@@ -1,0 +1,314 @@
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+.backgroundimage {
+    width: 100vw;
+    height: 100vh;
+}
+.backgroundImage {
+    width: 2000px;
+    height: 1100px;
+    position: relative;
+    top: -230px;
+    left: -475px;
+    overflow: hidden;
+}
+
+.container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    gap: 400px;
+    justify-content: space-between;
+    /* position: absolute; */
+    /* background: url('./../../assets/loginSignup-Bg.jpg'); */
+}
+/* .logo-container {
+    background-color: #fdf5e6;
+    position: relative;
+} */
+
+.logo-icon img {
+    transform: rotate(180deg);
+    width: 114px;
+    height: 114px;
+    position: absolute;
+    top: 90px;
+    left: 30px;
+}
+
+.logo-text {
+    width: 204px;
+    height: 66px;
+    position: absolute;
+    top: 90px;
+    left: 93px;
+}
+
+.travel {
+    font-family: "Madimi One", sans-serif;
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: blue;
+}
+
+.trail {
+    font-family: "Montez", cursive;
+    font-weight: 400;
+    font-size: 55px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: green;
+}
+
+.tagline {
+    width: 500px;
+    font-family: "Inter", sans-serif;
+    position: absolute;
+    left: 140px;
+    top: 150px;
+}
+
+.login-container {
+    position: absolute;
+    top: 30px;
+    right: 50px;
+    width: 40%;
+    /* height: 680px; */
+    height: 93%;
+    background-color: white;
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+}
+
+.login-container h2 {
+    color: #084880;
+    font-weight: 500;
+}
+
+.login-container form {
+    width: 100%;
+}
+
+
+.profile-img {
+    width: 100px;
+    height: 100px;
+    position: relative;
+}
+
+.profile-img img {
+    border-radius: 50%;
+    border: 1px solid #084880;
+    padding: 1px;
+}
+
+.profile-img i {
+    position: absolute;
+    top: 25px;
+    right: 12px;
+    color: white;
+    cursor: pointer;
+}
+
+.page1, .page2 {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 80%;
+}
+.inputfield {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+}
+::ng-deep .inputfield .p-dropdown {
+    width: 235px !important;
+    height: 35px;
+    padding: 5px !important;
+    display: flex;
+    align-items: center;
+    background-color: #F3F3F3;
+    border: none;
+}
+
+.genderField label {
+    background-color: #F3F3F3;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px !important;
+    width: 75px;
+    height: 37px;
+}
+.genderField div {
+    display: flex;
+    gap: 5px;
+}
+
+.selectedGender {
+    background-color: #1E88E5 !important;
+    color: white;
+}
+
+/* .login-container h2 {
+    color: #084880;
+    font-weight: 500;
+}
+.login-container form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+}
+.login-container form div {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.profile-img {
+    width: 100px;
+    height: 100px;
+    position: relative;
+}
+
+.profile-img img {
+    border-radius: 50%;
+    border: 1px solid #084880;
+    padding: 1px;
+}
+
+.profile-img i {
+    position: absolute;
+    top: 25px;
+    right: 12px;
+    color: white;
+    cursor: pointer;
+}
+
+.inputfield {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.inputfield label {
+    font-size: 18px;
+}
+.inputfield input {
+    padding: 10px;
+    background-color: #F3F3F3;
+    border: none;
+    border-radius: 4px;
+}
+.inputfield input:focus {
+    outline: none;
+    border: 1px solid #1E88E5
+}
+
+.submitBtn button{
+    background-color: #1E88E5;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    padding: 10px;
+    font-size: 20px;
+}
+
+.login-container p {
+    font-size: 15px;
+    font-weight: 400;
+    transform: translateY(-40px);
+}
+ */
+ .inputfield label {
+    font-size: 18px;
+}
+.inputfield input, .inputfield textarea {
+    padding: 10px;
+    background-color: #F3F3F3;
+    border: none;
+    border-radius: 4px;
+}
+.inputfield input:focus {
+    outline: none;
+    border: 1px solid #1E88E5
+}
+
+#address {
+    height: 100px;
+}
+
+.adminCheck {
+    display: flex !important;
+    flex-direction: row;
+    align-items: center !important;
+    gap: 15px;
+    padding: 10px;
+    transform: translateY(10px);
+    /* margin-top: 10px; */
+}
+
+.submitBtn button{
+    background-color: #1E88E5;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    padding: 10px;
+    font-size: 20px;
+    margin: 10px 0 0;
+}
+.login-container p {
+    font-size: 15px;
+    font-weight: 400;
+}
+
+ .paginators {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+ }
+
+ .paginators .pi-stop {
+    font-size: 10px;
+    transform: rotate(45deg);
+    color: #1E88E5;
+    border-radius: 4px;
+ }
+
+ .fillSquare {
+    background-color: #1E88E5;
+ }
+
+ .paginators button {
+    border: none;
+    background-color: white;
+    cursor: pointer;
+    margin: 0 5px;
+    margin: 0;
+    /* color: #1E88E5; */
+ }
+
+ .errMsg {
+    color: red;
+    font-size: 12px;
+ }

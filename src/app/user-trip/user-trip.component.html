@@ -1,0 +1,137 @@
+<div class="user-trip-container">
+  <div class="table-header"></div>
+  <div class="user-trip-table">
+    <p-table
+      #userTripTable
+      [value]="userTrips"
+      [paginator]="true"
+      [rows]="numOfRows"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="{first} to {last} of {totalRecords} Records"
+      [globalFilterFields]="['userName', 'totalDistance', 'gender', 'age', 'totalExpense']"
+    >
+      <ng-template pTemplate="caption">
+        <p>user Trips</p>
+        <div class="right-contents">
+          <div class="currency-formate">
+            <p-dropdown
+              [options]="currencyFormate"
+              [(ngModel)]="selectedCurrency"
+              optionLabel="name"
+              placeholder="Choose Currency Format"
+            >
+            </p-dropdown>
+          </div>
+          <div class="distance-formate">
+            <p-dropdown
+              [options]="distanceFormate"
+              [(ngModel)]="selectedDistanceFormate"
+              placeholder="Choose Distance Format"
+            ></p-dropdown>
+          </div>
+          <div class="searchField">
+            <input pInputText type="text" (input)="filterGlobal($event)" />
+            <i class="pi pi-search"></i>
+          </div>
+          <div class="numRows" (click)="changeRows()">
+            <i class="pi pi-bars"></i>
+            <span>{{ numOfRows }}</span>
+          </div>
+          <div *ngIf="showRowsChange" class="numRowChanges">
+            <p-listbox
+              [options]="rowOptions"
+              [(ngModel)]="numOfRows"
+              (onChange)="closeListbox()"
+            />
+          </div>
+          <div class="numColumns" (click)="showCloumnList()">
+            <i class="pi pi-bars"></i>
+            <span>5</span>
+          </div>
+          <div *ngIf="shoeColumnsDisplay" class="selectingColumnDiv">
+            <p-multiSelect [options]="columnOptions" />
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="userName">
+            <div class="tableHead">
+              User Name
+              <div class="sort-icons">
+                <i class="pi pi-sort-up-fill"></i>
+                <i class="pi pi-sort-down-fill"></i>
+              </div>
+            </div>
+          </th>
+          <th pSortableColumn="totalDistance">
+            <div class="tableHead">
+              Total Diatance
+              <div class="sort-icons">
+                <i class="pi pi-sort-up-fill"></i>
+                <i class="pi pi-sort-down-fill"></i>
+              </div>
+            </div>
+          </th>
+          <th pSortableColumn="gender">
+            <div class="tableHead">
+              Gender
+              <div class="sort-icons">
+                <i class="pi pi-sort-up-fill"></i>
+                <i class="pi pi-sort-down-fill"></i>
+              </div>
+            </div>
+          </th>
+          <th pSortableColumn="age">
+            <div class="tableHead">
+              Age
+              <div class="sort-icons">
+                <i class="pi pi-sort-up-fill"></i>
+                <i class="pi pi-sort-down-fill"></i>
+              </div>
+            </div>
+          </th>
+          <th pSortableColumn="totalExpense">
+            <div class="tableHead">
+              Total Expense
+              <div class="sort-icons">
+                <i class="pi pi-sort-up-fill"></i>
+                <i class="pi pi-sort-down-fill"></i>
+              </div>
+            </div>
+          </th>
+          <th style="width: 10%">Bucket List</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-userTrip>
+        <tr>
+          <td>{{ userTrip.userName }}</td>
+          <td>{{ userTrip.totalDistance }}</td>
+          <td>{{ userTrip.gender }}</td>
+          <td>{{ userTrip.age }}</td>
+          <td>{{ userTrip.totalExpense }}</td>
+          <td><i class="pi pi-tag" (click)="openUserBucketList(userTrip)"></i></td>
+        </tr>
+      </ng-template>
+    </p-table>
+    <div class="pagination-container">
+      <!-- <p-paginator
+            [rows]="10"
+            [first]="5"
+            [totalRecords]="userTrips.length"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="{first} to {last} of {totalRecords} Records"
+        ></p-paginator> -->
+    </div>
+  </div>
+</div>
+
+<div class="bucketDailog">
+  <p-dialog 
+    header="User Bucket List"
+    [(visible)]="bucketListDailog"
+    [modal]="true"
+    [resizable]="false"
+    [draggable]="false"
+  ></p-dialog>
+</div>

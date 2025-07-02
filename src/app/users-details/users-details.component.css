@@ -1,0 +1,113 @@
+.tableHead {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.tableHead div {
+    display: flex;
+    flex-direction: column; 
+}
+
+.tableHead div i {
+    font-size: 8px;
+}
+
+::ng-deep .p-datatable-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px !important;
+    background-color: white !important;
+}
+::ng-deep .p-datatable-header p {
+    display: flex;
+    align-items: center;
+}
+
+.right-contents {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+::ng-deep .p-dropdown {
+    height: 30px !important;
+    display: flex;
+    align-items: center;
+}
+
+::ng-deep .p-dropdown .p-highlight {
+    background-color: #F3F3F3 !important;
+    color: black !important;
+}
+
+.searchField {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: #F3F3F3;
+    padding: 10px;
+    border-radius: 4px; 
+    height: 30px;   
+}
+
+.searchField input {
+    border: none;
+    background-color: #F3F3F3;
+}
+
+.searchField input:focus {
+    outline: none;
+}
+
+.numRows, .numColumns {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    z-index: 2;
+    cursor: pointer;
+    position: relative;
+}
+.numRows i, .numColumns i {
+    color: #084880;
+    font-weight: bolder;
+    font-size: 24px;
+}
+
+.numColumns i {
+    transform: rotate(90deg);
+}
+
+.numRows span, .numColumns span {
+    color: #084880;
+    border: 1px solid #084880;
+    padding: 5px;
+    border-radius: 2px;
+    font-size: 10px;
+    text-align: center;
+}
+
+/* Stying the change number of rows in the table */
+.numRowChanges {
+    position: absolute;
+    top: 50px;
+    right: 75px;
+}
+
+::ng-deep .p-listbox .p-highlight {
+    background-color: #084880 !important;
+    color: #ffffff !important;
+}
+
+/* Styling the change number of columns in the table */
+.selectingColumnDiv {
+    position: absolute;
+    top: 50px;
+    right: 10px;
+}
+
+.pi-tag {
+    cursor: pointer;
+}

@@ -1,0 +1,20 @@
+<div class="graphtype">
+  <p>Graph Types</p>
+  <div class="graphTypeRadio">
+      <input type="radio" name="graphtype" id="barGraph" value="barGraph" checked (change)="onRadioChange('barGraph')" hidden />
+      <label for="barGraph" [class.radioChecked]="selectedRadio === 'barGraph'">Bar</label>
+      <input type="radio" name="graphtype" id="lineGraph" value="lineGraph" (change)="onRadioChange('lineGraph')" hidden />
+      <label for="lineGraph" [class.radioChecked]="selectedRadio === 'lineGraph'">Line</label>
+      <input type="radio" name="graphtype" id="pieChart" value="pieChart" (change)="onRadioChange('pieChart')" hidden />
+      <label for="pieChart" [class.radioChecked]="selectedRadio === 'pieChart'">Pie</label>
+  </div>
+</div>
+<div class="barGraph" *ngIf="selectedRadio === 'barGraph'">
+  <p-chart type="bar" [data]="data" [options]="options"></p-chart>
+</div>
+<div class="lineBar" *ngIf="selectedRadio === 'lineGraph'">
+  <p-chart type="line" [data]="data" [options]="options" />
+</div>
+<div class="peiChart" *ngIf="selectedRadio === 'pieChart'">
+  <p-chart type="pie" [data]="data" [options]="options" />
+</div>

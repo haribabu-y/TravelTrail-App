@@ -1,0 +1,163 @@
+.bucket-list-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 5px;
+    padding: 10px;
+}
+
+.bucket-list-item {
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 25%);
+    border-radius: 4px;
+}
+
+.bucket-image {
+    position: relative;
+}
+
+.bucket-image span {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    background-color: white;
+    color: black;
+    padding: 0 10px;
+    border-radius: 2px;
+}
+
+.bucket-image .editDeletBtns {
+    display: flex;
+    gap: 5px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.bucket-image i {
+    background-color: white;
+    color: black;
+    padding: 5px;
+    font-size: 20px;
+    border-radius: 4px;
+    opacity: 0.7;
+    display: none;
+}
+
+.bucket-list-item span {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.bucket-list-item:hover {
+    box-shadow: 0 4px #084880;
+}
+
+.bucket-list-item:hover i {
+    display: inline;
+}
+
+.content p {
+    font-size: 12px;
+}
+
+.adding-new-bucket {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.adding-new-bucket i {
+    background-color: #084880;
+    color: white;
+    font-weight: 900;
+    padding: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.adding-new-bucket p {
+    color: lightgray;
+}
+
+/* Styling the dailog for adding new bucket place */
+
+.inputFields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.field {
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+}
+
+.field label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.field input {
+    border: none;
+    background-color: #F1F1F1;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.field input:focus {
+    outline: none;
+}
+
+.image-upload-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    background-color: #f3f3f3;
+    height: 200px;
+    cursor: pointer;
+}
+
+.selected-image {
+    position: relative;
+}
+.selected-image div {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 5px;
+}
+
+.selected-image div i {
+    background-color: white;
+    color: #084880;
+    padding: 5px;
+    opacity: 0.7;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.buttons button {
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.cancelbtn {
+    border: 1px solid #084880;
+    color: #084880;
+}
+
+.submitbtn {
+    background-color: #084880;
+    color: white;
+    border: none;
+}
+

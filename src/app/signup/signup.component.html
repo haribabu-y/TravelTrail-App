@@ -1,0 +1,223 @@
+<body>
+<div class="backgroundimage">
+  <img
+    src="./../../assets/loginSignup-Bg.jpg"
+    alt="bg image"
+    class="backgroundImage"
+  />
+</div>
+
+<div class="container">
+  <div class="logo-container">
+    <div class="logo-header">
+      <div class="logo-icon">
+        <img src="./../../assets/foot_16750297.png" alt="Footicon" />
+      </div>
+      <div class="logo-text">
+        <span class="travel">Travel</span>
+        <span class="trail">Trail</span>
+      </div>
+    </div>
+    <div class="tagline">
+      Every journey has a story. We help you remember it
+    </div>
+  </div>
+  <div class="login-container">
+    <h2>
+      <a routerLink="/login"><i class="pi pi-arrow-left"></i></a> SIGN UP To
+      TravelTrail...
+    </h2>
+    <form [formGroup]="reactiveForm" (ngSubmit)="onSignupFormsubmit()">
+      <div class="page1" *ngIf="paginationPageNo === 1">
+        <div class="image-upload-container">
+          <div class="profile-img">
+            <img [src]="profileImage" alt="ProfileImage" class="profile-img" />
+            <i class="pi pi-pencil" (click)="triggerFileinput()"></i>
+          </div>
+          <input
+            type="file"
+            accept=".png, .jpg, .jpeg"
+            #fileInput
+            (change)="onFilechanges($event)"
+            hidden
+          />
+          <!-- formControlName="profileImage" -->
+        </div>
+        <div class="inputfield">
+          <label for="username">User Name</label>
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            required
+          />
+        </div>
+        <div class="row">
+          <div class="inputfield">
+            <label for="firstName">First name</label>
+            <input
+              type="text"
+              id="firstName"
+              formControlName="firstName"
+              required
+            />
+          </div>
+          <div class="inputfield">
+            <label for="lastName">Last name</label>
+            <input type="text" id="lastName" formControlName="lastName" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="genderField inputfield">
+            <span>Gender</span>
+            <div>
+              <input
+                type="radio"
+                formControlName="gender"
+                value="male"
+                id="male"
+                hidden
+                (change)="changeGender('male')"
+              />
+              <label
+                for="male"
+                [class.selectedGender]="selectedGender === 'male'"
+                >Male</label
+              >
+              <input
+                type="radio"
+                formControlName="gender"
+                value="female"
+                id="female"
+                hidden
+                (change)="changeGender('female')"
+              />
+              <label
+                for="female"
+                [class.selectedGender]="selectedGender === 'female'"
+                >Female</label
+              >
+              <input
+                type="radio"
+                formControlName="gender"
+                value="others"
+                id="others"
+                hidden
+                (change)="changeGender('others')"
+              />
+              <label
+                for="others"
+                [class.selectedGender]="selectedGender === 'others'"
+                >Others</label
+              >
+            </div>
+          </div>
+          <div class="inputfield">
+            <label for="dob">DOB</label>
+            <input type="date" id="dob" formControlName="dob" required />
+          </div>
+        </div>
+
+        <div class="inputfield">
+          <label for="email">Email ID</label>
+          <input type="email" id="email" formControlName="email" required />
+        </div>
+        <div class="inputfield">
+          <label for="mobile">Mobile Number</label>
+          <input type="text" id="mobile" formControlName="phone" required />
+        </div>
+      </div>
+      <div class="page2" *ngIf="paginationPageNo === 2">
+        <div class="inputfield">
+          <label for="address">Address</label>
+          <textarea id="address" formControlName="address" required ></textarea>
+        </div>
+        <div class="row">
+          <div class="inputfield">
+            <label>Country</label>
+            <p-dropdown
+              [options]="countries"
+              placeholder="Select a Country"
+              optionLabel="name"
+              formControlName="country"
+              (onChange)="onCountryChanges($event.value)"
+            />
+          </div>
+          <div class="inputfield">
+            <label>State</label>
+            <p-dropdown
+              [options]="filteredstates"
+              placeholder="Select a State"
+              optionLabel="name"
+              formControlName="state"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="inputfield">
+            <label for="zipcode">Zip Code</label>
+            <input
+              type="text"
+              id="zipcode"
+              formControlName="zipCode"
+              required
+            />
+          </div>
+          <div class="inputfield">
+            <label>Time Zone</label>
+            <p-dropdown
+              [options]="timezones"
+              placeholder="Select Time Zone"
+              formControlName="timeZone"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="inputfield">
+            <label>Locale</label>
+            <p-dropdown
+              [options]="locales"
+              placeholder="Select Locale"
+              formControlName="locale"
+            />
+          </div>
+          <div class="inputfield adminCheck">
+            <input type="checkbox" [disabled]="true" />
+            <label>Is Admin</label>
+          </div>
+        </div>
+        <div class="inputfield">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            required
+          />
+        </div>
+        <div class="inputfield">
+          <label for="confirmPassword">Confirm Password</label>
+          <input type="password" formControlName="confirmPassword" required />
+          <p class="errMsg" *ngIf="passwordMatch">
+            Password & Confirm Password must be Equal*
+          </p>
+        </div>
+        <div class="submitBtn inputfield">
+          <button type="submit">Sign Up</button>
+        </div>
+        <!-- <p>Already have an account!?, <a routerLink="/login">LOGIN</a></p> -->
+      </div>
+    </form>
+    <div class="paginators">
+      <button [disabled]="paginationPageNo === 1">
+        <i class="pi pi-angle-left" (click)="goToPrevPage(1)"></i>
+      </button>
+      <i class="pi pi-stop" [class.fillSquare]="paginationPageNo === 1"></i>
+      <i class="pi pi-stop" [class.fillSquare]="paginationPageNo === 2"></i>
+      <button [disabled]="paginationPageNo === 2">
+        <i class="pi pi-angle-right" (click)="goToNextPage(2)"></i>
+      </button>
+    </div>
+  </div>
+</div>
+</body>

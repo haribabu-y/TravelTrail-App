@@ -1,0 +1,138 @@
+::ng-deep .p-datatable-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px !important;
+    background-color: white !important;
+}
+::ng-deep .p-datatable-header p {
+    display: flex;
+    align-items: center;
+}
+.right-captions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.searchField {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: #F3F3F3;
+    padding: 10px;
+    border-radius: 4px;    
+}
+
+.searchField input {
+    border: none;
+    background-color: #F3F3F3;
+}
+
+.searchField input:focus {
+    outline: none;
+}
+
+.numRows, .numColumns {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    z-index: 2;
+    cursor: pointer;
+    position: relative;
+}
+.numRows i, .numColumns i {
+    color: #084880;
+    font-weight: bolder;
+    font-size: 24px;
+}
+
+.numColumns i {
+    transform: rotate(90deg);
+}
+
+.numRows span, .numColumns span {
+    color: #084880;
+    border: 1px solid #084880;
+    padding: 5px;
+    border-radius: 2px;
+    font-size: 10px;
+    text-align: center;
+}
+.right-captions .pi-plus {
+    background-color: #084880;
+    padding: 5px;
+    border-radius: 2px;
+    color: white;
+    cursor: pointer;
+}
+
+.inputFields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.field {
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+}
+
+.field label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.field input {
+    border: none;
+    background-color: #F1F1F1;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.field input:focus {
+    outline: none;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.buttons button {
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.cancelbtn {
+    border: 1px solid #084880;
+    color: #084880;
+}
+
+.submitbtn {
+    background-color: #084880;
+    color: white;
+    border: none;
+}
+
+
+/* Stying the change number of rows in the table */
+.numRowChanges {
+    position: absolute;
+    top: 50px;
+    right: 75px;
+}
+
+::ng-deep .p-listbox .p-highlight {
+    background-color: #084880 !important;
+    color: #ffffff !important;
+}
+
+/* Styling the change number of columns in the table */
+.selectingColumnDiv {
+    position: absolute;
+    top: 50px;
+    right: 10px;
+}

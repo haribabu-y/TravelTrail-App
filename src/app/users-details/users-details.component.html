@@ -1,0 +1,110 @@
+<p>users-details works!</p>
+<div class="users-detail-table">
+  <p-table
+    #usersDetailTable
+    [value]="usersDetails"
+    [paginator]="true"
+    [rows]="numOfRows"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="{first} to {last} of {totalRecords} Records"
+    [globalFilterFields]="['userName', 'age', 'Country', 'TotalExpense']"
+  >
+    <ng-template pTemplate="caption">
+      <p>Users Details</p>
+      <div class="right-contents">
+        <div class="currency-formate">
+          <p-dropdown
+            [options]="currencyFormate"
+            [(ngModel)]="selectedCurrency"
+            optionLabel="name"
+            placeholder="Choose Currency Format"
+          >
+          </p-dropdown>
+        </div>
+        <div class="distance-formate">
+          <p-dropdown
+            [options]="distanceFormate"
+            [(ngModel)]="selectedDistanceFormate"
+            placeholder="Choose Distance Format"
+          ></p-dropdown>
+        </div>
+        <div class="searchField">
+          <input pInputText type="text" (input)="filterGlobal($event)" />
+          <i class="pi pi-search"></i>
+        </div>
+        <div class="numRows" (click)="changeRows()">
+          <i class="pi pi-bars"></i>
+          <span>{{ numOfRows }}</span>
+        </div>
+        <div *ngIf="showRowsChange" class="numRowChanges">
+          <p-listbox
+            [options]="rowOptions"
+            [(ngModel)]="numOfRows"
+            (onChange)="closeListbox()"
+          />
+        </div>
+        <div class="numColumns" (click)="showCloumnList()">
+          <i class="pi pi-bars"></i>
+          <span>5</span>
+        </div>
+        <div *ngIf="shoeColumnsDisplay" class="selectingColumnDiv">
+          <p-multiSelect [options]="columnOptions" />
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+          <th>Profile</th>
+          <th pSortableColumn="userName">
+            <div class="tableHead">
+              User Name
+              <div class="sort-icons">
+                <i class="pi pi-sort-up-fill"></i>
+                <i class="pi pi-sort-down-fill"></i>
+              </div>
+            </div>
+          </th>
+          <th pSortableColumn="age">
+            <div class="tableHead">
+              Age
+              <div class="sort-icons">
+                <i class="pi pi-sort-up-fill"></i>
+                <i class="pi pi-sort-down-fill"></i>
+              </div>
+            </div>
+          </th>
+          <th pSortableColumn="totalExpense">
+            <div class="tableHead">
+              Total Expense
+              <div class="sort-icons">
+                <i class="pi pi-sort-up-fill"></i>
+                <i class="pi pi-sort-down-fill"></i>
+              </div>
+            </div>
+          </th>
+          <th pSortableColumn="country">
+            <div class="tableHead">
+              Country
+              <div class="sort-icons">
+                <i class="pi pi-sort-up-fill"></i>
+                <i class="pi pi-sort-down-fill"></i>
+              </div>
+            </div>
+          </th>
+          <th>Bucket List</th>
+          <th>Delete</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-userDetail>
+        <tr>
+            <td><img src="assets/users/user7.jpg" alt="Profile image" width="40px" height="40px" style="border-radius: 50%;"></td>
+            <td>{{userDetail.userName}}</td>
+            <td>{{userDetail.age}}</td>
+            <td>{{userDetail.TotalExpense}}</td>
+            <td>{{userDetail.Country}}</td>
+            <td><i class="pi pi-tag"></i></td>
+            <td><i class="pi pi-trash"></i></td>
+        </tr>
+    </ng-template>
+  </p-table>
+</div>

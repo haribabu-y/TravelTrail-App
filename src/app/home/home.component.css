@@ -1,0 +1,35 @@
+.graphtype {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    padding: 10px 20px;
+    width: 100%;
+    border-bottom: 4px solid rgba(211, 211, 211, 0.211);;
+}
+.graphTypeRadio {
+    display: flex;
+    gap: 5px;
+}
+.graphTypeRadio label {
+    padding: 10px;
+    background-color: lightgray;
+    border-radius: 10px;
+    width: 100px;
+    text-align: center;
+}
+
+.radioChecked {
+    background-color: #1E88E5 !important;
+    color: white;
+}
+
+/* ::ng-deep .p-element p-chart{
+    padding: 10px;
+    margin-left: 30px;
+    margin-right: 10px;
+} */
+.barGraph {
+    padding: 10px;
+    margin-left: 30px;
+    margin-right: 50px;
+}

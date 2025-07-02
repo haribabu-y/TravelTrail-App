@@ -1,0 +1,35 @@
+<body>
+    <p-toast></p-toast>
+<div class="backgroundimage">
+    <img src="./../../assets/loginSignup-Bg.jpg" alt="bg image" class="backgroundImage">
+</div>
+<div class="container">
+    <div class="logo-container">
+        <div class="logo-header">
+            <div class="logo-icon"><img src="./../../assets/foot_16750297.png" alt="Footicon"></div>
+            <div class="logo-text">
+                <span class="travel">Travel</span>
+                <span class="trail">Trail</span>
+            </div>
+        </div>
+        <div class="tagline">Every journey has a story. We help you remember it</div>
+    </div>
+    <div class="login-container">
+        <h2>Login To TravelTrail...</h2>
+        <form #loginForm="ngForm" (ngSubmit)="onLoginSubmit(loginForm)">
+            <div class="inputfield">
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="email" ngModel required>
+            </div>
+            <div class="inputfield">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" ngModel required>
+            </div>
+            <div class="submitBtn inputfield">
+                <button type="submit">Login</button>
+            </div>
+        </form>
+        <p>Don’t have an account!?, <a routerLink="/signup">SIGN UP</a></p>
+    </div>   
+</div>
+</body>

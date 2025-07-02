@@ -1,0 +1,155 @@
+
+<!-- 
+    [rowsPerPageOptions]="[5, 10, 15, 20]"
+    -->
+<div class="trip-table">
+  <p-table
+    #dt2
+    [value]="trips"
+    [paginator]="true"
+    dataKey="id"
+    [rows]="rows"
+    [showCurrentPageReport]="true"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    currentPageReportTemplate="{first} to {last} of {totalRecords} Records"
+    [globalFilterFields]="[
+      'startLocation',
+      'destination',
+      'totalDistance',
+      'totalExpense',
+      'totalMembers'
+    ]"
+  >
+    <ng-template pTemplate="caption">
+      <p>Total trips</p>
+      <div class="right-captions">
+        <div class="searchField">
+          <input
+            pInputText
+            type="text"
+            (input)="filterGlobal($event)"
+          />
+          <i class="pi pi-search"></i>
+        </div>
+        <div class="numRows" (click)="changeRows()">
+            <i class="pi pi-bars"></i>
+            <span>{{numOfRows}}</span>
+        </div>
+        <div *ngIf="showRowsChange" class="numRowChanges" >
+            <p-listbox
+                [options]="rowOptions"
+                [(ngModel)] = rows
+                (onChange)="closeListbox()"
+            />
+        </div>
+        <div class="numColumns" (click)="showCloumnList()">
+            <i class="pi pi-bars"></i>
+            <span>5</span>
+        </div>
+        <div *ngIf="shoeColumnsDisplay" class="selectingColumnDiv">
+            <p-multiSelect 
+                [options]="columnOptions"
+            />
+        </div>
+        <i class="pi pi-plus" (click)="openNew()"></i>        
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="startLocation" style="width: 20%">
+          Start Location <p-sortIcon field="startLocation" />
+        </th>
+        <th pSortableColumn="destination" style="width: 20%">
+          Destination <p-sortIcon field="destination" />
+        </th>
+        <th pSortableColumn="totalDistance" style="width: 20%">
+          Total Distance <p-sortIcon field="totalDistance" />
+        </th>
+        <th pSortableColumn="totalExpense" style="width: 20%">
+          Total Expense <p-sortIcon field="totalExpense" />
+        </th>
+        <th pSortableColumn="totalMembers" style="width: 20%">
+          Total Members <p-sortIcon field="totalMembers" />
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-trip>
+      <tr>
+        <td>{{ trip.startLocation }}</td>
+        <td>{{ trip.destination }}</td>
+        <td>{{ trip.totalDistance }}</td>
+        <td>{{ trip.totalExpense }}</td>
+        <td>{{ trip.totalMembers }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  header="Add Trip"
+  [modal]="true"
+  [(visible)]="showDailog"
+  [style]="{ width: '500px' }"
+  [resizable]="false"
+  [draggable]="false"
+>
+  <ng-template pTemplate="content">
+    <div class="inputFields">
+      <div class="field">
+        <label for="sl">Start Location</label>
+        <input
+          type="text"
+          pInputText
+          id="sl"
+          [(ngModel)]="startPlace"
+          autofocus
+          required
+        />
+      </div>
+      <div class="field">
+        <label for="d">Destination</label>
+        <input
+          type="text"
+          pInputText
+          id="d"
+          [(ngModel)]="destination"
+          required
+        />
+      </div>
+      <div class="field">
+        <label for="td">Total Distance</label>
+        <input
+          type="number"
+          pInputText
+          id="td"
+          [(ngModel)]="totalDistance"
+          required
+        />
+      </div>
+      <div class="field">
+        <label for="te">Total Expanse</label>
+        <input
+          type="number"
+          pInputText
+          id="te"
+          [(ngModel)]="totalExpense"
+          required
+        />
+      </div>
+      <div class="field">
+        <label for="tm">Total Members</label>
+        <input
+          type="number"
+          pInputText
+          id="tm"
+          [(ngModel)]="totalMembers"
+          required
+        />
+      </div>
+      <div class="buttons">
+        <button (click)="closeDailog()" class="cancelbtn">Cancel</button>
+        <button (click)="addRecord()" class="submitbtn">Submit</button>
+      </div>
+    </div>
+  </ng-template>
+</p-dialog>
