@@ -18,11 +18,11 @@
     <div class="right">
       <div class="currency">
         <img src="./../../assets/currencyimg.png" alt="" />
-        <span>$12345</span>
+        <span>${{userExpense}}</span>
       </div>
       <div class="toggleDarkMode">
         <p>Dark Theme</p>
-        <p-inputSwitch [(ngModel)]="darkMode" />
+        <p-inputSwitch [(ngModel)]="darkMode" styleClass="custom-inputswitch" />
       </div>
       <p-button label="Logout" (onClick)="logoutUser()"/>
       <div class="profileImg">
@@ -31,10 +31,10 @@
     </div>
   </div>
   <div class="navbar">
-    <a routerLink="/user/Home" [routerLinkActive]="'activeLink'"><i class="pi pi-home"></i> Home</a>
-    <a routerLink="/user/Trips" [routerLinkActive]="'activeLink'"><i class="pi pi-briefcase"></i> Trips</a>
-    <a routerLink="/user/BucketLists" [routerLinkActive]="'activeLink'"><i class="pi pi-tag"></i> Bucket List</a>
-    <a routerLink="/admin/UsersTrips" [routerLinkActive]="'activeLink'"><i class="pi pi-briefcase"></i> User Trips</a>
-    <a routerLink="/admin/Users" [routerLinkActive]="'activeLink'"><i class="pi pi-users"></i> Users</a>
+    <a routerLink="/user/Home" [routerLinkActive]="'activeLink'" *ngIf="!isAdmin"><i class="pi pi-home"></i> Home</a>
+    <a routerLink="/user/Trips" [routerLinkActive]="'activeLink'" *ngIf="!isAdmin"><i class="pi pi-briefcase"></i> Trips</a>
+    <a routerLink="/user/BucketLists" [routerLinkActive]="'activeLink'" *ngIf="!isAdmin"><i class="pi pi-tag"></i> Bucket List</a>
+    <a routerLink="/admin/UsersTrips" [routerLinkActive]="'activeLink'" *ngIf="isAdmin"><i class="pi pi-briefcase"></i> User Trips</a>
+    <a routerLink="/admin/Users" [routerLinkActive]="'activeLink'" *ngIf="isAdmin"><i class="pi pi-users"></i> Users</a>
   </div>
 </div>

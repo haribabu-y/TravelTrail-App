@@ -4,6 +4,8 @@ import { Authservice } from '../Services/auth.service';
 import { Router } from '@angular/router';
 import { User } from '../Models/user';
 import { MessageService } from 'primeng/api';
+import { LoginUser } from '../Models/loginUser';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -23,13 +25,17 @@ export class LoginComponent {
     const password = form.value.password;
     console.log(form.value);
     this.authService.login(email, password).subscribe({
-      next: (user: User | null) => {
+      next: (user: User | null ) => {
         if(user) {
           this.errorMessage = 'Login Successful!..';
           this.messageService.add({severity: 'success', summary: 'Success', detail: this.errorMessage})
-          setTimeout(() => {
+          if(user.username === 'admin') {
+            this.router.navigate(['/admin/UsersTrips']);
+          } else {
+            // console.log(user);    
+            // this.loggedInUser.next(user);      
             this.router.navigate(['/user/Home']);
-          },1500)
+          }          
         } else {
           this.errorMessage = 'Invalid Username or Password';
           this.messageService.add({severity: 'error', summary: 'Error', detail: this.errorMessage})

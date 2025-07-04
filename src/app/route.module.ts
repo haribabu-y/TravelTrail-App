@@ -15,12 +15,12 @@ const routes: Routes = [
   
   {path: 'login', component: LoginComponent},
   {path: 'signup', component: SignupComponent},
-  {path: 'user', canActivateChild: [canActivateRouteGuard], children: [
+  {path: 'user', canActivate: [canActivateRouteGuard], children: [
     {path: 'Home', component: HomeComponent},
     {path: 'Trips', component: TripsComponent},
     {path: 'BucketLists', component: BucketListComponent},
   ]},
-  {path: 'admin', children: [
+  {path: 'admin', canActivate: [canActivateRouteGuard], children: [
     {path: 'UsersTrips', component: UserTripComponent},
     {path: 'Users', component: UsersDetailsComponent}
   ]},

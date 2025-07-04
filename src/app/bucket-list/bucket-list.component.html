@@ -1,16 +1,18 @@
-<div class="bucket-list-container">
-  <div class="bucket-list-item" *ngFor="let bucketListItem of bucketListItems">
+<app-loader *ngIf="isLoading"></app-loader>
+<div class="bucket-list-container" *ngIf="!isLoading">
+  <div class="bucket-list-item" *ngFor="let bucketListItem of userBucketLists">
     <div class="bucket-image">
       <p-image
-        [src]="bucketListItem.image"
+        [src]="bucketListItem.placeImage"
         alt="image"
         width="100%"
         height="250px"
+        alt="Place Image"
       ></p-image>
       <span>{{bucketListItem.estimatedDistance}} KMs</span>
       <div class="editDeletBtns">
         <i class="pi pi-pencil" (click)="editBucketItem(bucketListItem)"></i>
-       <i class="pi pi-trash" (click)="deleteBucketItem(bucketListItem)"></i>
+       <i class="pi pi-trash" (click)="deleteBucketItem(bucketListItem)" *ngIf="isAdmin"></i>
       </div>
     </div>
     <div class="content">

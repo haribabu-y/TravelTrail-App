@@ -32,6 +32,14 @@
     gap: 10px;
 }
 
+.right-contents .pi-plus {
+    background-color: #084880;
+    padding: 5px;
+    border-radius: 2px;
+    color: white;
+    cursor: pointer;
+}
+
 ::ng-deep .p-dropdown {
     height: 30px !important;
     display: flex;
@@ -42,6 +50,10 @@
     background-color: #F3F3F3 !important;
     color: black !important;
 }
+
+/* ::ng-deep .users-detail-table.p-datatable .p-datatable-tbody > tr > td {
+    padding: 10px;
+} */
 
 .searchField {
     display: flex;

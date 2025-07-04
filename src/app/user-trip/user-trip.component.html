@@ -1,14 +1,21 @@
-<div class="user-trip-container">
+<app-loader *ngIf="isLoading"></app-loader>
+<div class="user-trip-container" *ngIf="!isLoading">
   <div class="table-header"></div>
   <div class="user-trip-table">
     <p-table
       #userTripTable
-      [value]="userTrips"
+      [value]="usersTrips"
       [paginator]="true"
       [rows]="numOfRows"
       [showCurrentPageReport]="true"
       currentPageReportTemplate="{first} to {last} of {totalRecords} Records"
-      [globalFilterFields]="['userName', 'totalDistance', 'gender', 'age', 'totalExpense']"
+      [globalFilterFields]="[
+        'username',
+        'totalDistance',
+        'gender',
+        'age',
+        'totalExpense'
+      ]"
     >
       <ng-template pTemplate="caption">
         <p>user Trips</p>
@@ -55,7 +62,7 @@
       </ng-template>
       <ng-template pTemplate="header">
         <tr>
-          <th pSortableColumn="userName">
+          <th pSortableColumn="username">
             <div class="tableHead">
               User Name
               <div class="sort-icons">
@@ -105,12 +112,14 @@
       </ng-template>
       <ng-template pTemplate="body" let-userTrip>
         <tr>
-          <td>{{ userTrip.userName }}</td>
+          <td>{{ userTrip.username }}</td>
           <td>{{ userTrip.totalDistance }}</td>
           <td>{{ userTrip.gender }}</td>
           <td>{{ userTrip.age }}</td>
           <td>{{ userTrip.totalExpense }}</td>
-          <td><i class="pi pi-tag" (click)="openUserBucketList(userTrip)"></i></td>
+          <td>
+            <i class="pi pi-tag" (click)="openUserBucketList(userTrip.id)"></i>
+          </td>
         </tr>
       </ng-template>
     </p-table>
@@ -127,11 +136,168 @@
 </div>
 
 <div class="bucketDailog">
-  <p-dialog 
+  <p-dialog
     header="User Bucket List"
     [(visible)]="bucketListDailog"
     [modal]="true"
     [resizable]="false"
     [draggable]="false"
-  ></p-dialog>
+    [style]="{ width: '95%', height: '95%' }"
+  >
+    <ng-template pTemplate="content">
+      <app-loader *ngIf="isbucketListloading"></app-loader>
+      <div class="bucketList-container" *ngIf="!isbucketListloading">
+        <div
+          class="bucket-list-item"
+          *ngFor="let bucketListItem of bucketListItems"
+        >
+          <div class="bucket-image">
+            <p-image
+              [src]="bucketListItem.placeImage"
+              alt="image"
+              width="100%"
+              height="200px"
+              alt="Place Image"
+            ></p-image>
+            <span>{{ bucketListItem.estimatedDistance }} KMs</span>
+            <div class="editDeletBtns">
+              <i
+                class="pi pi-pencil"
+                (click)="displayBucketItem(bucketListItem)"
+              ></i>
+              <i
+                class="pi pi-trash"
+                (click)="showDeleteDailog(bucketListItem.id)"
+              ></i>
+            </div>
+          </div>
+          <div class="content">
+            <span>{{ bucketListItem.placeName }}</span>
+            <p>{{ bucketListItem.placeDescription }}</p>
+            <span>${{ bucketListItem.estimatedBudget }}</span>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-dialog>
+</div>
+
+<div class="editBucketItem">
+  <p-dialog
+    header="Update Place"
+    [(visible)]="showEditBucketDialog"
+    [resizable]="false"
+    [draggable]="false"
+    [modal]="true"
+    [style]="{ width: '35%' }"
+  >
+    <ng-template pTemplate="content">
+      <div class="inputFields">
+        <div class="field">
+          <label for="pi">Place Image</label>
+          <div
+            class="image-upload-container"
+            (click)="triggerFileinput()"
+            *ngIf="!placeImage"
+          >
+            <i class="pi pi-upload"></i>
+            <p>Drag and Drop or Upload</p>
+          </div>
+          <input
+            type="file"
+            pInputText
+            id="pi"
+            required
+            accept="image/png, image/jpeg, image/jpg"
+            (change)="onFilechanges($event)"
+            hidden
+            #fileInput
+          />
+          <div class="selected-image" *ngIf="placeImage">
+            <img
+              [src]="placeImage"
+              alt="Place image"
+              width="100%"
+              height="200px"
+            />
+            <div>
+              <i class="pi pi-pencil" (click)="triggerFileinput()"></i>
+              <i class="pi pi-trash" (click)="deleteSelectedPlaceImage()"></i>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="pn">Place Name</label>
+          <input
+            type="text"
+            pInputText
+            id="pn"
+            [(ngModel)]="placeName"
+            required
+          />
+        </div>
+        <div class="field">
+          <label for="pd">Place Description</label>
+          <input
+            type="text"
+            pInputText
+            id="pd"
+            [(ngModel)]="placeDescription"
+            required
+          />
+        </div>
+        <div class="field">
+          <label for="ed">Estimated Distance</label>
+          <input
+            type="number"
+            pInputText
+            id="ed"
+            [(ngModel)]="estimatedDistance"
+            required
+          />
+        </div>
+        <div class="field">
+          <label for="eb">Estimated Budget</label>
+          <input
+            type="number"
+            pInputText
+            id="eb"
+            [(ngModel)]="estimatedBudget"
+            required
+          />
+        </div>
+        <div class="buttons">
+          <button (click)="closeEditDailog()" class="cancelbtn">Cancel</button>
+          <button (click)="updateBucketItem()" class="submitbtn">
+            Submit
+          </button>
+        </div>
+      </div>
+    </ng-template>
+  </p-dialog>
+</div>
+
+<div class="delete-dailog">
+  <p-dialog
+    [(visible)]="isDeleteDailog"
+    [modal]="true"
+    [position]="'top'"
+    [resizable]="false"
+    [draggable]="false"
+    [style]="{ width: '40%', height: '45%' }"
+  >
+    <ng-template pTemplate="content">
+      <div class="delete-container">
+        <img src="assets/deleteImg.png" alt="Delete image" />
+        <div class="text">
+          <h4>Are You sure!??</h4>
+          <p>Do you really want to delete the selected item?</p>
+        </div>
+        <div class="btns">
+          <button (click)="closeDeleteDailog()">Cancel</button>
+          <button class="delbtn" (click)="deleteBucketItem()">Delete</button>
+        </div>
+      </div>
+    </ng-template>
+  </p-dialog>
 </div>

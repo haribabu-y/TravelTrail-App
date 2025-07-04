@@ -1,58 +1,34 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { BucketList } from '../Models/bucketList';
+import { BucketListService } from '../Services/bucketList.service';
 
 @Component({
   selector: 'app-bucket-list',
   templateUrl: './bucket-list.component.html',
   styleUrls: ['./bucket-list.component.css']
 })
-export class BucketListComponent {
+export class BucketListComponent implements OnInit{
   showAddBucketDailog: boolean = false;
+  isLoading: boolean = false;
+  isAdmin: boolean = false;
 
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
-  // list of bucket list items
-  bucketListItems = [
-    {
-      id: 1,
-      image: 'assets/BucketList/Bali.png',
-      placeName: 'Bali',
-      placeDescription: 'A beautiful island in Indonesia known for its forested volcanic mountains, iconic rice paddies, beaches and coral reefs.',
-      estimatedDistance: 5000,
-      estimatedBudget: 30000
-    },
-    {
-      id: 2,
-      image: 'assets/BucketList/Bangkok.png',
-      placeName: 'Bangkok',
-      placeDescription: 'A beautiful island in Indonesia known for its forested volcanic mountains, iconic rice paddies, beaches and coral reefs.',
-      estimatedDistance: 5000,
-      estimatedBudget: 15000
-    },
-    {
-      id: 3,
-      image: 'assets/BucketList/Belgium.png',
-      placeName: 'Belgium',
-      placeDescription: 'A beautiful island in Indonesia known for its forested volcanic mountains, iconic rice paddies, beaches and coral reefs.',
-      estimatedDistance: 5000,
-      estimatedBudget: 45000
-    },
-    {
-      id: 4,
-      image: 'assets/BucketList/Germany.png',
-      placeName: 'Germany',
-      placeDescription: 'A beautiful island in Indonesia known for its forested volcanic mountains, iconic rice paddies, beaches and coral reefs.',
-      estimatedDistance: 5000,
-      estimatedBudget: 35000
-    },
-    {
-      id: 5,
-      image: 'assets/BucketList/Kyoto.png',
-      placeName: 'Kyoto',
-      placeDescription: 'A beautiful island in Indonesia known for its forested volcanic mountains, iconic rice paddies, beaches and coral reefs.',
-      estimatedDistance: 5000,
-      estimatedBudget: 25000
-    }
-  ]
+  userBucketLists: BucketList[];
+  //Getting the instance of the bucketList service
+  bucketListService: BucketListService = inject(BucketListService);
+
+  ngOnInit(): void {
+    this.getbucketlists();
+  }
+
+  getbucketlists() {
+    this.isLoading = true;
+    this.bucketListService.getAllBucketLists().subscribe((bucketLists: BucketList[]) => {
+      this.userBucketLists = bucketLists;
+      this.isLoading = false;
+    })
+  }
 
   placeImage: string = '';
   placeName: string = '';
@@ -65,7 +41,8 @@ export class BucketListComponent {
   }
 
   triggerFileinput() {
-    this.fileInput.nativeElement.click();  }
+    this.fileInput.nativeElement.click();  
+  }
 
   onFilechanges(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
@@ -88,6 +65,7 @@ export class BucketListComponent {
     const reader = new FileReader();
     reader.onload = () => {
       this.placeImage = reader.result as string;
+      console.log(reader.result as string);      
     }
     reader.readAsDataURL(file);
     
@@ -95,26 +73,26 @@ export class BucketListComponent {
 
   closeDailog() {
     this.showAddBucketDailog = false;
-    console.log(this.placeImage);    
+    // console.log(this.placeImage);    
     this.placeImage = '';
     this.placeName = '';
     this.placeDescription = '';
-    this.estimatedDistance = 0;
-    this.estimatedBudget = 0;
+    this.estimatedDistance = null;
+    this.estimatedBudget = null;
   }
 
   deleteSelectedPlaceImage() {
     this.placeImage = '';
-    this.placeName = '';
-    this.placeDescription = '';
-    this.estimatedDistance = 0;
-    this.estimatedBudget = 0;
+    // this.placeName = '';
+    // this.placeDescription = '';
+    // this.estimatedDistance = 0;
+    // this.estimatedBudget = 0;
   }
 
-  bucketId: number;
-  editBucketItem(item) {
+  bucketId: string;
+  editBucketItem(item: BucketList) {
     this.showAddBucketDailog = true;
-    this.placeImage = item.image;
+    this.placeImage = item.placeImage;    
     this.placeName = item.placeName;
     this.placeDescription = item.placeDescription;
     this.estimatedDistance = item.estimatedDistance;
@@ -123,29 +101,27 @@ export class BucketListComponent {
     this.bucketId = item.id;
   }
 
-  deleteBucketItem(item) {
-    const index = this.bucketListItems.findIndex(bucketItem => bucketItem.id === item.id);
-    if(index !== -1) {
-      this.bucketListItems.splice(index, 1);      
-    }
-    this.closeDailog();    
+  deleteBucketItem(item: BucketList) {
+    let itemId = item.id;
+    this.bucketListService.deleteUserbucketItem(itemId).subscribe((res) => {
+      this.getbucketlists();
+    });
+    this.closeDailog();
   }
 
-  addRecord(id?: number) {
+  addRecord(id?: string) {
+    let newBucketItem = {
+      placeImage: this.placeImage,
+      placeName: this.placeName,
+      placeDescription: this.placeDescription,
+      estimatedDistance: this.estimatedDistance,
+      estimatedBudget: this.estimatedBudget
+    }
     if(id) {
-      const index = this.bucketListItems.findIndex(item => item.id === id);
-      if(index !== -1) {
-        this.bucketListItems[index] = {
-          id: id,
-          image: this.placeImage,
-          placeName: this.placeName,
-          placeDescription: this.placeDescription,
-          estimatedDistance: this.estimatedDistance,
-          estimatedBudget: this.estimatedBudget
-        };
-      }
+      this.bucketListService.updateUserBucketItem(id,newBucketItem).subscribe((res) => {
+        this.getbucketlists();
+      });
       this.closeDailog();
-
       return;
     }
     if(!this.placeImage || !this.placeName || !this.placeDescription || !this.estimatedDistance || !this.estimatedBudget) {
@@ -153,16 +129,10 @@ export class BucketListComponent {
       return;
     }
 
-    let newBucketItem = {
-      id: this.bucketListItems.length + 1,
-      image: this.placeImage,
-      placeName: this.placeName,
-      placeDescription: this.placeDescription,
-      estimatedDistance: this.estimatedDistance,
-      estimatedBudget: this.estimatedBudget
-    }
-
-    this.bucketListItems.push(newBucketItem);
+    console.log(newBucketItem);    
+    this.bucketListService.addNewBucketListitem(newBucketItem).subscribe((res) => {
+      this.getbucketlists();
+    });
     this.closeDailog();
   }
 }

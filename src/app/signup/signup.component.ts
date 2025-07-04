@@ -4,6 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { User } from '../Models/user';
 import { Authservice } from '../Services/auth.service';
 import { catchError, map, throwError } from 'rxjs';
+import { SharedService } from '../Services/shared.service';
 
 
 @Component({
@@ -185,6 +186,7 @@ export class SignupComponent implements OnInit {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   http: HttpClient = inject(HttpClient);
+  sharedService: SharedService = inject(SharedService)
   allUsers: User[] = [];
   errorMessage: string = '';
   profileImage: string = 'assets/users/defaultProfileImg.jpg';
@@ -241,7 +243,7 @@ export class SignupComponent implements OnInit {
       return;
     }
     console.log(this.currentUser);    
-    this.authService.getAllUsers().subscribe({
+    this.sharedService.getAllUsers().subscribe({
       next: (users) => {
         this.allUsers = users;
         console.log(this.allUsers);

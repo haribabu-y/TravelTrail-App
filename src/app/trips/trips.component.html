@@ -1,11 +1,9 @@
 
-<!-- 
-    [rowsPerPageOptions]="[5, 10, 15, 20]"
-    -->
-<div class="trip-table">
+<app-loader *ngIf="isLoading"></app-loader>
+<div class="trip-table" *ngIf="!isLoading">
   <p-table
-    #dt2
-    [value]="trips"
+    #tripTable
+    [value]="userTrips"
     [paginator]="true"
     dataKey="id"
     [rows]="rows"
@@ -148,7 +146,7 @@
       </div>
       <div class="buttons">
         <button (click)="closeDailog()" class="cancelbtn">Cancel</button>
-        <button (click)="addRecord()" class="submitbtn">Submit</button>
+        <button (click)="onNewTripSubmit()" class="submitbtn">Submit</button>
       </div>
     </div>
   </ng-template>

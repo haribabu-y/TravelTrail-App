@@ -18,5 +18,7 @@ export class User {
         public password: string,
         public confirmPassword: string,
         public lastName?: string,
+        public trips?: string,
+        public bucketlists?: string
     ) {}
 }

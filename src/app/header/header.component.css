@@ -7,7 +7,7 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     height: 60px;
 }
 .left {
@@ -17,7 +17,7 @@
 }
 
 .home-icons {
-    margin-top: 30px;
+    margin-top: 25px;
 }
 
 .right {
@@ -95,15 +95,69 @@
 .currency img {
     width: 44px;
     height: 34px;
+    transform: translateX(10px);
+    z-index: -10;
+}
+.currency span {
+    font-size: 14px;
+    font-style: italic;
+    font-weight: 700;
+    color: #084880;
 }
 
 .actionDiv, .toggleDarkMode {
     display: flex;
     gap: 5px;
+    /* transform: translateX(20px); */
 }
-.p-button-label {
-    width: 24px;
-    height: 24px;
+.toggleDarkMode p {
+    font-size: 15px;
+    font-weight: 500;
+}
+/* ::ng-deep .p-inputswitch {
+    width: 24px !important;
+    height: 24px !important;
+}
+::ng-deep .p-inputswitch .p-inputswitch-slider {
+    width: 10px !important;
+    height: 10px !important;
+} */
+
+::ng-deep .p-inputswitch {
+    width: 25px;
+}
+::ng-deep .p-inputswitch .p-inputswitch-slider {
+    height: 15px;
+    margin-top: 10px;
+    background: #4d4747;
+    width: 25px;
+    cursor: pointer;
+}
+ 
+::ng-deep .p-inputswitch .p-inputswitch-slider:before {
+  width: 8px;
+  height: 8px;
+  left: 3.5px;
+  margin-top: -0.25rem;
+  border-radius: 50%;
+  transition-duration: 0.2s;
+  cursor: pointer;
+}
+
+::ng-deep .p-inputswitch.p-inputswitch-checked .p-inputswitch-slider {
+    background-color: #5F6368 !important;
+}
+ 
+::ng-deep .p-inputswitch.p-inputswitch-checked .p-inputswitch-slider:before {
+  left: -8px;
+}
+
+::ng-deep .p-button-label {
+    font-size: 14px;
+    font-weight: 400;
+}
+::ng-deep .p-button {
+    background-color: #1E88E5;
 }
 
 .profileImg img {

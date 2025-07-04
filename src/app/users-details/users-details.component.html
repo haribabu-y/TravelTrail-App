@@ -1,8 +1,8 @@
-<p>users-details works!</p>
-<div class="users-detail-table">
+<app-loader *ngIf="isLoading"></app-loader>
+<div class="users-detail-table" *ngIf="!isLoading">
   <p-table
     #usersDetailTable
-    [value]="usersDetails"
+    [value]="users"
     [paginator]="true"
     [rows]="numOfRows"
     [showCurrentPageReport]="true"
@@ -50,6 +50,7 @@
         <div *ngIf="shoeColumnsDisplay" class="selectingColumnDiv">
           <p-multiSelect [options]="columnOptions" />
         </div>
+        <i class="pi pi-plus" (click)="openNew()"></i>
       </div>
     </ng-template>
     <ng-template pTemplate="header">
@@ -95,16 +96,29 @@
           <th>Delete</th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-userDetail>
+    <ng-template pTemplate="body" let-user>
         <tr>
-            <td><img src="assets/users/user7.jpg" alt="Profile image" width="40px" height="40px" style="border-radius: 50%;"></td>
-            <td>{{userDetail.userName}}</td>
-            <td>{{userDetail.age}}</td>
-            <td>{{userDetail.TotalExpense}}</td>
-            <td>{{userDetail.Country}}</td>
-            <td><i class="pi pi-tag"></i></td>
+            <td><img [src]="user.userImage" alt="Profile image" width="30px" height="30px" style="border-radius: 10px;"></td>
+            <td>{{user.username}}</td>
+            <td>{{user.age}}</td>
+            <td>{{user.totalExpense}}</td>
+            <td>{{user.country}}</td>
+            <td><i class="pi pi-pencil"></i></td>
             <td><i class="pi pi-trash"></i></td>
         </tr>
     </ng-template>
   </p-table>
+</div>
+
+<div class="add-Update-user">
+  <p-dialog
+    [(visible)]="showAddOrUpdateDailog"
+    [position]="'top'"
+    [modal]="true"
+    [resizable]="false"
+    [draggable]="false"
+    [style]="{width: '75%', height: '75%'}"
+  >
+
+  </p-dialog>
 </div>

@@ -1,11 +1,51 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Table } from 'primeng/table';
+import { SharedService } from '../Services/shared.service';
+import { UserDetail } from '../Models/userDetail';
+import { BucketList } from '../Models/bucketList';
+import { BucketListService } from '../Services/bucketList.service';
 
 @Component({
   selector: 'app-users-details',
   templateUrl: './users-details.component.html',
   styleUrls: ['./users-details.component.css']
 })
-export class UsersDetailsComponent {
+export class UsersDetailsComponent implements OnInit {
+  
+  @ViewChild('usersDetailTable') usersDetailTable: Table;
+  sharedService: SharedService = inject(SharedService);
+  bucketListService: BucketListService = inject(BucketListService)
+  users: UserDetail[] = [];
+
+  ngOnInit(): void {
+    this.isLoading = true;
+    this.sharedService.getAllUsers().subscribe((users) => {
+      for(let user of users) {
+        console.log(user);
+        let userimage: string = user.profileImage;
+        let username: string = user.firstName + ' ' + user.lastName;
+        let id: string = user.id;
+        let age: number = new Date().getFullYear() - new Date(user.dob).getFullYear();
+        console.log(user.country);        
+        let countryObj = user.country;
+        let country = Object.values(countryObj)[1];
+        console.log(country);        
+        let totalExpense: number = 0;
+        if (user.trips) {
+          Object.keys(user.trips).forEach((key) => {
+            // console.log(user.trips[key]);
+            totalExpense += user.trips[key].totalExpense;
+          });
+        }
+        let userDetail = new UserDetail(id,username, userimage, age, country, totalExpense);
+        this.users.push(userDetail);   
+      }
+      console.log(this.users);
+      
+      this.isLoading = false;
+    });
+  }
+
   currencyFormate = [
     {name: '$  Doller', code: '$'},
     {name: '₹  Rupees', code: '₹'},
@@ -22,7 +62,7 @@ export class UsersDetailsComponent {
   ]
   selectedDistanceFormate: string = '';
 
-  @ViewChild('usersDetailTable') usersDetailTable;
+  isLoading: boolean = false;
 
   filterGlobal(event: Event) {
     const input: HTMLInputElement = event.target as HTMLInputElement;
@@ -55,64 +95,10 @@ export class UsersDetailsComponent {
     this.shoeColumnsDisplay = !this.shoeColumnsDisplay
   }
 
+  showAddOrUpdateDailog: boolean = false;
 
-  usersDetails = [
-    {
-      profilePic: 'assets/users/user1.png',
-      userName: 'Hari babu',
-      age: 22,
-      TotalExpense: 20000,
-      Country: 'India'
-    },
-    {
-      profilePic: 'assets/users/user2.png',
-      userName: 'Naruto',
-      age: 22,
-      TotalExpense: 30000,
-      Country: 'Japan'
-    },
-    {
-      profilePic: 'assets/users/user3.png',
-      userName: 'Eren',
-      age: 22,
-      TotalExpense: 35000,
-      Country: 'Koria'
-    },
-    {
-      profilePic: 'assets/users/user4.png',
-      userName: 'Kakashi',
-      age: 22,
-      TotalExpense: 40000,
-      Country: 'India'
-    },
-    {
-      profilePic: 'assets/users/user5.png',
-      userName: 'Gaara',
-      age: 22,
-      TotalExpense: 25000,
-      Country: 'Japan'
-    },
-    {
-      profilePic: 'assets/users/user6.png',
-      userName: 'Sasuke',
-      age: 22,
-      TotalExpense: 30000,
-      Country: 'japan'
-    },
-    {
-      profilePic: 'assets/users/user7.png',
-      userName: 'Hinata',
-      age: 22,
-      TotalExpense: 15000,
-      Country: 'India'
-    },
-    {
-      profilePic: 'assets/users/user8.png',
-      userName: 'Mikasha',
-      age: 22,
-      TotalExpense: 23000,
-      Country: 'Koria'
-    }
-  ]
+  openNew() {
+    this.showAddOrUpdateDailog = true;
+  }
 
 }
