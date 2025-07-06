@@ -16,7 +16,7 @@ export class User {
         public locale: string,
         public isAdmin: boolean,
         public password: string,
-        public confirmPassword: string,
+        public confirmPassword?: string,
         public lastName?: string,
         public trips?: string,
         public bucketlists?: string

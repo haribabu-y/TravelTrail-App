@@ -1,54 +1,55 @@
 .tableHead {
-    display: flex;
-    gap: 5px;
-    align-items: center;
+  display: flex;
+  gap: 5px;
+  align-items: center;
 }
 
 .tableHead div {
-    display: flex;
-    flex-direction: column; 
+  display: flex;
+  flex-direction: column;
 }
 
 .tableHead div i {
-    font-size: 8px;
+  font-size: 8px;
 }
 
 ::ng-deep .p-datatable-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 10px !important;
-    background-color: white !important;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px !important;
+  background-color: white !important;
 }
+
 ::ng-deep .p-datatable-header p {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .right-contents {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
 }
 
 .right-contents .pi-plus {
-    background-color: #084880;
-    padding: 5px;
-    border-radius: 2px;
-    color: white;
-    cursor: pointer;
+  background-color: #084880;
+  padding: 5px;
+  border-radius: 2px;
+  color: white;
+  cursor: pointer;
 }
 
 ::ng-deep .p-dropdown {
-    height: 30px !important;
-    display: flex;
-    align-items: center;
+  height: 30px !important;
+  display: flex;
+  align-items: center;
 }
 
 ::ng-deep .p-dropdown .p-highlight {
-    background-color: #F3F3F3 !important;
-    color: black !important;
+  background-color: #f3f3f3 !important;
+  color: black !important;
 }
 
 /* ::ng-deep .users-detail-table.p-datatable .p-datatable-tbody > tr > td {
@@ -56,70 +57,269 @@
 } */
 
 .searchField {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    background-color: #F3F3F3;
-    padding: 10px;
-    border-radius: 4px; 
-    height: 30px;   
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #f3f3f3;
+  padding: 10px;
+  border-radius: 4px;
+  height: 30px;
 }
 
 .searchField input {
-    border: none;
-    background-color: #F3F3F3;
+  border: none;
+  background-color: #f3f3f3;
 }
 
 .searchField input:focus {
-    outline: none;
+  outline: none;
 }
 
-.numRows, .numColumns {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    z-index: 2;
-    cursor: pointer;
-    position: relative;
+.numRows,
+.numColumns {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  z-index: 2;
+  cursor: pointer;
+  position: relative;
 }
-.numRows i, .numColumns i {
-    color: #084880;
-    font-weight: bolder;
-    font-size: 24px;
+
+.numRows i,
+.numColumns i {
+  color: #084880;
+  font-weight: bolder;
+  font-size: 24px;
 }
 
 .numColumns i {
-    transform: rotate(90deg);
+  transform: rotate(90deg);
 }
 
-.numRows span, .numColumns span {
-    color: #084880;
-    border: 1px solid #084880;
-    padding: 5px;
-    border-radius: 2px;
-    font-size: 10px;
-    text-align: center;
+.numRows span,
+.numColumns span {
+  color: #084880;
+  border: 1px solid #084880;
+  padding: 5px;
+  border-radius: 2px;
+  font-size: 10px;
+  text-align: center;
 }
 
 /* Stying the change number of rows in the table */
 .numRowChanges {
-    position: absolute;
-    top: 50px;
-    right: 75px;
+  position: absolute;
+  top: 50px;
+  right: 75px;
 }
 
 ::ng-deep .p-listbox .p-highlight {
-    background-color: #084880 !important;
-    color: #ffffff !important;
+  background-color: #084880 !important;
+  color: #ffffff !important;
 }
 
 /* Styling the change number of columns in the table */
 .selectingColumnDiv {
-    position: absolute;
-    top: 50px;
-    right: 10px;
+  position: absolute;
+  top: 50px;
+  right: 10px;
 }
 
 .pi-tag {
+  cursor: pointer;
+}
+
+/* Sty;ling the adding and editing the profile */
+/* .profile-img {
+    width: 100px;
+    height: 100px;
+    position: relative;
+}
+
+.profile-img img {
+    border-radius: 50%;
+    border: 1px solid #084880;
+    padding: 1px;
+}
+
+.profile-img i {
+    position: absolute;
+    top: 25px;
+    right: 12px;
+    color: white;
     cursor: pointer;
+} */
+
+.form-fields {
+  display: flex;
+  gap: 20px;
+  width: 95%;
+  justify-content: center;
+  align-items: center;
+}
+
+.left-elements,
+.right-elements {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.right-elements {
+    margin-top: 25px;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  width: 95%;
+}
+
+.inputfield {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 95%;
+}
+
+::ng-deep .inputfield .p-dropdown {
+    /* width: 235px !important; */
+    height: 30px;
+    padding: 5px !important;
+    display: flex;
+    align-items: center;
+    background-color: #F3F3F3;
+    border: none;
+}
+
+::ng-deep .p-dialog .p-dialog-content {
+    padding: 0;
+}
+
+.inputfield label {
+    font-size: 14px;
+}
+.inputfield input, .inputfield textarea {
+    padding: 6px;
+    background-color: #F3F3F3;
+    border: none;
+    border-radius: 4px;
+}
+.inputfield input:focus {
+    outline: none;
+    border: 1px solid #1E88E5
+}
+
+#address {
+    height: 100px;
+}
+
+.adminCheck {
+    display: flex !important;
+    flex-direction: row;
+    align-items: center !important;
+    gap: 15px;
+    padding: 10px;
+    transform: translateY(10px);
+    /* margin-top: 10px; */
+}
+
+
+.profile-img {
+  width: 100px;
+  height: 100px;
+  position: relative;
+}
+
+.profile-img img {
+  border-radius: 50%;
+  border: 1px solid #084880;
+  padding: 1px;
+}
+
+.profile-img i {
+  position: absolute;
+  top: 25px;
+  right: 12px;
+  color: white;
+  cursor: pointer;
+}
+
+.genderField label {
+  background-color: #f3f3f3;
+  padding: 6px;
+  border-radius: 4px;
+  font-size: 14px !important;
+}
+
+.genderField div {
+  display: flex;
+  gap: 5px;
+}
+
+.selectedGender {
+  background-color: #1e88e5 !important;
+  color: white;
+}
+
+.buttons {
+    width: 95%;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.buttons button {
+    margin-top: 10px;
+    padding: 6px;
+    border: 1px solid #084880;
+    font-size: 14px;
+    border-radius: 8px; 
+    width: 100px;
+}
+
+.submitBtn {
+    background-color: #084880;
+    color: white;
+}
+
+
+/* Styling the delete confirm button*/
+.delete-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.delete-container img {
+    width: 120px;
+    height: 120px;
+}
+.text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.text p {
+    font-size: 14px;
+
+}
+.btns {
+    display: flex;
+    gap: 10px;
+    width: 90%;
+}
+.btns button {
+    width: 45%;
+    border: 1px solid #084880;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.delbtn {
+    background-color: #084880;
+    color: white;
 }

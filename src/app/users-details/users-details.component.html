@@ -103,8 +103,8 @@
             <td>{{user.age}}</td>
             <td>{{user.totalExpense}}</td>
             <td>{{user.country}}</td>
-            <td><i class="pi pi-pencil"></i></td>
-            <td><i class="pi pi-trash"></i></td>
+            <td><i class="pi pi-pencil" (click)="openEditDialog(user.id)"></i></td>
+            <td><i class="pi pi-trash" (click)="showDeleteUser(user.id)"></i></td>
         </tr>
     </ng-template>
   </p-table>
@@ -112,6 +112,7 @@
 
 <div class="add-Update-user">
   <p-dialog
+    header="Add User"
     [(visible)]="showAddOrUpdateDailog"
     [position]="'top'"
     [modal]="true"
@@ -119,6 +120,197 @@
     [draggable]="false"
     [style]="{width: '75%', height: '75%'}"
   >
+  <ng-template pTemplate="content">
+    <form #addUserForm [formGroup]="addUserForm1" (ngSubmit)="addOrUpdateUser(userToEditId)">
+      <div class="form-fields">
+        <div class="left-elements">
+        <div class="image-upload-container">
+          <div class="profile-img">
+            <img [src]="profileImage" alt="ProfileImage" class="profile-img" />
+            <i class="pi pi-pencil" (click)="triggerFileinput()"></i>
+          </div>
+          <input
+            type="file"
+            accept=".png, .jpg, .jpeg"
+            #fileInput
+            (change)="onFilechanges($event)"
+            hidden
+          />
+        </div>
+        <div class="inputfield">
+          <label for="username">User Name</label>
+          <input
+            type="text"
+            id="username"
+            required
+            formControlName="username"
+          />
+        </div>
+        <div class="row">
+          <div class="inputfield">
+            <label for="firstName">First name</label>
+            <input
+              type="text"
+              id="firstName"
+              formControlName="firstName"
+              required
+            />
+          </div>
+          <div class="inputfield">
+            <label for="lastName">Last name</label>
+            <input type="text" id="lastName" formControlName="lastName" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="genderField inputfield">
+            <span>Gender</span>
+            <div>
+              <input
+                type="radio"
+                value="male"
+                id="male"
+                formControlName="gender"
+                (change)="changeGender('male')"
+                hidden
+              />
+              <label for="male" [class.selectedGender]="selectedGender === 'male'">Male</label
+              >
+              <input
+                type="radio"
+                value="female"
+                id="female"
+                formControlName="gender"
+                (change)="changeGender('female')"
+                hidden
+              />
+              <label for="female" [class.selectedGender]="selectedGender === 'female'">Female</label
+              >
+              <input
+                type="radio"
+                value="others"
+                id="others"
+                formControlName="gender"
+                (change)="changeGender('others')"
+                hidden
+              />
+              <label for="others" [class.selectedGender]="selectedGender === 'others'">Others</label
+              >
+            </div>
+          </div>
+          <div class="inputfield">
+            <label for="dob">DOB</label>
+            <input type="date" id="dob" formControlName="dob" required />
+          </div>
+        </div>
+        <div class="inputfield">
+          <label for="email">Email ID</label>
+          <input type="email" id="email" formControlName="email" required />
+        </div>
+        <div class="inputfield">
+          <label for="mobile">Mobile Number</label>
+          <input type="text" id="mobile" formControlName="phone" required />
+        </div>
+      </div>
+      <div class="right-elements">
+        <div class="inputfield">
+          <label for="address">Address</label>
+          <textarea id="address" formControlName="address" required ></textarea>
+        </div>
+        <div class="row">
+          <div class="inputfield">
+            <label>Country</label>
+            <p-dropdown
+              [options]="countries"
+              placeholder="Select a Country"
+              optionLabel="name"
+              formControlName="country"
+              (onChange)="onCountryChanges($event.value)"
+            />
+          </div>
+          <div class="inputfield">
+            <label>State</label>
+            <p-dropdown
+              [options]="filteredstates"
+              placeholder="Select a State"
+              optionLabel="name"
+              formControlName="state"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="inputfield">
+            <label for="zipcode">Zip Code</label>
+            <input
+              type="text"
+              id="zipcode"
+              formControlName="zipCode"
+              required
+            />
+          </div>
+          <div class="inputfield">
+            <label>Time Zone</label>
+            <p-dropdown
+              [options]="timezones"
+              placeholder="Select Time Zone"
+              formControlName="timeZone"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="inputfield">
+            <label>Locale</label>
+            <p-dropdown
+              [options]="locales"
+              placeholder="Select Locale"
+              formControlName="locale"
+            />
+          </div>
+          <div class="inputfield adminCheck">
+            <input type="checkbox" formControlName="isAdmin" />
+            <label>Is Admin</label>
+          </div>
+        </div>
+        <div class="inputfield">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            required
+          />
+        </div>
+      </div>
+      </div>
+      <div class="buttons">
+        <button type="button" (click)="closeDailog()">Cancel</button>
+        <button type="submit" class="submitBtn">Submit</button>
+      </div>      
+    </form>
+  </ng-template>
+  </p-dialog>
+</div>
 
+<div class="delete-dailog">
+  <p-dialog
+    [(visible)]="showDeleteUserdailog"
+    [modal]="true"
+    [position]="'top'"
+    [resizable]="false"
+    [draggable]="false"
+    [style]="{ width: '40%', height: '45%' }"
+  >
+    <ng-template pTemplate="content">
+      <div class="delete-container">
+        <img src="assets/deleteImg.png" alt="Delete image" />
+        <div class="text">
+          <h4>Are You sure!??</h4>
+          <p>Do you really want to delete the selected item?</p>
+        </div>
+        <div class="btns">
+          <button (click)="closeDeleteUserDailog()">Cancel</button>
+          <button class="delbtn" (click)="deleteUser()">Delete</button>
+        </div>
+      </div>
+    </ng-template>
   </p-dialog>
 </div>

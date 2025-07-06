@@ -17,29 +17,6 @@ export class Authservice {
   router: Router = inject(Router);
   sharedservice: SharedService = inject(SharedService)
 
-  // public getAllUsers(): Observable<User[]> {
-  //   return this.http
-  //     .get<User[]>(
-  //       'https://travektrail-app-default-rtdb.firebaseio.com/users.json'
-  //     )
-  //     .pipe(
-  //       map((response) => {
-  //         // console.log(response);
-  //         let users = [];
-  //         for (let key in response) {
-  //           if (response.hasOwnProperty(key)) {
-  //             users.push({ ...response[key], id: key });
-  //           }
-  //         }
-  //         console.log(users);
-  //         return users;
-  //       }),
-  //       catchError((err) => {
-  //         return throwError(() => err);
-  //       })
-  //     );
-  // }
-
   signup(data: User) {
     console.log(data);
     this.http.post(
