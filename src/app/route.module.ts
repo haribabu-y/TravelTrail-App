@@ -21,8 +21,10 @@ const routes: Routes = [
     {path: 'BucketLists', component: BucketListComponent},
   ]},
   {path: 'admin', canActivate: [canActivateRouteGuard], children: [
-    {path: 'UsersTrips', component: UserTripComponent},
-    {path: 'Users', component: UsersDetailsComponent}
+    { path: '', redirectTo: 'UsersTrips', pathMatch: 'full' },
+    {path: 'UsersTrips', component: UserTripComponent},    
+    {path: 'Users', component: UsersDetailsComponent},
+
   ]},
   {path: '', redirectTo: 'login', pathMatch: 'full'},
   {path: '**', component: NotFoundComponent}

@@ -1,12 +1,12 @@
 <app-loader *ngIf="isLoading"></app-loader>
+<p-toast></p-toast>
 <div class="users-detail-table" *ngIf="!isLoading">
   <p-table
     #usersDetailTable
     [value]="users"
     [paginator]="true"
+    (onPage)="onPageChange($event)"
     [rows]="numOfRows"
-    [showCurrentPageReport]="true"
-    currentPageReportTemplate="{first} to {last} of {totalRecords} Records"
     [globalFilterFields]="['userName', 'age', 'Country', 'TotalExpense']"
   >
     <ng-template pTemplate="caption">
@@ -18,15 +18,9 @@
             [(ngModel)]="selectedCurrency"
             optionLabel="name"
             placeholder="Choose Currency Format"
+            (onChange)="currencyFormateChanged()"
           >
           </p-dropdown>
-        </div>
-        <div class="distance-formate">
-          <p-dropdown
-            [options]="distanceFormate"
-            [(ngModel)]="selectedDistanceFormate"
-            placeholder="Choose Distance Format"
-          ></p-dropdown>
         </div>
         <div class="searchField">
           <input pInputText type="text" (input)="filterGlobal($event)" />
@@ -48,24 +42,46 @@
           <span>5</span>
         </div>
         <div *ngIf="shoeColumnsDisplay" class="selectingColumnDiv">
-          <p-multiSelect [options]="columnOptions" />
+          <p-multiSelect 
+              #coloumnSelect
+              [options]="columnOptions"
+              [(ngModel)]="selectedColumns"
+              optionLabel="label"
+              placeholder="Select columns"
+              display="comma"
+              [selectedItemsLabel]="selectedColumns.length + ' items selected'"
+              [maxSelectedLabels]="1"
+              (onChange)="columnsChanged($event)"
+          />
         </div>
         <i class="pi pi-plus" (click)="openNew()"></i>
       </div>
     </ng-template>
+    <ng-template pTemplate="paginatorleft" let-state>
+    <span class="p-paginator-pages">
+      {{state.first + 1}} to {{state.first + state.rows > state.totalRecords ? state.totalRecords : state.first + state.rows}} of {{state.totalRecords}} Records
+    </span>
+  </ng-template>
+    <ng-template pTemplate="paginatorright" let-state>
+    <div class="jumpingPage" style="margin-left: 10px;">
+      <input id="goToPageInput" type="number" pInputText [(ngModel)]="goToPageNumber"
+        (keyup.enter)="goToPage()">
+      <button label="Go" (click)="goToPage()">Go</button>
+    </div>
+  </ng-template>
     <ng-template pTemplate="header">
         <tr>
           <th>Profile</th>
-          <th pSortableColumn="userName">
+          <th [pSortableColumn]="column.value" *ngFor="let column of selectedColumns">
             <div class="tableHead">
-              User Name
+              {{column.label}}
               <div class="sort-icons">
                 <i class="pi pi-sort-up-fill"></i>
                 <i class="pi pi-sort-down-fill"></i>
               </div>
             </div>
           </th>
-          <th pSortableColumn="age">
+          <!-- <th pSortableColumn="age">
             <div class="tableHead">
               Age
               <div class="sort-icons">
@@ -91,7 +107,7 @@
                 <i class="pi pi-sort-down-fill"></i>
               </div>
             </div>
-          </th>
+          </th> -->
           <th>Bucket List</th>
           <th>Delete</th>
         </tr>
@@ -99,9 +115,11 @@
     <ng-template pTemplate="body" let-user>
         <tr>
             <td><img [src]="user.userImage" alt="Profile image" width="30px" height="30px" style="border-radius: 10px;"></td>
-            <td>{{user.username}}</td>
+            <!-- <td *ngFor="let column of selectedColumns">{{user[column.value]}}</td> -->
+            
+            <td>{{user.username}}</td> 
             <td>{{user.age}}</td>
-            <td>{{user.totalExpense}}</td>
+            <td>{{convertAmount(user.totalExpense) | currency: currencyCode }}</td>
             <td>{{user.country}}</td>
             <td><i class="pi pi-pencil" (click)="openEditDialog(user.id)"></i></td>
             <td><i class="pi pi-trash" (click)="showDeleteUser(user.id)"></i></td>
@@ -112,13 +130,13 @@
 
 <div class="add-Update-user">
   <p-dialog
-    header="Add User"
+    [header]="userToEditId ? 'Update User' : 'Add User'"
     [(visible)]="showAddOrUpdateDailog"
     [position]="'top'"
     [modal]="true"
     [resizable]="false"
     [draggable]="false"
-    [style]="{width: '75%', height: '75%'}"
+    [style]="{width: '60%', height: '75%'}"
   >
   <ng-template pTemplate="content">
     <form #addUserForm [formGroup]="addUserForm1" (ngSubmit)="addOrUpdateUser(userToEditId)">
@@ -138,7 +156,7 @@
           />
         </div>
         <div class="inputfield">
-          <label for="username">User Name</label>
+          <label for="username">User Name*</label>
           <input
             type="text"
             id="username"
@@ -148,7 +166,7 @@
         </div>
         <div class="row">
           <div class="inputfield">
-            <label for="firstName">First name</label>
+            <label for="firstName">First name*</label>
             <input
               type="text"
               id="firstName"
@@ -163,7 +181,7 @@
         </div>
         <div class="row">
           <div class="genderField inputfield">
-            <span>Gender</span>
+            <span>Gender*</span>
             <div>
               <input
                 type="radio"
@@ -198,27 +216,38 @@
             </div>
           </div>
           <div class="inputfield">
-            <label for="dob">DOB</label>
+            <label for="dob">DOB*</label>
             <input type="date" id="dob" formControlName="dob" required />
           </div>
         </div>
         <div class="inputfield">
-          <label for="email">Email ID</label>
+          <label for="email">Email ID*</label>
           <input type="email" id="email" formControlName="email" required />
         </div>
-        <div class="inputfield">
-          <label for="mobile">Mobile Number</label>
-          <input type="text" id="mobile" formControlName="phone" required />
+        <div class="phone-number row">
+          <div class="inputfield country-code-field">
+          <label>Code*</label>
+            <p-dropdown
+            [options]="countryCode"
+            optionLabel="code"
+            placeholder="Country code"
+            formControlName="countryCode"
+            />
+        </div>
+        <div class="inputfield phoneNumberField">
+          <label for="mobile">Mobile Number*</label>
+          <input type="text" id="mobile" formControlName="phone" />
+        </div>
         </div>
       </div>
       <div class="right-elements">
         <div class="inputfield">
-          <label for="address">Address</label>
+          <label for="address">Address*</label>
           <textarea id="address" formControlName="address" required ></textarea>
         </div>
         <div class="row">
           <div class="inputfield">
-            <label>Country</label>
+            <label>Country*</label>
             <p-dropdown
               [options]="countries"
               placeholder="Select a Country"
@@ -239,7 +268,7 @@
         </div>
         <div class="row">
           <div class="inputfield">
-            <label for="zipcode">Zip Code</label>
+            <label for="zipcode">Zip Code*</label>
             <input
               type="text"
               id="zipcode"
@@ -248,7 +277,7 @@
             />
           </div>
           <div class="inputfield">
-            <label>Time Zone</label>
+            <label>Time Zone*</label>
             <p-dropdown
               [options]="timezones"
               placeholder="Select Time Zone"
@@ -271,7 +300,7 @@
           </div>
         </div>
         <div class="inputfield">
-          <label for="password">Password</label>
+          <label for="password">Password*</label>
           <input
             type="password"
             id="password"
@@ -283,7 +312,7 @@
       </div>
       <div class="buttons">
         <button type="button" (click)="closeDailog()">Cancel</button>
-        <button type="submit" class="submitBtn">Submit</button>
+        <button type="submit" class="submitBtn">{{userToEditId ? 'Update' : 'Submit'}}</button>
       </div>      
     </form>
   </ng-template>
@@ -304,7 +333,7 @@
         <img src="assets/deleteImg.png" alt="Delete image" />
         <div class="text">
           <h4>Are You sure!??</h4>
-          <p>Do you really want to delete the selected item?</p>
+          <p>Do you really want to delete the selected user?</p>
         </div>
         <div class="btns">
           <button (click)="closeDeleteUserDailog()">Cancel</button>

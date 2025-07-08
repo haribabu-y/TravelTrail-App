@@ -8,6 +8,8 @@ import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { User } from '../Models/user';
 import { Authservice } from '../Services/auth.service';
 import { HttpClient } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
+import { MultiSelect } from 'primeng/multiselect';
 
 @Component({
   selector: 'app-users-details',
@@ -23,6 +25,7 @@ export class UsersDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
+    this.selectedColumns = [...this.columnOptions]
     this.sharedService.getAllUsers().subscribe((users) => {
       for(let user of users) {
         console.log(user);
@@ -57,10 +60,11 @@ export class UsersDetailsComponent implements OnInit {
         gender: new FormControl('male', Validators.required),
         dob: new FormControl(null, Validators.required),
         email: new FormControl(null, [Validators.required, Validators.email]),
-        phone: new FormControl(null, Validators.required),
+        countryCode: new FormControl(null, Validators.required),
+        phone: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
         address: new FormControl(null, Validators.required),
         country: new FormControl(null, Validators.required),
-        state: new FormControl(null, Validators.required),
+        state: new FormControl(null),
         zipCode: new FormControl(null, Validators.required),
         timeZone: new FormControl(null, Validators.required),
         locale: new FormControl(null),
@@ -70,20 +74,36 @@ export class UsersDetailsComponent implements OnInit {
   }
 
   currencyFormate = [
-    {name: '$  Doller', code: '$'},
-    {name: '₹  Rupees', code: '₹'},
-    {name: '€  Euro', code: '€'},
-    {name: '£  Pound', code: '£'},
-    {name: '¥  Yen', code: '¥'}
-  ]
+    { name: '$  Doller', code: 'USD', symbol: '$' },
+    { name: '₹  Rupees', code: 'INR', symbol: '₹' },
+    { name: '€  Euro', code: 'EUR', symbol: '€' },
+    { name: '£  Pound', code: 'GBP', symbol: '£' },
+    { name: '¥  Yen', code: 'JPY', symbol: '¥' },
+  ];
 
-  selectedCurrency;
+  exchangeRates: { [key: string]: number } = {
+    'INR': 1,      // 1 INR is 1 INR
+    'USD': 0.012,  // 1 INR = 0.012 USD (example rate as of July 2025)
+    'EUR': 0.011,  // 1 INR = 0.011 EUR
+    'GBP': 0.0095, // 1 INR = 0.0095 GBP
+    'JPY': 1.85,   // 1 INR = 1.85 JPY
+  };
 
-  distanceFormate = [
-    'Kilo Meters',
-    'Miles'
-  ]
-  selectedDistanceFormate: string = '';
+  selectedCurrency: any;
+  currencyCode: string = 'INR';
+  displayAmount: number;
+
+  currencyFormateChanged() {
+    this.currencyCode = this.selectedCurrency.code;
+  }
+
+  convertAmount(baseAmount?: number): number {
+    if (this.selectedCurrency && this.exchangeRates[this.selectedCurrency.code]) {
+      const rate = this.exchangeRates[this.selectedCurrency.code];
+      return baseAmount * rate;
+    }
+    return baseAmount;
+  }
 
   isLoading: boolean = false;
 
@@ -107,15 +127,24 @@ export class UsersDetailsComponent implements OnInit {
   closeListbox() {
     this.showRowsChange = false;
   }
-
+  @ViewChild('columnSelect') columnSelect: MultiSelect;
   shoeColumnsDisplay: boolean = false;
+  selectedColumns: any[] = [];
 
   columnOptions =[
-    'User Name', 'Toatl Distance','Gender', 'Age', 'Total Expense'
+    {label: 'User Name', value:'username'},
+    {label:'Age', value: 'age'},
+    {label:'Total Expense', value: 'totalExpense'},
+    {label:'Country', value: 'country'},
   ]
 
   showCloumnList() {
     this.shoeColumnsDisplay = !this.shoeColumnsDisplay
+  }
+  columnsChanged(event: Event) {
+    this.columnSelect.show()
+    // console.log(this.selectedColumns);
+    // this.shoeColumnsDisplay = false;
   }
 
 // code for adding and updating the new user to the application
@@ -302,9 +331,37 @@ export class UsersDetailsComponent implements OnInit {
     // Add more locales
   ];
 
+  countryCode = [
+    { name: 'India', code: '+91' },
+    { name: 'USA', code: '+1' },
+    { name: 'United Kingdom', code: '+44' },
+    { name: 'Germany', code: '+49' },
+    { name: 'France', code: '+33' },
+    { name: 'Brazil', code: '+55' },
+    { name: 'Argentina', code: '+54' },
+    { name: 'Spain', code: '+34' },
+    { name: 'Italy', code: '+39' },
+    { name: 'Netherlands', code: '+31' },
+    { name: 'Poland', code: '+48' },
+    { name: 'Sweden', code: '+46' },
+    { name: 'Portugal', code: '+351' },
+    { name: 'Mexico', code: '+52' },
+    { name: 'Colombia', code: '+57' },
+    { name: 'Peru', code: '+51' },
+    { name: 'Chile', code: '+56' },
+    { name: 'Venezuela', code: '+58' },
+    { name: 'Uruguay', code: '+598' },
+    { name: 'Norway', code: '+47' },
+    { name: 'Denmark', code: '+45' },
+    { name: 'Finland', code: '+358' },
+    { name: 'Belgium', code: '+32' },
+    { name: 'Austria', code: '+43' }
+  ]
+
   filteredstates: any[] = [];
-  @ViewChild('addUserForm') addUserForm: NgForm;
+  // @ViewChild('addUserForm') addUserForm: NgForm;
   authService: Authservice = inject(Authservice);
+  messageService: MessageService = inject(MessageService)
   http: HttpClient = inject(HttpClient);
 
   onCountryChanges(country: any) {
@@ -326,19 +383,32 @@ export class UsersDetailsComponent implements OnInit {
   // phone: string = ''
   // password: string = ''
   addOrUpdateUser(id?: string) {
-    if(id) {
-      let userToUpdate: User = this.addUserForm1.value;
-      this.http.put(`https://travektrail-app-default-rtdb.firebaseio.com/users/${id}.json`, userToUpdate).subscribe((res) => {
-        console.log(res);        
-      });
+    console.log(this.addUserForm1);    
+    if(this.addUserForm1.controls['phone'].invalid) {
+      this.messageService.add({severity:'error', summary:'Error', detail:'Enter Valid Mobile number atleast 10 digits!.'})
+      return
+    }
+    if(new Date(this.addUserForm1.value.dob) > new Date()) {
+      this.messageService.add({severity:'error', summary:'Error', detail:'Date of Birth must less the today!.'})
       return;
     }
-    console.log(this.addUserForm1);
-    if(this.addUserForm.invalid){
-      alert('Fill all manditory fields');
+    if(this.addUserForm1.invalid){
+      // alert('Fill all manditory fields');
+      this.messageService.add({severity:'error', summary:'Error', detail:'Fill all manditory fields'})
         return;
     }
+    console.log(this.addUserForm1);
     let newUser: User = this.addUserForm1.value;
+    console.log(newUser); 
+    if(id) {
+      let userToUpdate: User = this.addUserForm1.value;
+      this.http.patch(`https://travektrail-app-default-rtdb.firebaseio.com/users/${id}.json`, userToUpdate).subscribe((res) => {
+        console.log(res);       
+        this.userToEditId = ''; 
+        this.messageService.add({severity:'success', summary:'Success', detail:'User Successfully Updated!.'})
+      });
+      return;
+    }   
     this.sharedService.getAllUsers().subscribe({
       next: (users) => {
         let isUserExit = users.find((user) => {
@@ -346,12 +416,15 @@ export class UsersDetailsComponent implements OnInit {
         });
         if(isUserExit) {
           console.log(isUserExit);          
-          alert("User already exits");
+          // alert("User already exits");
+          this.messageService.add({severity:'error', summary:'Error',detail:'User already exits!.'})
           return;
         }
+        
         this.authService.signup(newUser);
         console.log(newUser);  
         this.addUserForm1.reset(); 
+        this.messageService.add({severity:'success', summary:'Success', detail:'UserSuccessFully Added!.'})
         this.profileImage = 'assets/users/defaultProfileImg.jpg';
       }
     })
@@ -359,6 +432,9 @@ export class UsersDetailsComponent implements OnInit {
   closeDailog() {
     this.showAddOrUpdateDailog = false;
     this.addUserForm1.reset();
+    this.userToEditId = ''
+    this.profileImage = 'assets/users/defaultProfileImg.jpg';
+
   }
   userToEdit: User;
   userToEditId: string;
@@ -402,11 +478,31 @@ export class UsersDetailsComponent implements OnInit {
 
   deleteUser() {
     this.http.delete(`https://travektrail-app-default-rtdb.firebaseio.com/users/${this.userId}.json`).subscribe();
-    alert("user with id " + this.userId + 'Deleted');
-
+    this.messageService.add({severity:'success', summary:'Success', detail:`User Successfully Deleted!.`})
+    this.showDeleteUserdailog = false;
   }
 
   closeDeleteUserDailog() {
     this.showDeleteUserdailog = false;
+  }
+  goToPageNumber: number = null;
+
+  onPageChange(event: any) {
+    console.log(event);
+    this.goToPageNumber = event.page + 1;
+    this.numOfRows = event.rows;
+  }
+
+  goToPage() {
+    if(this.usersDetailTable && this.goToPageNumber > 0) {
+      const pageIndex = this.goToPageNumber -1;
+      const firstRowIndex = pageIndex * this.numOfRows;
+      if(firstRowIndex >= 0 && firstRowIndex < this.usersDetailTable.value.length) {
+        this.usersDetailTable.first = firstRowIndex;
+      } else {
+        alert("Invalid page number entered.")
+        // this.goToPageNumber = Math.floor(this.table.first / this.rows) + 1;
+      }
+    }
   }
 }

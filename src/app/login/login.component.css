@@ -132,3 +132,172 @@ body {
     transform: translateY(-30px);
 }
 
+/* --- For tablets (768px - 1024px) --- */
+@media (max-width: 1024px) {
+    .backgroundImage {
+    width: 2000px;
+    height: 1100px;
+    /* height: 100vh; */
+    position: relative;
+    top: -150px;
+    left: -700px;
+}
+    /* .backgroundImage {
+        width: 100%;
+        height: auto;
+        top: 0;
+        left: -100px;
+        object-fit: cover;
+    } */
+
+    /* .container {
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+    }
+
+    .logo-icon img {
+        position: static;
+        width: 80px;
+        height: 80px;
+    }
+
+    .logo-text {
+        position: static;
+        text-align: center;
+    }
+
+    .tagline {
+        position: static;
+        text-align: center;
+        padding: 0 20px;
+    }
+
+    .login-container {
+        position: static;
+        width: 90%;
+        height: auto;
+        padding: 20px;
+        gap: 30px;
+    } */
+}
+
+/* --- For mobile devices (max-width: 768px) --- */
+@media (max-width: 768px) {
+    .backgroundImage {
+        width: 100%;
+        height: auto;
+        top: 0;
+        left: -100px;
+        object-fit: cover;
+    }
+    .container {
+        width: 100vw;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .backgroundImage {
+        display: none; /* Hide background image or replace with mobile-friendly bg */
+        position: static;
+    }
+
+    .logo-container {
+        text-align: center;
+        z-index: 10;
+    }    
+
+    .logo-icon img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .logo-text {
+    top: 90px;
+    left: 50px;
+}
+
+.travel {
+    font-size: 40px;
+}
+
+.trail {
+    font-size: 35px;
+}
+
+.tagline {
+    font-size: 12px;
+    left: 15px;
+    top: 135px;
+}
+
+    .login-container {
+        /* position: static; */
+        left: 50px;
+        width: 100%;
+        padding: 20px;
+        border-radius: 15px;
+        gap: 20px;
+    }
+
+    .login-container h2 {
+        font-size: 20px;
+    }
+
+    .inputfield {
+        width: 100%;
+    }
+
+    .inputfield input {
+        font-size: 16px;
+    }
+
+    .submitBtn button {
+        width: 100%;
+        font-size: 18px;
+    }
+
+    .login-container p {
+        font-size: 14px;
+        transform: translateY(0px);
+    }
+}
+
+/* --- Optional: Very small devices (max-width: 480px) --- */
+@media (max-width: 425px) {
+    .logo-icon img {
+        top: 130px;
+    }
+    .logo-text {
+    top: 130px;
+    left: 40px;
+}
+    .travel {
+        font-size: 32px;
+    }
+
+    .trail {
+        font-size: 28px;
+    }
+    .tagline {
+        left: 5px;
+        top: 165px;
+    }
+
+    .login-container {
+        /* position: static !important; */
+        top: 200px;
+        width: 140%;
+        left: 30px;
+    }
+
+    .login-container h2 {
+        font-size: 18px;
+    }
+
+    .submitBtn button {
+        font-size: 16px;
+    }
+}

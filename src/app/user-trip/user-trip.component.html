@@ -1,4 +1,5 @@
 <app-loader *ngIf="isLoading"></app-loader>
+<p-toast></p-toast>
 <div class="user-trip-container" *ngIf="!isLoading">
   <div class="table-header"></div>
   <div class="user-trip-table">
@@ -6,9 +7,8 @@
       #userTripTable
       [value]="usersTrips"
       [paginator]="true"
+      (onPage)="onPageChange($event)"
       [rows]="numOfRows"
-      [showCurrentPageReport]="true"
-      currentPageReportTemplate="{first} to {last} of {totalRecords} Records"
       [globalFilterFields]="[
         'username',
         'totalDistance',
@@ -26,13 +26,16 @@
               [(ngModel)]="selectedCurrency"
               optionLabel="name"
               placeholder="Choose Currency Format"
+              (onChange)="currencyFormateChanged()"
             >
             </p-dropdown>
           </div>
           <div class="distance-formate">
             <p-dropdown
               [options]="distanceFormate"
+              optionLabel="name"
               [(ngModel)]="selectedDistanceFormate"
+              (onChange)="distanceFormateChnaged()"
               placeholder="Choose Distance Format"
             ></p-dropdown>
           </div>
@@ -56,22 +59,53 @@
             <span>5</span>
           </div>
           <div *ngIf="shoeColumnsDisplay" class="selectingColumnDiv">
-            <p-multiSelect [options]="columnOptions" />
+            <p-multiSelect
+              #columnSelect
+              #coloumnSelect
+              [options]="columnOptions"
+              [(ngModel)]="selectedColumns"
+              optionLabel="label"
+              placeholder="Select columns"
+              display="comma"
+              [selectedItemsLabel]="selectedColumns.length + ' items selected'"
+              [maxSelectedLabels]="1"
+              (onChange)="columnsChanged($event)"
+            />
           </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="paginatorleft" let-state>
+    <span class="p-paginator-pages">
+      {{state.first + 1}} to {{state.first + state.rows > state.totalRecords ? state.totalRecords : state.first + state.rows}} of {{state.totalRecords}} Records
+    </span>
+  </ng-template>
+      <ng-template pTemplate="paginatorright" let-state>
+        <div class="jumpingPage" style="margin-left: 10px">
+          <input
+            id="goToPageInput"
+            type="number"
+            pInputText
+            [(ngModel)]="goToPageNumber"
+            (keyup.enter)="goToPage()"
+          />
+          <button label="Go" (click)="goToPage()">Go</button>
         </div>
       </ng-template>
       <ng-template pTemplate="header">
         <tr>
-          <th pSortableColumn="username">
+          <th
+            [pSortableColumn]="column.value"
+            *ngFor="let column of selectedColumns"
+          >
             <div class="tableHead">
-              User Name
+              {{ column.label }}
               <div class="sort-icons">
                 <i class="pi pi-sort-up-fill"></i>
                 <i class="pi pi-sort-down-fill"></i>
               </div>
             </div>
           </th>
-          <th pSortableColumn="totalDistance">
+          <!-- <th pSortableColumn="totalDistance">
             <div class="tableHead">
               Total Diatance
               <div class="sort-icons">
@@ -106,17 +140,21 @@
                 <i class="pi pi-sort-down-fill"></i>
               </div>
             </div>
-          </th>
+          </th> -->
           <th style="width: 10%">Bucket List</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-userTrip>
         <tr>
+          <!-- <td *ngFor="let column of selectedColumns">
+            {{ userTrip[column.value] }}
+          </td> -->
+          
           <td>{{ userTrip.username }}</td>
-          <td>{{ userTrip.totalDistance }}</td>
+          <td>{{ getConvertedDistance(userTrip.totalDistance) | number:'1.0-2'}}{{getDistanceUnitLabel()}}</td>
           <td>{{ userTrip.gender }}</td>
           <td>{{ userTrip.age }}</td>
-          <td>{{ userTrip.totalExpense }}</td>
+          <td>{{ convertAmount(userTrip.totalExpense) | currency: currencyCode }}</td>
           <td>
             <i class="pi pi-tag" (click)="openUserBucketList(userTrip.id)"></i>
           </td>
@@ -268,9 +306,7 @@
         </div>
         <div class="buttons">
           <button (click)="closeEditDailog()" class="cancelbtn">Cancel</button>
-          <button (click)="updateBucketItem()" class="submitbtn">
-            Submit
-          </button>
+          <button (click)="updateBucketItem()" class="submitbtn">Update</button>
         </div>
       </div>
     </ng-template>

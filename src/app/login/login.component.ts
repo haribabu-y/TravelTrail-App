@@ -27,6 +27,7 @@ export class LoginComponent {
     this.authService.login(email, password).subscribe({
       next: (user: User | null ) => {
         if(user) {
+          console.log(user);          
           this.errorMessage = 'Login Successful!..';
           this.messageService.add({severity: 'success', summary: 'Success', detail: this.errorMessage})
           if(user.username === 'admin') {
@@ -49,16 +50,7 @@ export class LoginComponent {
       complete: () => {
         console.log('Login attempt complete.');        
       }
-    });
-    // this.authService.login(email, password);    
-    // let user = localStorage.getItem('user');
-    // if(user) {
-    //   this.router.navigate(['/user/Home'])
-    // } else {
-    //   this.erroemessage = 'Invalid Username or password!'
-    //   alert(this.erroemessage);
-    // }
-    
+    });    
     form.reset();
   }
 }

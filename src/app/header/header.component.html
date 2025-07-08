@@ -16,13 +16,13 @@
       </div>
     </div>
     <div class="right">
-      <div class="currency">
-        <img src="./../../assets/currencyimg.png" alt="" />
+      <div class="currency" *ngIf="!isAdmin">
+        <img src="./../../assets/currencyimg.png" alt="Currency Image" />
         <span>${{userExpense}}</span>
       </div>
       <div class="toggleDarkMode">
-        <p>Dark Theme</p>
-        <p-inputSwitch [(ngModel)]="darkMode" styleClass="custom-inputswitch" />
+        <p>{{darkMode ? 'Light Mode' : 'Dark Theme'}}</p>
+        <p-inputSwitch (click)="toggleDarkMode()" styleClass="custom-inputswitch" />
       </div>
       <p-button label="Logout" (onClick)="logoutUser()"/>
       <div class="profileImg">

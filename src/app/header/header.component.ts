@@ -26,6 +26,17 @@ export class HeaderComponent implements OnInit {
     this.currentPage = this.router.url.split('/')[2];
   }  
 
+  toggleDarkMode() {
+    this.darkMode = !this.darkMode;
+
+    const body = document.body;
+    if(this.darkMode) {
+      body.classList.add('dark-mode');
+    } else {
+      body.classList.remove('dark-mode');
+    }
+  }
+
   logoutUser() {
     this.authService.logout();
   }

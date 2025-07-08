@@ -5,6 +5,8 @@ import { UserTrips } from '../Models/usertrips';
 import { SharedService } from '../Services/shared.service';
 import { BucketListService } from '../Services/bucketList.service';
 import { BucketList } from '../Models/bucketList';
+import { MultiSelect } from 'primeng/multiselect';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-user-trip',
@@ -19,16 +21,14 @@ export class UserTripComponent implements OnInit {
   adminService: AdminService = inject(AdminService);
   sharedService: SharedService = inject(SharedService);
   bucketListService: BucketListService = inject(BucketListService);
+  messageService: MessageService = inject(MessageService);
   userId: string = ''
   isLoading: boolean = false;
 
   ngOnInit(): void {
+
+    this.selectedColumns = [...this.columnOptions]
     this.isLoading = true;
-    // this.adminService.getUsersTrips().subscribe((res) => {
-    //   console.log(res);
-    //   this.usersTrips = res;
-    //   this.isLoading = false;
-    // });
     this.sharedService.getAllUsers().subscribe((users) => {
       for (let user of users) {
         // console.log(user);
@@ -48,14 +48,7 @@ export class UserTripComponent implements OnInit {
         }
         // console.log(totalDistance);
         // console.log(totalExpense);
-        let userDetail = new UserTrips(
-          username,
-          totalDistance,
-          gender,
-          age,
-          totalExpense,
-          id
-        );
+        let userDetail = new UserTrips( username, totalDistance, gender, age, totalExpense, id);
         // console.log(userDetail);
         this.usersTrips.push(userDetail);
       }
@@ -64,17 +57,59 @@ export class UserTripComponent implements OnInit {
   }
 
     currencyFormate = [
-    { name: '$  Doller', code: '$' },
-    { name: '₹  Rupees', code: '₹' },
-    { name: '€  Euro', code: '€' },
-    { name: '£  Pound', code: '£' },
-    { name: '¥  Yen', code: '¥' },
+    { name: '$  Doller', code: 'USD', symbol: '$' },
+    { name: '₹  Rupees', code: 'INR', symbol: '₹' },
+    { name: '€  Euro', code: 'EUR', symbol: '€' },
+    { name: '£  Pound', code: 'GBP', symbol: '£' },
+    { name: '¥  Yen', code: 'JPY', symbol: '¥' },
   ];
 
-  selectedCurrency: string = '';
+  exchangeRates: { [key: string]: number } = {
+    'INR': 1,      // 1 INR is 1 INR
+    'USD': 0.012,  // 1 INR = 0.012 USD (example rate as of July 2025)
+    'EUR': 0.011,  // 1 INR = 0.011 EUR
+    'GBP': 0.0095, // 1 INR = 0.0095 GBP
+    'JPY': 1.85,   // 1 INR = 1.85 JPY
+  };
+  selectedCurrency: any;
+  currencyCode: string = 'INR';
+  displayAmount: number;
+  currencyFormateChanged() {
+    console.log(this.selectedCurrency);
+    this.currencyCode = this.selectedCurrency.code;
+    console.log(this.currencyCode);    
+  }
+  convertAmount(baseAmount?: number): number {
+    if (this.selectedCurrency && this.exchangeRates[this.selectedCurrency.code]) {
+      const rate = this.exchangeRates[this.selectedCurrency.code];
+      return baseAmount * rate;
+    }
+    return baseAmount;
+  }
 
-  distanceFormate = ['Kilo Meters', 'Miles'];
-  selectedDistanceFormate: string = '';
+  distanceFormate = [
+    { name: 'Kilometers', unit: 'km', label: 'km' },
+    { name: 'Miles', unit: 'miles', label: 'miles' }
+  ];
+  selectedDistanceFormate: any;
+  distanceUnit: string = 'km'
+  distanceLabel: string = 'km';
+  private kmToMilesFactor: number = 0.621371;
+
+  distanceFormateChnaged() {
+    this.distanceUnit = this.selectedDistanceFormate.unit
+    this.distanceLabel = this.selectedDistanceFormate.label
+  }
+
+  getConvertedDistance(baseDistanceKm: number): number {
+    if(this.distanceUnit === 'miles') {
+      return baseDistanceKm * this.kmToMilesFactor;
+    }
+    return baseDistanceKm;
+  }
+  getDistanceUnitLabel(): string {
+    return this.distanceLabel;
+  }
 
   filterGlobal(event: Event) {
     const input: HTMLInputElement = event.target as HTMLInputElement;
@@ -97,18 +132,26 @@ export class UserTripComponent implements OnInit {
     this.showRowsChange = false;
   }
 
+  @ViewChild('columnSelect') columnSelect: MultiSelect;
   shoeColumnsDisplay: boolean = false;
+  selectedColumns: any[] = [];
 
   columnOptions = [
-    'User Name',
-    'Toatl Distance',
-    'Gender',
-    'Age',
-    'Total Expense',
+    {label:'User Name', value: 'username'},
+    {label:'Toatl Distance', value: 'totalDistance'},
+    {label:'Gender', value: 'gender'},
+    {label:'Age', value: 'age'},
+    {label:'Total Expense', value: 'totalExpense'},
   ];
 
   showCloumnList() {
     this.shoeColumnsDisplay = !this.shoeColumnsDisplay;
+  }
+
+  columnsChanged(event: Event) {
+    this.columnSelect.show()
+    // console.log(this.selectedColumns);
+    // this.shoeColumnsDisplay = false;    
   }
 
   bucketListDailog: boolean = false;
@@ -200,12 +243,13 @@ export class UserTripComponent implements OnInit {
       estimatedBudget: this.estimatedBudget
     }
     if(!this.placeImage || !this.placeName || !this.placeDescription || !this.estimatedDistance || !this.estimatedBudget) {
-      alert("Please fill all the fields.");
+      this.messageService.add({severity:'error',summary:'Error',detail:'please all the fields!.'})
       return;
     }
 
     this.bucketListService.updateUserBucketItem(this.bucketlistId, updateBucketData, this.userId).subscribe((res) => {
       this.openUserBucketList(this.userId);
+      this.messageService.add({severity:'success', summary:'Success', detail:'BucketList updated Successfully!.'});
     })
     this.showEditBucketDialog = false;
   }
@@ -220,11 +264,31 @@ export class UserTripComponent implements OnInit {
   deleteBucketItem() {
     this.bucketListService.deleteUserbucketItem(this.bucketId, this.userId).subscribe((res) => {
       this.openUserBucketList(this.userId);
+      this.messageService.add({severity:'success', summary:'Success', detail:'BucketList Successfully Deleted!.'})
     })
     this.isDeleteDailog = false;
   }
 
   closeDeleteDailog() {
     this.isDeleteDailog = false;
+  }
+
+  goToPageNumber: number = null;
+
+  onPageChange(event: any) {
+    this.goToPageNumber = event.page + 1;
+    this.numOfRows = event.rows;
+  }
+
+  goToPage() {
+    if(this.userTripTable && this.goToPageNumber > 0) {
+      const pageIndex = this.goToPageNumber - 1;
+      const firstrowindex = pageIndex * this.numOfRows;
+      if(firstrowindex >= 0 && firstrowindex < this.userTripTable.value.length) {
+        this.userTripTable.first = firstrowindex;
+      } else {
+        alert("Inavlid page numbmer entered.");
+      }
+    }
   }
 }

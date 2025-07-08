@@ -1,5 +1,6 @@
 
 <app-loader *ngIf="isLoading"></app-loader>
+<p-toast></p-toast>
 <div class="trip-table" *ngIf="!isLoading">
   <p-table
     #tripTable
@@ -7,9 +8,8 @@
     [paginator]="true"
     dataKey="id"
     [rows]="rows"
-    [showCurrentPageReport]="true"
     [tableStyle]="{ 'min-width': '50rem' }"
-    currentPageReportTemplate="{first} to {last} of {totalRecords} Records"
+    (onPage)="onPageChange($event)"
     [globalFilterFields]="[
       'startLocation',
       'destination',
@@ -42,21 +42,50 @@
         </div>
         <div class="numColumns" (click)="showCloumnList()">
             <i class="pi pi-bars"></i>
-            <span>5</span>
+            <span>{{selectedColumns.length}}</span>
         </div>
         <div *ngIf="shoeColumnsDisplay" class="selectingColumnDiv">
             <p-multiSelect 
+                #coloumnSelect
                 [options]="columnOptions"
+                [(ngModel)]="selectedColumns"
+                optionLabel="label"
+                placeholder="Select columns"
+                display="comma"
+                [selectedItemsLabel]="selectedColumns.length + ' items selected'"
+                [maxSelectedLabels]="1"
+                (onChange)="columnsChanged($event)"
             />
         </div>
         <i class="pi pi-plus" (click)="openNew()"></i>        
       </div>
     </ng-template>
+    <ng-template pTemplate="paginatorleft" let-state>
+    <span class="p-paginator-pages">
+      {{state.first + 1}} to {{state.first + state.rows > state.totalRecords ? state.totalRecords : state.first + state.rows}} of {{state.totalRecords}} Records
+    </span>
+  </ng-template>
+    <ng-template pTemplate="paginatorright" let-state>
+    <div class="jumpingPage" style="margin-left: 10px;">
+      <input id="goToPageInput" type="number" pInputText [(ngModel)]="goToPageNumber"
+        (keyup.enter)="goToPage()">
+      <button label="Go" (click)="goToPage()">Go</button>
+    </div>
+  </ng-template>
     <ng-template pTemplate="header">
       <tr>
-        <th pSortableColumn="startLocation" style="width: 20%">
-          Start Location <p-sortIcon field="startLocation" />
+        <th [pSortableColumn]="column.value" style="width: 20%" *ngFor="let column of selectedColumns">
+          <div class="tableHead">
+              {{column.label}}
+              <div class="sort-icons">
+                <i class="pi pi-sort-up-fill"></i>
+                <i class="pi pi-sort-down-fill"></i>
+              </div>
+            </div>
         </th>
+        <!-- 
+        <th pSortableColumn="startLocation" style="width: 20%">
+          Start Location <p-sortIcon field="destination" />
         <th pSortableColumn="destination" style="width: 20%">
           Destination <p-sortIcon field="destination" />
         </th>
@@ -68,16 +97,16 @@
         </th>
         <th pSortableColumn="totalMembers" style="width: 20%">
           Total Members <p-sortIcon field="totalMembers" />
-        </th>
+        </th> -->
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-trip>
       <tr>
-        <td>{{ trip.startLocation }}</td>
-        <td>{{ trip.destination }}</td>
+        <td *ngFor="let column of selectedColumns">{{ trip[column.value] }}</td>
+        <!-- <td>{{ trip.destination }}</td>
         <td>{{ trip.totalDistance }}</td>
         <td>{{ trip.totalExpense }}</td>
-        <td>{{ trip.totalMembers }}</td>
+        <td>{{ trip.totalMembers }}</td> -->
       </tr>
     </ng-template>
   </p-table>

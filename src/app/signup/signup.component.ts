@@ -1,10 +1,12 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, HostListener, inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { User } from '../Models/user';
 import { Authservice } from '../Services/auth.service';
 import { catchError, map, throwError } from 'rxjs';
 import { SharedService } from '../Services/shared.service';
+import { MessageService } from 'primeng/api';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -12,7 +14,7 @@ import { SharedService } from '../Services/shared.service';
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css'],
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent implements OnInit, AfterViewChecked {
 
   selectedGender: string = 'male';
 
@@ -154,6 +156,38 @@ export class SignupComponent implements OnInit {
     // Add more locales
   ];
 
+
+  countryCode = [
+    { name: 'India', code: '+91' },
+    { name: 'USA', code: '+1' },
+    { name: 'United Kingdom', code: '+44' },
+    { name: 'Germany', code: '+49' },
+    { name: 'France', code: '+33' },
+    { name: 'Brazil', code: '+55' },
+    { name: 'Argentina', code: '+54' },
+    { name: 'Spain', code: '+34' },
+    { name: 'Italy', code: '+39' },
+    { name: 'Netherlands', code: '+31' },
+    { name: 'Poland', code: '+48' },
+    { name: 'Sweden', code: '+46' },
+    { name: 'Portugal', code: '+351' },
+    { name: 'Mexico', code: '+52' },
+    { name: 'Colombia', code: '+57' },
+    { name: 'Peru', code: '+51' },
+    { name: 'Chile', code: '+56' },
+    { name: 'Venezuela', code: '+58' },
+    { name: 'Uruguay', code: '+598' },
+    { name: 'Norway', code: '+47' },
+    { name: 'Denmark', code: '+45' },
+    { name: 'Finland', code: '+358' },
+    { name: 'Belgium', code: '+32' },
+    { name: 'Austria', code: '+43' }
+  ]
+
+  phoneCode;
+  onCountryCodeChandes(code: any) {
+    this.phoneCode = code;
+  }
   filteredstates: any[] = [];
 
   onCountryChanges(country: any) {
@@ -171,10 +205,11 @@ export class SignupComponent implements OnInit {
       gender: new FormControl('male', Validators.required),
       dob: new FormControl(null, Validators.required),
       email: new FormControl(null, [Validators.required, Validators.email]),
-      phone: new FormControl(null, Validators.required),
+      countryCode: new FormControl(null, Validators.required),
+      phone: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)] ),
       address: new FormControl(null, Validators.required),
       country: new FormControl(null, Validators.required),
-      state: new FormControl(null, Validators.required),
+      state: new FormControl(null),
       zipCode: new FormControl(null, Validators.required),
       timeZone: new FormControl(null, Validators.required),
       locale: new FormControl(null),
@@ -184,13 +219,33 @@ export class SignupComponent implements OnInit {
     });
   }
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('logoContainer') logoContainer: ElementRef<HTMLDivElement>;;
 
   http: HttpClient = inject(HttpClient);
   sharedService: SharedService = inject(SharedService)
+  messageService: MessageService = inject(MessageService);
   allUsers: User[] = [];
   errorMessage: string = '';
   profileImage: string = 'assets/users/defaultProfileImg.jpg';
   paginationPageNo: number = 1;
+  fullPhoneNumber: string;
+
+  screenWidth: number = window.innerWidth;
+
+@HostListener('window:resize', ['$event'])
+onResize(event: any) {
+  this.screenWidth = event.target.innerWidth;
+  console.log(this.screenWidth);
+  
+}
+
+  ngAfterViewChecked(): void {
+    if(this.paginationPageNo === 2 && this.screenWidth <= 1000) {
+      this.logoContainer.nativeElement.style.display = 'none';
+    } else {
+      this.logoContainer.nativeElement.style.display = 'block';
+    }
+  }
 
   triggerFileinput() {
     this.fileInput.nativeElement.click();
@@ -231,15 +286,35 @@ export class SignupComponent implements OnInit {
   }
 
   authService: Authservice = inject(Authservice);
+  router: Router = inject(Router);
 
   currentUser: User;
-  passwordMatch: boolean = false;
   onSignupFormsubmit() {
+    // this.reactiveForm.patchValue({phone: `${this.phoneCode + ' ' + this.reactiveForm.value.phone}`})
+    if(this.reactiveForm.controls['phone'].invalid) {
+      this.messageService.add({severity: 'error', summary:'Error', detail: 'Mobhile number should less than 10 digits'});
+      return;
+    }
+    console.log(this.reactiveForm.value.dob);    
+    if(new Date(this.reactiveForm.value.dob) > new Date()) {
+      this.messageService.add({severity:'error', summary:'Error',detail:'Date of Birth must less the today!.'})
+      return;
+    }
+    if(this.reactiveForm.invalid) {
+    //   console.log('Form is invalid. Checking controls:');
+    // Object.keys(this.reactiveForm.controls).forEach(key => {
+    //   const control = this.reactiveForm.get(key);
+    //   console.log(`${key} → valid: ${control?.valid}, value: ${control?.value}, errors: ${JSON.stringify(control?.errors)}`);
+    // });
+    // return;
+      console.log(this.reactiveForm);      
+      this.messageService.add({severity: 'error', summary:'Error', detail: 'Please fill all the mandatory fields!.'});
+      return;
+    }
     console.log(this.reactiveForm.value);
     this.currentUser = this.reactiveForm.value;
     if(this.currentUser.password !== this.currentUser.confirmPassword || this.currentUser.password === null) {
-      this.passwordMatch = true;
-      alert("password should be match")
+      this.messageService.add({severity: 'error', summary:'Error', detail: 'Password and Confirm password should same!.'})
       return;
     }
     console.log(this.currentUser);    
@@ -252,15 +327,20 @@ export class SignupComponent implements OnInit {
         });
         if (isUserExits) {
           alert('User already exits');
+          this.messageService.add({severity: 'error', summary: 'Error', detail:'User already exits. Please Login!.'})
+          this.router.navigate(['/login']);
           return;
         }
         console.log(this.currentUser);        
         this.authService.signup(this.currentUser);
         this.reactiveForm.reset();
         this.profileImage = 'assets/users/defaultProfileImg.jpg';
+        this.messageService.add({severity: 'success', summary: 'Success', detail:`User ${this.currentUser.firstName + " " + this.currentUser.lastName} successfully signed Up. Please Login!.`});
+        this.router.navigate(['/login']);
       },
       error: (err) => {
         this.errorMessage = err.message;
+        this.messageService.add({severity: 'error', summary:'Error', detail:'An Unknowen Error occered!.'});
         console.log(this.errorMessage);
       },
     });
@@ -296,5 +376,6 @@ export class SignupComponent implements OnInit {
   goToNextPage(value: number) {
     this.paginationPageNo = value;
   }
+
   
 }

@@ -6,9 +6,9 @@
     class="backgroundImage"
   />
 </div>
-
+<p-toast></p-toast>
 <div class="container">
-  <div class="logo-container">
+  <div class="logo-container" #logoContainer>
     <div class="logo-header">
       <div class="logo-icon">
         <img src="./../../assets/foot_16750297.png" alt="Footicon" />
@@ -24,7 +24,7 @@
   </div>
   <div class="login-container">
     <h2>
-      <a routerLink="/login"><i class="pi pi-arrow-left"></i></a> SIGN UP To
+      <a routerLink="/login"><i class="pi pi-reply"></i></a> SIGN UP To
       TravelTrail...
     </h2>
     <form [formGroup]="reactiveForm" (ngSubmit)="onSignupFormsubmit()">
@@ -44,22 +44,20 @@
           <!-- formControlName="profileImage" -->
         </div>
         <div class="inputfield">
-          <label for="username">User Name</label>
+          <label for="username">User Name*</label>
           <input
             type="text"
             id="username"
             formControlName="username"
-            required
           />
         </div>
         <div class="row">
           <div class="inputfield">
-            <label for="firstName">First name</label>
+            <label for="firstName">First name*</label>
             <input
               type="text"
               id="firstName"
               formControlName="firstName"
-              required
             />
           </div>
           <div class="inputfield">
@@ -69,7 +67,7 @@
         </div>
         <div class="row">
           <div class="genderField inputfield">
-            <span>Gender</span>
+            <span>Gender*</span>
             <div>
               <input
                 type="radio"
@@ -113,28 +111,39 @@
             </div>
           </div>
           <div class="inputfield">
-            <label for="dob">DOB</label>
-            <input type="date" id="dob" formControlName="dob" required />
+            <label for="dob">DOB*</label>
+            <input type="date" id="dob" formControlName="dob"  />
           </div>
         </div>
 
         <div class="inputfield">
-          <label for="email">Email ID</label>
-          <input type="email" id="email" formControlName="email" required />
+          <label for="email">Email ID*</label>
+          <input type="email" id="email" formControlName="email"  />
         </div>
-        <div class="inputfield">
-          <label for="mobile">Mobile Number</label>
-          <input type="text" id="mobile" formControlName="phone" required />
+        <div class="phone-number row">
+          <div class="inputfield country-code-field">
+          <label>Code*</label>
+            <p-dropdown
+            [options]="countryCode"
+            optionLabel="code"
+            placeholder="select Country code"
+            formControlName="countryCode"
+            />
+        </div>
+        <div class="inputfield phoneNumberField">
+          <label for="mobile">Mobile Number*</label>
+          <input type="text" id="mobile" formControlName="phone" />
+        </div>
         </div>
       </div>
       <div class="page2" *ngIf="paginationPageNo === 2">
         <div class="inputfield">
-          <label for="address">Address</label>
-          <textarea id="address" formControlName="address" required ></textarea>
+          <label for="address">Address*</label>
+          <textarea id="address" formControlName="address" ></textarea>
         </div>
         <div class="row">
           <div class="inputfield">
-            <label>Country</label>
+            <label>Country*</label>
             <p-dropdown
               [options]="countries"
               placeholder="Select a Country"
@@ -155,16 +164,15 @@
         </div>
         <div class="row">
           <div class="inputfield">
-            <label for="zipcode">Zip Code</label>
+            <label for="zipcode">Zip Code*</label>
             <input
               type="text"
               id="zipcode"
               formControlName="zipCode"
-              required
             />
           </div>
           <div class="inputfield">
-            <label>Time Zone</label>
+            <label>Time Zone*</label>
             <p-dropdown
               [options]="timezones"
               placeholder="Select Time Zone"
@@ -187,20 +195,16 @@
           </div>
         </div>
         <div class="inputfield">
-          <label for="password">Password</label>
+          <label for="password">Password*</label>
           <input
             type="password"
             id="password"
             formControlName="password"
-            required
           />
         </div>
         <div class="inputfield">
-          <label for="confirmPassword">Confirm Password</label>
-          <input type="password" formControlName="confirmPassword" required />
-          <p class="errMsg" *ngIf="passwordMatch">
-            Password & Confirm Password must be Equal*
-          </p>
+          <label for="confirmPassword">Confirm Password*</label>
+          <input type="password" formControlName="confirmPassword" />
         </div>
         <div class="submitBtn inputfield">
           <button type="submit">Sign Up</button>

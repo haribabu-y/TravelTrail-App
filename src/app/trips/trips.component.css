@@ -1,3 +1,18 @@
+.tableHead {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.tableHead div {
+    display: flex;
+    flex-direction: column; 
+}
+
+.tableHead div i {
+    font-size: 8px;
+}
+
 ::ng-deep .p-datatable-header {
     display: flex;
     flex-direction: row;
@@ -135,4 +150,62 @@
     position: absolute;
     top: 50px;
     right: 10px;
+}
+
+/* Stying the pagination jumping input field */
+.jumpingPage {
+    display: flex;
+    gap: 5px;
+}
+
+.jumpingPage input {
+    width: 35px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid lightgray;
+    text-align: center;
+    background-color: #FDFDFD
+}
+
+.jumpingPage input:focus {
+    outline: 1px solid #084880;
+}
+
+.jumpingPage button {
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+/* Styling the paginator in p-table */
+
+::ng-deep .p-paginator {
+    padding: 5px 10px;
+}
+
+::ng-deep .p-paginator-right-content {
+    margin-left: 0 !important;
+}
+
+::ng-deep .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    background-color: #084880;
+    padding: 5px;
+    border-radius: 3px;
+    color: white;
+    min-width: 2rem;
+    height: 2rem;
+}
+
+::ng-deep .p-paginator .p-paginator-pages .p-paginator-page, ::ng-deep .p-paginator .p-paginator-first,::ng-deep .p-paginator .p-paginator-prev,::ng-deep .p-paginator .p-paginator-next,::ng-deep .p-paginator .p-paginator-last {
+    min-width: 2rem;
+    height: 2rem
 }

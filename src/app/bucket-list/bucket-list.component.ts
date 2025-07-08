@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { BucketList } from '../Models/bucketList';
 import { BucketListService } from '../Services/bucketList.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-bucket-list',
@@ -17,6 +18,7 @@ export class BucketListComponent implements OnInit{
   userBucketLists: BucketList[];
   //Getting the instance of the bucketList service
   bucketListService: BucketListService = inject(BucketListService);
+  messageService: MessageService = inject(MessageService);
 
   ngOnInit(): void {
     this.getbucketlists();
@@ -73,6 +75,7 @@ export class BucketListComponent implements OnInit{
 
   closeDailog() {
     this.showAddBucketDailog = false;
+    this.bucketId = ''
     // console.log(this.placeImage);    
     this.placeImage = '';
     this.placeName = '';
@@ -110,6 +113,10 @@ export class BucketListComponent implements OnInit{
   }
 
   addRecord(id?: string) {
+    if(this.placeImage === '' || this.placeName === '' || this.placeDescription === '' || this.estimatedDistance === 0 || this.estimatedBudget === 0) {
+      this.messageService.add({severity:'error', summary:'Error', detail:'Please fill all the fields'});
+      return;
+    }
     let newBucketItem = {
       placeImage: this.placeImage,
       placeName: this.placeName,
@@ -120,18 +127,18 @@ export class BucketListComponent implements OnInit{
     if(id) {
       this.bucketListService.updateUserBucketItem(id,newBucketItem).subscribe((res) => {
         this.getbucketlists();
+        this.bucketId = '';
+        this.messageService.add({severity:'success', summary:'Success', detail:'BucketList Successfully Updated!.'})
       });
       this.closeDailog();
       return;
     }
-    if(!this.placeImage || !this.placeName || !this.placeDescription || !this.estimatedDistance || !this.estimatedBudget) {
-      alert("Please fill all the fields.");
-      return;
-    }
+
 
     console.log(newBucketItem);    
     this.bucketListService.addNewBucketListitem(newBucketItem).subscribe((res) => {
       this.getbucketlists();
+      this.messageService.add({severity:'success', summary:'Success', detail:'BucketList Successfully Added!.'})
     });
     this.closeDailog();
   }

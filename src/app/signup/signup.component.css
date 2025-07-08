@@ -94,6 +94,10 @@ body {
     font-weight: 500;
 }
 
+.login-container h2 a i {
+    transform: rotate(180deg);
+}
+
 .login-container form {
     width: 100%;
 }
@@ -137,6 +141,7 @@ body {
     display: flex;
     flex-direction: column;
 }
+
 ::ng-deep .inputfield .p-dropdown {
     width: 235px !important;
     height: 35px;
@@ -147,6 +152,18 @@ body {
     border: none;
 }
 
+.phone-number {
+    display: flex;
+    width: 80%;
+    gap: 10px;
+}
+/* .country-code-field ::ng-deep .p-dropdown {
+    width: 40% !important;
+}
+.phoneNumberField {
+    width: 400px;
+} */
+
 .genderField label {
     background-color: #F3F3F3;
     padding: 10px;
@@ -154,10 +171,11 @@ body {
     font-size: 14px !important;
     width: 75px;
     height: 37px;
+    text-align: center;
 }
 .genderField div {
     display: flex;
-    gap: 5px;
+    gap: 10px;
 }
 
 .selectedGender {
@@ -165,80 +183,6 @@ body {
     color: white;
 }
 
-/* .login-container h2 {
-    color: #084880;
-    font-weight: 500;
-}
-.login-container form {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    gap: 20px;
-}
-.login-container form div {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-}
-
-.profile-img {
-    width: 100px;
-    height: 100px;
-    position: relative;
-}
-
-.profile-img img {
-    border-radius: 50%;
-    border: 1px solid #084880;
-    padding: 1px;
-}
-
-.profile-img i {
-    position: absolute;
-    top: 25px;
-    right: 12px;
-    color: white;
-    cursor: pointer;
-}
-
-.inputfield {
-    width: 80%;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-.inputfield label {
-    font-size: 18px;
-}
-.inputfield input {
-    padding: 10px;
-    background-color: #F3F3F3;
-    border: none;
-    border-radius: 4px;
-}
-.inputfield input:focus {
-    outline: none;
-    border: 1px solid #1E88E5
-}
-
-.submitBtn button{
-    background-color: #1E88E5;
-    color: white;
-    border-radius: 5px;
-    border: none;
-    padding: 10px;
-    font-size: 20px;
-}
-
-.login-container p {
-    font-size: 15px;
-    font-weight: 400;
-    transform: translateY(-40px);
-}
- */
  .inputfield label {
     font-size: 18px;
 }
@@ -312,3 +256,276 @@ body {
     color: red;
     font-size: 12px;
  }
+
+ @media screen and (max-width: 1024px) {
+  /* .container {
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    justify-content: flex-start;
+  } */
+     .backgroundImage {
+    width: 1800px;
+    height: 1100px;
+    /* height: 100vh; */
+    position: relative;
+    top: -150px;
+    left: -620px;
+}
+   .logo-container {
+        text-align: center;
+        z-index: 10;
+    }    
+
+    .logo-icon img {
+        width: 90px;
+        height: 90px;
+    }
+
+    .logo-text {
+    top: 85px;
+    left: 75px;
+}
+
+.travel {
+    font-size: 50px;
+}
+
+.trail {
+    font-size: 45px;
+}
+
+.tagline {
+    font-size: 14px;
+    left: 30px;
+    top: 135px;
+}
+   .login-container {
+    width: 45%;
+    height: 95%;
+    gap: 35px;
+   }
+
+   .login-container h2 {
+    transform: translateY(15px);
+   }
+   .paginators {
+    transform: translateY(-15px);
+   }
+
+   .adminCheck {
+    transform: translateY(-2px);
+    padding: 3;
+   }
+
+.row {
+    flex-direction: column;
+    width: 100%;
+}
+
+::ng-deep .inputfield .p-dropdown {
+    width: 100% !important;
+}
+
+  /* .logo-icon img {
+    position: static;
+    margin-top: 20px;
+    transform: none;
+  }
+
+  .logo-text {
+    position: static;
+    text-align: center;
+  }
+
+  .tagline {
+    position: static;
+    text-align: center;
+    width: 90%;
+    margin: 20px auto;
+  }
+
+  .login-container {
+    position: static;
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .row {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .inputfield {
+    width: 100%;
+  }
+
+  ::ng-deep .inputfield .p-dropdown {
+    width: 100% !important;
+  }
+
+  .adminCheck {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+
+  .submitBtn button {
+    width: 100%;
+  }
+
+  .paginators {
+    gap: 5px;
+  } */
+}
+
+/* --- For mobile devices (max-width: 768px) --- */
+@media (max-width: 768px) {
+    body {
+        overflow: scroll;
+    }
+    .container {
+        width: 100vw;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .backgroundimage {
+        /* display: none; Hide background image or replace with mobile-friendly bg */
+        position: static;
+        display: none;
+    }
+
+    .logo-container {
+        text-align: center;
+        z-index: 10;
+    }    
+
+    .logo-icon img {
+        top: 40px;
+        width: 80px;
+        height: 80px;
+    }
+
+    .logo-text {
+    top: 40px;
+    left: 55px;
+}
+
+.travel {
+    font-size: 40px;
+}
+
+.trail {
+    font-size: 35px;
+}
+
+.tagline {
+    font-size: 12px;
+    left: 15px;
+    top: 83px;
+}
+
+    .login-container {
+        /* position: static; */
+        top: 160px;
+        left: 10px;
+        width: 100%;
+        padding: 20px;
+        border-radius: 15px;
+        gap: 40px;
+    }
+
+    .login-container h2 {
+        font-size: 20px;
+    }
+
+    /* .page2 {
+        position: relative;
+        top: 80px;
+    } */
+
+    .inputfield {
+        width: 90%;
+    }
+
+    .inputfield input {
+        font-size: 16px;
+    }
+
+    .submitBtn button {
+        width: 100%;
+        font-size: 18px;
+    }
+
+    .login-container p {
+        font-size: 14px;
+        transform: translateY(0px);
+    }
+}
+
+@media (max-width: 426px) {
+    
+    .logo-icon img {
+        top: 40px;
+        width: 50px;
+        height: 50px;
+    }
+
+    .logo-text {
+    top: 40px;
+    left: 10px;
+}
+
+.travel {
+    font-size: 25px;
+}
+
+.trail {
+    font-size: 25px;
+}
+
+.tagline {
+    font-size: 10px;
+    left: -40px;
+    top: 68px;
+}
+}
+@media (max-width: 320px) {
+    body {
+        width: 100vw;
+    }
+    .logo-icon img {
+        top: 40px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .logo-text {
+    top: 35px;
+    left: 0px;
+}
+
+.travel {
+    font-size: 20px;
+}
+
+.trail {
+    font-size: 18px;
+}
+
+.tagline {
+    font-size: 8px;
+    left: -80px;
+    top: 55px;
+}
+.login-container h2 {
+    transform: translateY(-5px);
+}
+.page1 .profile-img {
+    transform: translateY(-10px);
+}
+}

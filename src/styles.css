@@ -7,13 +7,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Concert+One&family=Madimi+One&family=Montez&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap'); */
 @import url('https://fonts.googleapis.com/css2?family=Concert+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Madimi+One&family=Montez&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
+/* Light Mode - default */
+:root {
+  --background-color: #ffffff;
+  --text-color: #000000;
+}
+
+/* Dark Mode */
+.dark-mode {
+  --background-color: #121212;
+  --text-color: #ffffff;
+}
+
+/* Use variables in body or app-root */
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  height: 100%;
+  width: 100%;
+}
+
 * {
     font-family: "Inter", sans-serif;
     margin: 0;
 }
 
-body {
-    height: 100%;
-    width: 100%;
-    /* overflow: hidden; */
-}
+/* body {
+    
+    overflow: hidden;
+} */
+ 
