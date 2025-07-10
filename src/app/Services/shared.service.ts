@@ -10,6 +10,7 @@ import { Trip } from "../Models/trip";
 export class SharedService {
 
     http: HttpClient = inject(HttpClient);
+    isDarkMode = new Subject<boolean>();
 
     public getAllUsers(): Observable<User[]> {
         return this.http
@@ -39,5 +40,10 @@ export class SharedService {
 
     getUserExpense(expense: number) {
         this.userExpense.next(expense);
+    }
+
+    emitThemevalue(value: boolean) {
+      this.isDarkMode.next(value);
+      console.log(value);
     }
 }

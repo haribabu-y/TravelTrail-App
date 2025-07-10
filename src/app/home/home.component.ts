@@ -19,9 +19,11 @@ export class HomeComponent implements OnInit {
   userTrips: String[];
   userExpenses: number[];
   isLoading: boolean = false;
+  isDarkMode: boolean = false;
 
   sharedService: SharedService = inject(SharedService);
   tripService: TripService = inject(TripService);
+
 
   predefinedColors: string[] = [
   "#FF6384", // Red
@@ -81,6 +83,7 @@ export class HomeComponent implements OnInit {
   onRadioChange(value: string){
     this.selectedRadio = value;
   }
+
 
   ngOnInit(): void {
     this.isLoading = true;
@@ -307,5 +310,17 @@ export class HomeComponent implements OnInit {
     }
     this.isLoading = false;    
     })
+    this.sharedService.isDarkMode.subscribe((res) => {
+      console.log(res);
+      this.isDarkMode = res;      
+    })
+    let theme = localStorage.getItem('theme');
+    if(theme === 'dark') {
+      this.isDarkMode = true;
+    } else {
+      this.isDarkMode = false;
+    }
+
   }
+
 }

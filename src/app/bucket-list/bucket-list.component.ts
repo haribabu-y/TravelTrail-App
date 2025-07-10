@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from 
 import { BucketList } from '../Models/bucketList';
 import { BucketListService } from '../Services/bucketList.service';
 import { MessageService } from 'primeng/api';
+import { SharedService } from '../Services/shared.service';
 
 @Component({
   selector: 'app-bucket-list',
@@ -12,15 +13,19 @@ export class BucketListComponent implements OnInit{
   showAddBucketDailog: boolean = false;
   isLoading: boolean = false;
   isAdmin: boolean = false;
+  isDarkMode: boolean = false;
 
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   userBucketLists: BucketList[];
   //Getting the instance of the bucketList service
   bucketListService: BucketListService = inject(BucketListService);
+  sharedService: SharedService = inject(SharedService);
   messageService: MessageService = inject(MessageService);
 
   ngOnInit(): void {
+    this.sharedService.isDarkMode.subscribe((res) => this.isDarkMode = res)
+    localStorage.getItem('theme') === 'dark' ? this.isDarkMode = true : this.isDarkMode = false;
     this.getbucketlists();
   }
 

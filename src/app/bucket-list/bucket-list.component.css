@@ -59,7 +59,6 @@
 .content p {
     font-size: 12px;
 }
-
 .adding-new-bucket {
     display: flex;
     justify-content: center;
@@ -80,6 +79,10 @@
 }
 
 /* Styling the dailog for adding new bucket place */
+
+::ng-deep .add-bucket-contsiner .p-dialog {
+    width: 35%;
+}
 
 .inputFields {
     display: flex;
@@ -160,4 +163,93 @@
     color: white;
     border: none;
 }
+
+/* Making the page responsive */
+@media screen and (max-width: 770px) {
+    ::ng-deep .p-dialog {
+        width: 50%;
+    }
+}
+
+@media screen and (max-width: 426px) {
+    ::ng-deep .p-dialog {
+        width: 80%;
+    }
+    .bucket-list-item {
+        width: 530px;
+    }
+
+    .loader-container {
+        transform: translateX(400px);
+    }
+
+}
+
+
+/* styling for dark mode */
+
+.dark-mode .bucket-list-item {
+    background-color: #6b6b6b;
+}
+
+.dark-mode .bucket-list-item span {
+    color: white;
+}
+
+.dark-mode .bucket-list-item .content p {
+    color: white;
+}
+
+.dark-mode .adding-new-bucket p {
+    color: white;
+}
+
+.dark-mode .adding-new-bucket i {
+        background-color: white;
+    color: black;
+}
+
+.dark-mode .bucket-list-item:hover {
+    box-shadow: 0 4px #ffffff;
+}
+
+.dark-mode .bucket-image .distance-field {
+    background-color: white;
+    color: black;
+}
+
+/* styling the dark theme for dailog */
+
+.dark-mode ::ng-deep .p-dialog .p-dialog-header{
+    background-color: #4b4b4b !important;
+    color: white !important;
+}
+.dark-mode ::ng-deep .p-dialog .p-dialog-header .p-dialog-header-icon:last-child {
+    color: white;
+}
+
+.dark-mode ::ng-deep .p-dialog .p-dialog-content:last-of-type {
+    background-color: #4b4b4b !important;
+    color: white !important;
+}
+
+.dark-mode .field input {
+    background-color: lightgray;
+}
+
+.dark-mode .cancelbtn {
+    background-color: lightgray;
+}
+
+.dark-mode .inputFields .field .pi-upload {
+    color: black;
+}
+.dark-mode .inputFields .field .image-upload-container {
+    background-color: lightgray;
+}
+
+.dark-mode .inputFields .field .image-upload-container p {
+    color: black;
+}
+
 

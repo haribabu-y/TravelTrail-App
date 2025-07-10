@@ -1,11 +1,12 @@
 <app-loader *ngIf="isLoading"></app-loader>
 <p-toast></p-toast>
-<div class="users-detail-table" *ngIf="!isLoading">
+<div class="users-detail-table" [ngClass]="isDarkMode ? 'dark-mode' : ''" *ngIf="!isLoading">
   <p-table
     #usersDetailTable
     [value]="users"
     [paginator]="true"
     (onPage)="onPageChange($event)"
+    [pageLinks]="3"
     [rows]="numOfRows"
     [globalFilterFields]="['userName', 'age', 'Country', 'TotalExpense']"
   >
@@ -48,7 +49,6 @@
               [(ngModel)]="selectedColumns"
               optionLabel="label"
               placeholder="Select columns"
-              display="comma"
               [selectedItemsLabel]="selectedColumns.length + ' items selected'"
               [maxSelectedLabels]="1"
               (onChange)="columnsChanged($event)"
@@ -68,6 +68,12 @@
         (keyup.enter)="goToPage()">
       <button label="Go" (click)="goToPage()">Go</button>
     </div>
+  </ng-template>
+  <ng-template pTemplate="paginatorfirstpagelinkicon">
+    <i class="pi pi-step-backward" style="font-size: 12px;"></i>
+  </ng-template>
+  <ng-template pTemplate="paginatorlastpagelinkicon">
+    <i class="pi pi-step-forward" style="font-size: 12px;"></i>
   </ng-template>
     <ng-template pTemplate="header">
         <tr>
@@ -115,20 +121,25 @@
     <ng-template pTemplate="body" let-user>
         <tr>
             <td><img [src]="user.userImage" alt="Profile image" width="30px" height="30px" style="border-radius: 10px;"></td>
-            <!-- <td *ngFor="let column of selectedColumns">{{user[column.value]}}</td> -->
+            <td *ngFor="let column of selectedColumns">{{(column.value === 'totalExpense') ? (convertAmount(user.totalExpense) | currency: currencyCode) : user[column.value]}}</td>
             
-            <td>{{user.username}}</td> 
+            <!-- <td>{{user.username}}</td> 
             <td>{{user.age}}</td>
             <td>{{convertAmount(user.totalExpense) | currency: currencyCode }}</td>
-            <td>{{user.country}}</td>
+            <td>{{user.country}}</td> -->
             <td><i class="pi pi-pencil" (click)="openEditDialog(user.id)"></i></td>
             <td><i class="pi pi-trash" (click)="showDeleteUser(user.id)"></i></td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6">No Users Found!.</td>
         </tr>
     </ng-template>
   </p-table>
 </div>
 
-<div class="add-Update-user">
+<div class="add-Update-user" [ngClass]="isDarkMode ? 'dark-mode' : ''">
   <p-dialog
     [header]="userToEditId ? 'Update User' : 'Add User'"
     [(visible)]="showAddOrUpdateDailog"
@@ -136,7 +147,7 @@
     [modal]="true"
     [resizable]="false"
     [draggable]="false"
-    [style]="{width: '60%', height: '75%'}"
+    (onHide)="closeDailog()"
   >
   <ng-template pTemplate="content">
     <form #addUserForm [formGroup]="addUserForm1" (ngSubmit)="addOrUpdateUser(userToEditId)">
@@ -319,14 +330,13 @@
   </p-dialog>
 </div>
 
-<div class="delete-dailog">
+<div class="delete-dailog" [ngClass]="isDarkMode ? 'dark-mode' : ''">
   <p-dialog
     [(visible)]="showDeleteUserdailog"
     [modal]="true"
     [position]="'top'"
     [resizable]="false"
     [draggable]="false"
-    [style]="{ width: '40%', height: '45%' }"
   >
     <ng-template pTemplate="content">
       <div class="delete-container">

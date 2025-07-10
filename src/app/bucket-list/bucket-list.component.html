@@ -1,6 +1,6 @@
 <app-loader *ngIf="isLoading"></app-loader>
 <p-toast></p-toast>
-<div class="bucket-list-container" *ngIf="!isLoading">
+<div class="bucket-list-container" [ngClass]="isDarkMode ? 'dark-mode' : ''" *ngIf="!isLoading">
   <div class="bucket-list-item" *ngFor="let bucketListItem of userBucketLists">
     <div class="bucket-image">
       <p-image
@@ -10,7 +10,7 @@
         height="250px"
         alt="Place Image"
       ></p-image>
-      <span>{{bucketListItem.estimatedDistance}} KMs</span>
+      <span class="distance-field">{{bucketListItem.estimatedDistance}} KMs</span>
       <div class="editDeletBtns">
         <i class="pi pi-pencil" (click)="editBucketItem(bucketListItem)"></i>
        <i class="pi pi-trash" (click)="deleteBucketItem(bucketListItem)" *ngIf="isAdmin"></i>
@@ -30,13 +30,14 @@
   </div>
 </div>
 
+<div class="add-bucket-contsiner" [ngClass]="isDarkMode ? 'dark-mode' : ''">
 <p-dialog
     [header]="bucketId ? 'Update Place' : 'Add Place'"
     [(visible)]="showAddBucketDailog"
     [resizable]="false"
     [draggable]="false"
     [modal]="true"
-    [style]="{ width: '35%' }"
+    (onHide)="closeDailog()"
 >
     <ng-template pTemplate="content">
     <div class="inputFields">
@@ -111,3 +112,4 @@
     </div>
   </ng-template>
 </p-dialog>
+</div>

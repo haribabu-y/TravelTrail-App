@@ -2,13 +2,14 @@
 <p-toast></p-toast>
 <div class="user-trip-container" *ngIf="!isLoading">
   <div class="table-header"></div>
-  <div class="user-trip-table">
+  <div class="user-trip-table" [ngClass]="isDarkMode ? 'dark-mode' : ''">
     <p-table
       #userTripTable
       [value]="usersTrips"
       [paginator]="true"
       (onPage)="onPageChange($event)"
       [rows]="numOfRows"
+      [pageLinks]="3"
       [globalFilterFields]="[
         'username',
         'totalDistance',
@@ -18,7 +19,7 @@
       ]"
     >
       <ng-template pTemplate="caption">
-        <p>user Trips</p>
+        <p>User Trips</p>
         <div class="right-contents">
           <div class="currency-formate">
             <p-dropdown
@@ -70,6 +71,7 @@
               [selectedItemsLabel]="selectedColumns.length + ' items selected'"
               [maxSelectedLabels]="1"
               (onChange)="columnsChanged($event)"
+              
             />
           </div>
         </div>
@@ -91,6 +93,12 @@
           <button label="Go" (click)="goToPage()">Go</button>
         </div>
       </ng-template>
+      <ng-template pTemplate="paginatorfirstpagelinkicon">
+    <i class="pi pi-step-backward" style="font-size: 12px;"></i>
+  </ng-template>
+  <ng-template pTemplate="paginatorlastpagelinkicon">
+    <i class="pi pi-step-forward" style="font-size: 12px;"></i>
+  </ng-template>
       <ng-template pTemplate="header">
         <tr>
           <th
@@ -146,40 +154,37 @@
       </ng-template>
       <ng-template pTemplate="body" let-userTrip>
         <tr>
-          <!-- <td *ngFor="let column of selectedColumns">
-            {{ userTrip[column.value] }}
-          </td> -->
+          <td *ngFor="let column of selectedColumns">
+            {{(column.value === 'totalDistance') ? (getConvertedDistance(userTrip.totalDistance)) : (column.value === 'totalExpense') ? (convertAmount(userTrip.totalExpense) | currency: currencyCode) : userTrip[column.value]}}
+          </td>
           
-          <td>{{ userTrip.username }}</td>
-          <td>{{ getConvertedDistance(userTrip.totalDistance) | number:'1.0-2'}}{{getDistanceUnitLabel()}}</td>
+          <!-- <td>{{ userTrip.username }}</td>
+          <td>{{ getConvertedDistance(userTrip.totalDistance)}}</td>
           <td>{{ userTrip.gender }}</td>
           <td>{{ userTrip.age }}</td>
-          <td>{{ convertAmount(userTrip.totalExpense) | currency: currencyCode }}</td>
+          <td>{{ convertAmount(userTrip.totalExpense) | currency: currencyCode }}</td> -->
           <td>
             <i class="pi pi-tag" (click)="openUserBucketList(userTrip.id)"></i>
           </td>
         </tr>
       </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6">No Users Found!.</td>
+        </tr>
+      </ng-template>
     </p-table>
-    <div class="pagination-container">
-      <!-- <p-paginator
-            [rows]="10"
-            [first]="5"
-            [totalRecords]="userTrips.length"
-            [showCurrentPageReport]="true"
-            currentPageReportTemplate="{first} to {last} of {totalRecords} Records"
-        ></p-paginator> -->
-    </div>
   </div>
 </div>
 
-<div class="bucketDailog">
+<div class="bucketDailog" [ngClass]="isDarkMode ? 'dark-mode' : ''">
   <p-dialog
     header="User Bucket List"
     [(visible)]="bucketListDailog"
     [modal]="true"
     [resizable]="false"
     [draggable]="false"
+    (onHide)="closeBucketListDailog()"
     [style]="{ width: '95%', height: '95%' }"
   >
     <ng-template pTemplate="content">
@@ -216,11 +221,12 @@
           </div>
         </div>
       </div>
+      <div *ngIf="haveBucketLists" class="no-bucket-list">No Bucket List For this user!</div>
     </ng-template>
   </p-dialog>
 </div>
 
-<div class="editBucketItem">
+<div class="editBucketItem" [ngClass]="isDarkMode ? 'dark-mode' : ''">
   <p-dialog
     header="Update Place"
     [(visible)]="showEditBucketDialog"
@@ -313,14 +319,13 @@
   </p-dialog>
 </div>
 
-<div class="delete-dailog">
+<div class="delete-dailog" [ngClass]="isDarkMode ? 'dark-mode' : ''">
   <p-dialog
     [(visible)]="isDeleteDailog"
     [modal]="true"
     [position]="'top'"
     [resizable]="false"
     [draggable]="false"
-    [style]="{ width: '40%', height: '45%' }"
   >
     <ng-template pTemplate="content">
       <div class="delete-container">

@@ -22,6 +22,7 @@ export class UsersDetailsComponent implements OnInit {
   sharedService: SharedService = inject(SharedService);
   bucketListService: BucketListService = inject(BucketListService)
   users: UserDetail[] = [];
+  isDarkMode: boolean = false;
 
   ngOnInit(): void {
     this.isLoading = true;
@@ -29,7 +30,7 @@ export class UsersDetailsComponent implements OnInit {
     this.sharedService.getAllUsers().subscribe((users) => {
       for(let user of users) {
         console.log(user);
-        let userimage: string = user.profileImage;
+        let userimage: string = user.profileImage ? user.profileImage : `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName ? user.lastName : ''}&bold=true`;
         let username: string = user.firstName + ' ' + user.lastName;
         let id: string = user.id;
         let age: number = new Date().getFullYear() - new Date(user.dob).getFullYear();
@@ -71,6 +72,9 @@ export class UsersDetailsComponent implements OnInit {
         isAdmin: new FormControl(false),
         password: new FormControl(null, Validators.required),
     })
+
+    this.sharedService.isDarkMode.subscribe((res) => this.isDarkMode = res);
+    localStorage.getItem('theme') === 'dark' ? this.isDarkMode = true : this.isDarkMode = false;
   }
 
   currencyFormate = [
@@ -156,6 +160,9 @@ export class UsersDetailsComponent implements OnInit {
   profileImage: string = 'assets/users/defaultProfileImg.jpg';
 
   openNew() {
+    this.selectedGender = 'male';
+    this.addUserForm1.get('username').enable();
+    this.addUserForm1.get('password').enable();
     this.showAddOrUpdateDailog = true;
   }
 
@@ -406,6 +413,7 @@ export class UsersDetailsComponent implements OnInit {
         console.log(res);       
         this.userToEditId = ''; 
         this.messageService.add({severity:'success', summary:'Success', detail:'User Successfully Updated!.'})
+        this.showAddOrUpdateDailog = false;
       });
       return;
     }   
@@ -426,6 +434,7 @@ export class UsersDetailsComponent implements OnInit {
         this.addUserForm1.reset(); 
         this.messageService.add({severity:'success', summary:'Success', detail:'UserSuccessFully Added!.'})
         this.profileImage = 'assets/users/defaultProfileImg.jpg';
+        this.showAddOrUpdateDailog = false;
       }
     })
   }
@@ -442,10 +451,15 @@ export class UsersDetailsComponent implements OnInit {
     console.log(userId);
     this.userToEditId = userId;
     this.showAddOrUpdateDailog = true;
+    if(userId) {
+      this.addUserForm1.get('username').disable();
+      this.addUserForm1.get('password').disable();
+    }
     this.http.get(`https://travektrail-app-default-rtdb.firebaseio.com/users/${userId}.json`).subscribe((user: User) => {
       this.userToEdit = user;
       console.log(this.userToEdit);
-      this.profileImage = user.profileImage;
+      this.selectedGender = user.gender;
+      this.profileImage = user.profileImage ? user.profileImage : `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName ? user.lastName : ''}&bold=true`;
       this.addUserForm1.patchValue(this.userToEdit);
       this.addUserForm1.patchValue({profileImage: this.profileImage});
       // this.addUserForm1.setValue({
@@ -500,8 +514,9 @@ export class UsersDetailsComponent implements OnInit {
       if(firstRowIndex >= 0 && firstRowIndex < this.usersDetailTable.value.length) {
         this.usersDetailTable.first = firstRowIndex;
       } else {
-        alert("Invalid page number entered.")
-        // this.goToPageNumber = Math.floor(this.table.first / this.rows) + 1;
+        // alert("Invalid page number entered.")
+        this.messageService.add({severity:'warn', summary:'Warn', detail:'Invali page number entered!.'})
+        // this.goToPageNumber = Math.floor(this.usersDetailTable.first / this.numOfRows) + 1;
       }
     }
   }

@@ -9,6 +9,7 @@
     justify-content: space-between;
     align-items: center;
     height: 60px;
+    padding: 5px;
 }
 .left {
     display: flex;
@@ -170,10 +171,11 @@
     display: flex;
     flex-direction: row;
     gap: 10px;
-    padding: 5px;
+    padding: 5px 10px;
     /* height: 35px; */
-    border: 4px solid rgba(211, 211, 211, 0.211);
-    margin: 3px
+    border-top: 4px solid rgba(211, 211, 211, 0.211);
+    border-bottom: 4px solid rgba(211, 211, 211, 0.211);
+    margin: 3px;
 }
 
 .navbar a {
@@ -187,3 +189,96 @@
     color: #084880;
     border-bottom: 3px solid #084880;
 }
+
+/* Stying for 425 screen size */
+@media screen and (max-width: 770px) {
+    /* .header{
+        width: 875px;
+    }
+    .navbar {
+        width: 875px;
+    }  */
+}
+
+@media screen and (max-width: 426px) {
+    .navbar {
+        width: 550px;
+    } 
+    .header{
+        width: 550px;
+    }
+}
+
+
+
+/* Styling for dark mode */
+.dark-mode {
+  background-color: black; 
+  color: white;
+  /* transition: background-color 0.3s, color 0.3s; */
+}
+
+.dark-mode img {
+  filter: brightness(0.9);
+}
+
+.dark-mode .logo-icon img {
+  filter: invert(1) brightness(0.8);
+}
+
+.dark-mode .header {
+  background-color: black;
+  /* border-bottom: 1px solid #333; */
+}
+.dark-mode .app-logo .logo-text .travel {
+    color: rgb(0, 187, 249);
+}
+
+.dark-mode .app-logo .logo-text .trail {
+  color: rgb(42, 243, 42)
+}
+
+.dark-mode .home-icons,
+.dark-mode .currency span,
+.dark-mode .toggleDarkMode p {
+  color: white;
+}
+
+.dark-mode .home-icons i,
+.dark-mode .navbar a i {
+  color: white;
+}
+.dark-mode .currency span {
+    z-index: 2;
+}
+
+.dark-mode .currency img {
+z-index: 1;
+}
+
+.dark-mode .toggleDarkMode p {
+  cursor: pointer;
+}
+
+.dark-mode .profileImg img {
+  border: 2px solid rgb(0, 187, 249);
+  border-radius: 50%;
+}
+
+/* Navbar Links */
+.dark-mode .navbar {
+  background-color: black;
+}
+
+.dark-mode .navbar a {
+  color: white;
+  transition: color 0.3s;
+}
+
+.dark-mode .navbar a.activeLink,
+.dark-mode .navbar a:hover {
+  color: rgb(0, 187, 249);
+  border-bottom: 3px solid rgb(0, 187, 249);
+}
+
+

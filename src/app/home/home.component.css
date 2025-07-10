@@ -4,7 +4,7 @@
     flex-direction: column;
     padding: 10px 20px;
     width: 100%;
-    border-bottom: 4px solid rgba(211, 211, 211, 0.211);;
+    border-bottom: 4px solid rgba(211, 211, 211, 0.211);
 }
 .graphTypeRadio {
     display: flex;
@@ -32,4 +32,33 @@
     padding: 10px;
     margin-left: 30px;
     margin-right: 50px;
+}
+
+@media screen and (max-width: 426px) {
+    .graphtype {
+        width: 550px;
+    }
+
+    .barGraph, .lineBar, .pieChart {
+        width: 500px;
+        height: 450px;
+    }
+}
+
+/* applying styles for the dark mode */
+.dark-mode {
+    background-color: black;
+}
+.dark-mode p {
+    color: white;
+}
+.dark-mode .graphTypeRadio {
+    background-color: black;
+}
+
+.dark-mode .graphTypeRadio label{
+    color: black;
+}
+.dark-mode .graphTypeRadio .radioChecked {
+    color: white;
 }

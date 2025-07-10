@@ -1,6 +1,6 @@
 <app-loader *ngIf="isLoading"></app-loader>
 <ng-container *ngIf="!isLoading">
-  <div class="graphtype">
+  <div class="graphtype" [ngClass]="isDarkMode ? 'dark-mode' : '' ">
   <p>Graph Types</p>
   <div class="graphTypeRadio">
       <input type="radio" name="graphtype" id="barGraph" value="barGraph" checked (change)="onRadioChange('barGraph')" hidden />
@@ -12,12 +12,16 @@
   </div>
 </div>
 <div class="barGraph" *ngIf="selectedRadio === 'barGraph'">
-  <p-chart type="bar" [data]="barGraphData" [options]="barGraphOptions"></p-chart>
+  <p-chart 
+    type="bar" 
+    [data]="barGraphData" 
+    [options]="barGraphOptions"
+  ></p-chart>
 </div>
 <div class="lineBar" *ngIf="selectedRadio === 'lineGraph'">
   <p-chart type="line" [data]="lineGraphData" [options]="lineGraphOptions" />
 </div>
-<div class="peiChart" *ngIf="selectedRadio === 'pieChart'">
+<div class="pieChart" *ngIf="selectedRadio === 'pieChart'">
   <p-chart type="pie" [data]="pieChartData" [options]="pieChartOptions" height="500px" />
 </div>
 </ng-container>

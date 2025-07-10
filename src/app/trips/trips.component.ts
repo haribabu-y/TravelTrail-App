@@ -22,12 +22,24 @@ export class TripsComponent implements OnInit {
   tripService: TripService = inject(TripService);
   sharedService: SharedService = inject(SharedService);
   isLoading: boolean = false;
+  isDarkMode: boolean = false;
 
   @ViewChild('coloumnSelect') columnSelect: MultiSelect
 
   messageService: MessageService = inject(MessageService);
 
   ngOnInit() {
+    let theme = localStorage.getItem('theme');
+    if(theme === 'dark') {
+      this.isDarkMode = true;
+    } else {
+      this.isDarkMode = false;
+    }
+
+    this.sharedService.isDarkMode.subscribe((res) => {
+      this.isDarkMode = res;
+    })
+
     this.loadTripsInTable();
     this.selectedColumns = [...this.columnOptions]
   }
@@ -68,6 +80,11 @@ export class TripsComponent implements OnInit {
 
   openNew() {
     this.showDailog = true;
+    this.startPlace = '';
+    this.destination = '';
+    this.totalDistance = 0;
+    this.totalExpense = 0;
+    this.totalMembers = 0;
   }
 
   closeDailog() {
@@ -150,7 +167,8 @@ export class TripsComponent implements OnInit {
       if(firstRowIndex >= 0 && firstRowIndex < this.table.value.length) {
         this.table.first = firstRowIndex;
       } else {
-        alert("Invalid page number entered.")
+        this.messageService.add({severity:'warn', summary:'Warn', detail:'Inavlid page numbmer entered.'})
+        // alert("Invalid page number entered.")
         // this.goToPageNumber = Math.floor(this.table.first / this.rows) + 1;
       }
     }

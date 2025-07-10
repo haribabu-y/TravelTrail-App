@@ -30,11 +30,14 @@ export class HeaderComponent implements OnInit {
     this.darkMode = !this.darkMode;
 
     const body = document.body;
+    let mode: string = this.darkMode ? 'dark' : 'light';
+    localStorage.setItem('theme', mode);
     if(this.darkMode) {
       body.classList.add('dark-mode');
     } else {
       body.classList.remove('dark-mode');
     }
+    this.sharedService.emitThemevalue(this.darkMode);
   }
 
   logoutUser() {
@@ -43,6 +46,15 @@ export class HeaderComponent implements OnInit {
   currentUser: User;
   profileImage: string = 'assets/users/defaultProfileImg.jpg'
   ngOnInit(): void {
+    let theme: string = localStorage.getItem('theme');
+    const body = document.body;
+    if(theme === 'dark') {
+      body.classList.add('dark-mode');
+      this.darkMode = true;
+    } else {
+      body.classList.remove('dark-mode');
+      this.darkMode = false;
+    }
 
     this.sharedService.userExpense.subscribe((res) => {
       console.log(res);   
@@ -50,7 +62,7 @@ export class HeaderComponent implements OnInit {
     })
 
     let localuser = JSON.parse(localStorage.getItem('user'));
-    if(localuser.username === 'admin') {
+    if(localuser.username === 'admin' || localuser.isAdmin) {
       this.usertype === 'admin';
       this.isAdmin = true;
       this.router.navigate(['/admin/UsersTrips']);

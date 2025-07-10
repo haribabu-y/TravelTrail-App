@@ -16,7 +16,7 @@
 /* Dark Mode */
 .dark-mode {
   --background-color: #121212;
-  --text-color: #ffffff;
+  /* --text-color: #ffffff; */
 }
 
 /* Use variables in body or app-root */

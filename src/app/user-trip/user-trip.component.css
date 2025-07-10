@@ -1,3 +1,6 @@
+::ng-deep .p-datatable-table {
+    padding: 0 15px;
+}
 .tableHead {
     display: flex;
     gap: 5px;
@@ -17,8 +20,12 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 10px !important;
+    padding: 15px !important;
     background-color: white !important;
+}
+
+::ng-deep .p-datatable .p-datatable-header {
+    border: none;
 }
 ::ng-deep .p-datatable-header p {
     display: flex;
@@ -175,6 +182,11 @@
 .content p {
     font-size: 12px;
 }
+.no-bucket-list {
+    font-size: 20px;
+    text-align: center;
+    font-weight: 500;
+}
 
 /* Styling the dailog for adding new bucket place */
 
@@ -302,6 +314,11 @@
 }
 
 /* Stying the pagination jumping input field */
+
+::ng-deep .p-paginator {
+    padding: 5px 15px !important;
+}
+
 .jumpingPage {
     display: flex;
     gap: 5px;
@@ -351,4 +368,168 @@ input[type="number"]::-webkit-inner-spin-button {
 ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page, ::ng-deep .p-paginator .p-paginator-first,::ng-deep .p-paginator .p-paginator-prev,::ng-deep .p-paginator .p-paginator-next,::ng-deep .p-paginator .p-paginator-last {
     min-width: 2rem;
     height: 2rem
+}
+
+/* making the page responsive for all the screen sizes */
+@media screen and (max-width: 769px) {
+    ::ng-deep .tableHead {
+        width: 150px !important;
+    }
+    ::ng-deep .p-datatable-header {
+        flex-direction: row;
+        gap: 10px;
+    }
+    .right-contents {
+        justify-content: flex-end;
+    }
+    /* ::ng-deep .p-datatable>.p-datatable-wrapper {
+        width: 875px !important;
+    }
+    ::ng-deep .p-datatable .p-paginator-bottom {
+        width: 875px;
+    } */
+    ::ng-deep .p-dropdown {
+        width: 150px;
+    }
+
+    .searchField input {
+        width: 150px;
+    }
+}
+@media screen and (max-width: 426px) {
+    /* ::ng-deep .p-datatable {
+        width: 550px !important;
+    }     */
+    ::ng-deep .p-datatable-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .right-contents {
+        justify-content: flex-start;
+    }
+    /* ::ng-deep .p-datatable>.p-datatable-wrapper {
+        width: 550px !important;
+    }
+    ::ng-deep .p-datatable .p-paginator-bottom {
+        width: 550px;
+    } */
+    ::ng-deep .p-dropdown {
+        width: 245px;
+    }
+}
+
+
+
+/* style property for table */
+
+.dark-mode ::ng-deep .p-datatable {
+  background-color: black;
+  color: #e0e0e0;
+  border: none;
+}
+
+.dark-mode ::ng-deep .p-datatable-header,
+.dark-mode ::ng-deep .p-datatable-footer {
+  background-color: black !important;
+  color: #e0e0e0;
+}
+
+.dark-mode ::ng-deep .p-datatable-thead > tr > th {
+  background-color: #2a2a2a;
+  color: #fff;
+  border-color: #444;
+}
+
+.dark-mode ::ng-deep .p-datatable-tbody > tr > td {
+  background-color: #1e1e1e;
+  color: #ccc;
+  border-color: #444;
+}
+
+.dark-mode ::ng-deep .p-datatable-tbody > tr:hover {
+  background-color: #333;
+}
+
+.dark-mode ::ng-deep .p-paginator {
+  background-color: #2a2a2a;
+  color: #ccc;
+  border-top: 1px solid #444;
+
+}
+
+.dark-mode .numRows i, .dark-mode .numColumns i {
+    color: white;
+}
+
+.dark-mode .numRows span, .dark-mode .numColumns span {
+    border: 1px solid white;
+    color: white;
+}
+
+.dark-mode .right-captions .pi-plus {
+    background-color: white;
+    color: black;
+}
+
+/* styling the dark theme for the dailogs */
+
+.dark-mode  ::ng-deep .p-dialog .p-dialog-header, .dark-mode  ::ng-deep .p-dialog .p-dialog-content:last-of-type {
+    background-color: #aeadad;
+    color: white;
+}
+
+.dark-mode  ::ng-deep .p-dialog .p-dialog-header .p-dialog-header-icon {
+    color: white;
+}
+
+.dark-mode  .no-bucket-list {
+    color: white;
+}
+
+.dark-mode .bucket-list-item, .dark-mode .bucket-list-item span {
+    background-color: lightgray;
+    color: black;
+}
+
+.dark-mode .bucket-list-item .content p {
+    color: black;
+}
+
+
+/* styling the dark theme for dailog */
+
+.dark-mode ::ng-deep .p-dialog .p-dialog-header{
+    background-color: #4b4b4b !important;
+    color: white !important;
+}
+.dark-mode ::ng-deep .p-dialog .p-dialog-header .p-dialog-header-icon:last-child {
+    color: white;
+}
+
+.dark-mode ::ng-deep .p-dialog .p-dialog-content:last-of-type {
+    background-color: #4b4b4b !important;
+    color: white !important;
+}
+
+.dark-mode .field input {
+    background-color: lightgray;
+}
+
+.dark-mode .cancelbtn {
+    background-color: lightgray;
+}
+
+.dark-mode .inputFields .field .pi-upload {
+    color: black;
+}
+.dark-mode .inputFields .field .image-upload-container {
+    background-color: lightgray;
+}
+
+.dark-mode .inputFields .field .image-upload-container p {
+    color: black;
+}
+
+.dark-mode .searchField i {
+  color: black;
 }

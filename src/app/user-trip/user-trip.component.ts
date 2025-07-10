@@ -24,8 +24,11 @@ export class UserTripComponent implements OnInit {
   messageService: MessageService = inject(MessageService);
   userId: string = ''
   isLoading: boolean = false;
+  isDarkMode: boolean = false;
 
   ngOnInit(): void {
+    this.sharedService.isDarkMode.subscribe((res) => this.isDarkMode = res);
+    localStorage.getItem('theme') === 'dark' ? this.isDarkMode = true : this.isDarkMode = false;
 
     this.selectedColumns = [...this.columnOptions]
     this.isLoading = true;
@@ -101,11 +104,11 @@ export class UserTripComponent implements OnInit {
     this.distanceLabel = this.selectedDistanceFormate.label
   }
 
-  getConvertedDistance(baseDistanceKm: number): number {
+  getConvertedDistance(baseDistanceKm: number): string {
     if(this.distanceUnit === 'miles') {
-      return baseDistanceKm * this.kmToMilesFactor;
+      return Math.floor(baseDistanceKm * this.kmToMilesFactor) + this.distanceUnit;
     }
-    return baseDistanceKm;
+    return baseDistanceKm.toString() + this.distanceUnit;
   }
   getDistanceUnitLabel(): string {
     return this.distanceLabel;
@@ -157,6 +160,7 @@ export class UserTripComponent implements OnInit {
   bucketListDailog: boolean = false;
   bucketListItems: BucketList[];
   isbucketListloading: boolean = false;
+  haveBucketLists: boolean = false;
 
   openUserBucketList(userid: string) {
     console.log(userid);
@@ -166,8 +170,18 @@ export class UserTripComponent implements OnInit {
     this.bucketListService.getAllBucketLists(userid).subscribe((res) => {
       console.log(res);   
       this.bucketListItems = res;
-      this.isbucketListloading = false;   
+      this.isbucketListloading = false;
+      if(this.bucketListItems.length === 0) {
+        this.haveBucketLists = true;
+      } else {
+        this.haveBucketLists = false;
+      }
     })
+    
+  }
+
+  closeBucketListDailog() {
+    this.haveBucketLists = false;
   }
 
   showEditBucketDialog: boolean = false;
@@ -287,7 +301,8 @@ export class UserTripComponent implements OnInit {
       if(firstrowindex >= 0 && firstrowindex < this.userTripTable.value.length) {
         this.userTripTable.first = firstrowindex;
       } else {
-        alert("Inavlid page numbmer entered.");
+        this.messageService.add({severity:'warn', summary:"Warn", detail:'Inavlid page numbmer entered.'});
+        // alert("Inavlid page numbmer entered.");
       }
     }
   }

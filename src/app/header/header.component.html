@@ -1,4 +1,4 @@
-<div class="app-header">
+<div class="app-header" [ngClass]="darkMode? 'dark-mode': ''">
   <div class="header">
     <div class="left">
       <div class="app-logo">
@@ -21,7 +21,7 @@
         <span>${{userExpense}}</span>
       </div>
       <div class="toggleDarkMode">
-        <p>{{darkMode ? 'Light Mode' : 'Dark Theme'}}</p>
+        <p>{{darkMode ? 'Light Theme' : 'Dark Theme'}}</p>
         <p-inputSwitch (click)="toggleDarkMode()" styleClass="custom-inputswitch" />
       </div>
       <p-button label="Logout" (onClick)="logoutUser()"/>

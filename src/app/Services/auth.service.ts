@@ -28,12 +28,13 @@ export class Authservice {
       });
   }
 
-  login(email, password): Observable<LoginUser | User | null> {
+  login(email: string, password: string): Observable<LoginUser | User | null> {
     if (email === 'Admin' && password === 'Admin') {
       let username = 'admin';
       let loginTime = new Date().getTime();
       let expiryTime = loginTime + 10 * 60 * 1000;
-      let user: LoginUser = { username: username, id: '', loginTime: loginTime};
+      let isAdmin = true;
+      let user: LoginUser = { username: username, id: '', loginTime: loginTime, isAdmin};
       localStorage.setItem('user', JSON.stringify(user));
       this.router.navigate(['/admin/UsersTrips']);
       return of(user);
@@ -49,7 +50,8 @@ export class Authservice {
         if (foundUser) {
           const loginTime = new Date().getTime();
           const expiryTime = loginTime + 10 * 60 * 1000;
-          let user = { username: foundUser.username, id: foundUser.id, loginTime: loginTime };
+          let isAdmin = foundUser.isAdmin;
+          let user: LoginUser = { username: foundUser.username, id: foundUser.id, loginTime: loginTime, isAdmin };
           localStorage.setItem('user', JSON.stringify(user));
           // alert('User login successfully');
           this.loggedInUser.next(foundUser);

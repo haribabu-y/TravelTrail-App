@@ -1,7 +1,7 @@
 
 <app-loader *ngIf="isLoading"></app-loader>
 <p-toast></p-toast>
-<div class="trip-table" *ngIf="!isLoading">
+<div class="trip-table" [ngClass]="isDarkMode ? 'dark-mode' : ''" *ngIf="!isLoading">
   <p-table
     #tripTable
     [value]="userTrips"
@@ -10,6 +10,7 @@
     [rows]="rows"
     [tableStyle]="{ 'min-width': '50rem' }"
     (onPage)="onPageChange($event)"
+    [pageLinks]="3"
     [globalFilterFields]="[
       'startLocation',
       'destination',
@@ -72,9 +73,15 @@
       <button label="Go" (click)="goToPage()">Go</button>
     </div>
   </ng-template>
+  <ng-template pTemplate="paginatorfirstpagelinkicon">
+    <i class="pi pi-step-backward" style="font-size: 12px;"></i>
+  </ng-template>
+  <ng-template pTemplate="paginatorlastpagelinkicon">
+    <i class="pi pi-step-forward" style="font-size: 12px;"></i>
+  </ng-template>
     <ng-template pTemplate="header">
       <tr>
-        <th [pSortableColumn]="column.value" style="width: 20%" *ngFor="let column of selectedColumns">
+        <th [pSortableColumn]="column.value" *ngFor="let column of selectedColumns">
           <div class="tableHead">
               {{column.label}}
               <div class="sort-icons">
@@ -109,9 +116,15 @@
         <td>{{ trip.totalMembers }}</td> -->
       </tr>
     </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="6">No Trips Found!.</td>
+      </tr>
+    </ng-template>
   </p-table>
 </div>
 
+<div class="add-trip-container" [ngClass]="isDarkMode ? 'dark-mode' : ''">
 <p-dialog
   header="Add Trip"
   [modal]="true"
@@ -119,6 +132,7 @@
   [style]="{ width: '500px' }"
   [resizable]="false"
   [draggable]="false"
+  (onHide)="closeDailog()"
 >
   <ng-template pTemplate="content">
     <div class="inputFields">
@@ -180,3 +194,4 @@
     </div>
   </ng-template>
 </p-dialog>
+</div>

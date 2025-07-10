@@ -206,7 +206,7 @@ body {
     flex-direction: row;
     align-items: center !important;
     gap: 15px;
-    padding: 10px;
+    padding: 10px 0;
     transform: translateY(10px);
     /* margin-top: 10px; */
 }
@@ -257,7 +257,7 @@ body {
     font-size: 12px;
  }
 
- @media screen and (max-width: 1024px) {
+ @media screen and (max-width: 1024px) and (max-height: 850px){
   /* .container {
     flex-direction: column;
     gap: 20px;
@@ -302,8 +302,9 @@ body {
 }
    .login-container {
     width: 45%;
-    height: 95%;
+    height: 97%;
     gap: 35px;
+    top: 12px;
    }
 
    .login-container h2 {
