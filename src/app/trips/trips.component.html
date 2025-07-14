@@ -8,9 +8,10 @@
     [paginator]="true"
     dataKey="id"
     [rows]="rows"
-    [tableStyle]="{ 'min-width': '50rem' }"
     (onPage)="onPageChange($event)"
     [pageLinks]="3"
+    [scrollable]="true"
+    scrollHeight="500px"
     [globalFilterFields]="[
       'startLocation',
       'destination',
@@ -30,7 +31,7 @@
           />
           <i class="pi pi-search"></i>
         </div>
-        <div class="numRows" (click)="changeRows()">
+        <div class="numRows" (click)="changeRows()" #rowSelect>
             <i class="pi pi-bars"></i>
             <span>{{numOfRows}}</span>
         </div>
@@ -41,20 +42,18 @@
                 (onChange)="closeListbox()"
             />
         </div>
-        <div class="numColumns" (click)="showCloumnList()">
+        <div class="numColumns" (click)="showCloumnList()" #coloumnSelect>
             <i class="pi pi-bars"></i>
             <span>{{selectedColumns.length}}</span>
         </div>
-        <div *ngIf="shoeColumnsDisplay" class="selectingColumnDiv">
+        <div class="selectingColumnDiv">
             <p-multiSelect 
-                #coloumnSelect
+                #columnMultiSelect
                 [options]="columnOptions"
                 [(ngModel)]="selectedColumns"
                 optionLabel="label"
-                placeholder="Select columns"
-                display="comma"
-                [selectedItemsLabel]="selectedColumns.length + ' items selected'"
                 [maxSelectedLabels]="1"
+                [displaySelectedLabel]="false"
                 (onChange)="columnsChanged($event)"
             />
         </div>
@@ -129,7 +128,6 @@
   header="Add Trip"
   [modal]="true"
   [(visible)]="showDailog"
-  [style]="{ width: '500px' }"
   [resizable]="false"
   [draggable]="false"
   (onHide)="closeDailog()"

@@ -84,7 +84,8 @@ export class Authservice {
   logout() {
     let user = localStorage.getItem('user');
     if (user) {
-      localStorage.removeItem('user');
+      // localStorage.removeItem('user');
+      localStorage.clear()
     }
     this.router.navigate(['/login']);
   }

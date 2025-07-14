@@ -7,13 +7,16 @@
     [paginator]="true"
     (onPage)="onPageChange($event)"
     [pageLinks]="3"
+    [scrollable]="true"
+    scrollHeight="500px"
     [rows]="numOfRows"
     [globalFilterFields]="['userName', 'age', 'Country', 'TotalExpense']"
   >
     <ng-template pTemplate="caption">
       <p>Users Details</p>
       <div class="right-contents">
-        <div class="currency-formate">
+        <div class="display-formate">
+          <div class="currency-formate">
           <p-dropdown
             [options]="currencyFormate"
             [(ngModel)]="selectedCurrency"
@@ -23,11 +26,13 @@
           >
           </p-dropdown>
         </div>
-        <div class="searchField">
+        </div>
+        <div class="other-fileds">
+          <div class="searchField">
           <input pInputText type="text" (input)="filterGlobal($event)" />
           <i class="pi pi-search"></i>
         </div>
-        <div class="numRows" (click)="changeRows()">
+        <div class="numRows" (click)="changeRows()" #rowSelect>
           <i class="pi pi-bars"></i>
           <span>{{ numOfRows }}</span>
         </div>
@@ -38,23 +43,23 @@
             (onChange)="closeListbox()"
           />
         </div>
-        <div class="numColumns" (click)="showCloumnList()">
+        <div class="numColumns" (click)="showCloumnList()" #coloumnSelect>
           <i class="pi pi-bars"></i>
-          <span>5</span>
+          <span>{{selectedColumns.length + 3}}</span>
         </div>
-        <div *ngIf="shoeColumnsDisplay" class="selectingColumnDiv">
+        <div class="selectingColumnDiv">
           <p-multiSelect 
-              #coloumnSelect
+              #columnMultiSelect
               [options]="columnOptions"
               [(ngModel)]="selectedColumns"
-              optionLabel="label"
-              placeholder="Select columns"
-              [selectedItemsLabel]="selectedColumns.length + ' items selected'"
-              [maxSelectedLabels]="1"
               (onChange)="columnsChanged($event)"
+              optionLabel="label"
+              [displaySelectedLabel]="false"
           />
         </div>
         <i class="pi pi-plus" (click)="openNew()"></i>
+        </div>
+        
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorleft" let-state>
@@ -114,8 +119,8 @@
               </div>
             </div>
           </th> -->
-          <th>Bucket List</th>
-          <th>Delete</th>
+          <th style="width: 5%;">Bucket List</th>
+          <th style="width: 5%;">Delete</th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-user>

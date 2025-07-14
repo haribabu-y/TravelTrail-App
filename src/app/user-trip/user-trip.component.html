@@ -10,6 +10,8 @@
       (onPage)="onPageChange($event)"
       [rows]="numOfRows"
       [pageLinks]="3"
+      [scrollable]="true"
+      scrollHeight="500px"
       [globalFilterFields]="[
         'username',
         'totalDistance',
@@ -21,7 +23,8 @@
       <ng-template pTemplate="caption">
         <p>User Trips</p>
         <div class="right-contents">
-          <div class="currency-formate">
+          <div class="display-format">
+            <div class="currency-formate">
             <p-dropdown
               [options]="currencyFormate"
               [(ngModel)]="selectedCurrency"
@@ -40,11 +43,32 @@
               placeholder="Choose Distance Format"
             ></p-dropdown>
           </div>
-          <div class="searchField">
+          </div>
+          <!-- <div class="currency-formate">
+            <p-dropdown
+              [options]="currencyFormate"
+              [(ngModel)]="selectedCurrency"
+              optionLabel="name"
+              placeholder="Choose Currency Format"
+              (onChange)="currencyFormateChanged()"
+            >
+            </p-dropdown>
+          </div>
+          <div class="distance-formate">
+            <p-dropdown
+              [options]="distanceFormate"
+              optionLabel="name"
+              [(ngModel)]="selectedDistanceFormate"
+              (onChange)="distanceFormateChnaged()"
+              placeholder="Choose Distance Format"
+            ></p-dropdown>
+          </div> -->
+          <div class="other-Fields">
+            <div class="searchField">
             <input pInputText type="text" (input)="filterGlobal($event)" />
             <i class="pi pi-search"></i>
           </div>
-          <div class="numRows" (click)="changeRows()">
+          <div class="numRows" (click)="changeRows()" #rowSelect>
             <i class="pi pi-bars"></i>
             <span>{{ numOfRows }}</span>
           </div>
@@ -55,25 +79,22 @@
               (onChange)="closeListbox()"
             />
           </div>
-          <div class="numColumns" (click)="showCloumnList()">
+          <div class="numColumns" (click)="showCloumnList()" #coloumnSelect>
             <i class="pi pi-bars"></i>
-            <span>5</span>
+            <span>{{selectedColumns.length + 1}}</span>
           </div>
-          <div *ngIf="shoeColumnsDisplay" class="selectingColumnDiv">
+          <div class="selectingColumnDiv">
             <p-multiSelect
-              #columnSelect
-              #coloumnSelect
+              #columnMultiSelect
               [options]="columnOptions"
               [(ngModel)]="selectedColumns"
               optionLabel="label"
-              placeholder="Select columns"
-              display="comma"
-              [selectedItemsLabel]="selectedColumns.length + ' items selected'"
-              [maxSelectedLabels]="1"
               (onChange)="columnsChanged($event)"
-              
+              [displaySelectedLabel]="false"
             />
           </div>
+          </div>
+          
         </div>
       </ng-template>
       <ng-template pTemplate="paginatorleft" let-state>
@@ -164,7 +185,7 @@
           <td>{{ userTrip.age }}</td>
           <td>{{ convertAmount(userTrip.totalExpense) | currency: currencyCode }}</td> -->
           <td>
-            <i class="pi pi-tag" (click)="openUserBucketList(userTrip.id)"></i>
+            <i class="pi pi-tag" (click)="openUserBucketList(userTrip.id)" style="cursor: pointer;"></i>
           </td>
         </tr>
       </ng-template>
@@ -233,7 +254,6 @@
     [resizable]="false"
     [draggable]="false"
     [modal]="true"
-    [style]="{ width: '35%' }"
   >
     <ng-template pTemplate="content">
       <div class="inputFields">

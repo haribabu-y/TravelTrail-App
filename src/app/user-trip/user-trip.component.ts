@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, OnInit, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { AdminService } from '../Services/admin.service';
 import { UserTrips } from '../Models/usertrips';
@@ -119,10 +119,10 @@ export class UserTripComponent implements OnInit {
     return this.userTripTable.filterGlobal(input.value, 'contains');
   }
 
-  numOfRows: number = 5;
+    @ViewChild('rowSelect') rowSelect!: ElementRef;
+  numOfRows: number = 10;
   showRowsChange: boolean = false;
   rowOptions = [
-    { label: 'Show 5', value: 5 },
     { label: 'Show 10', value: 10 },
     { label: 'Show 15', value: 15 },
     { label: 'Show 20', value: 20 },
@@ -135,7 +135,18 @@ export class UserTripComponent implements OnInit {
     this.showRowsChange = false;
   }
 
-  @ViewChild('columnSelect') columnSelect: MultiSelect;
+   @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if(this.showRowsChange) {
+      let clickedInsideListBox = this.rowSelect.nativeElement.contains(target);
+    if(!clickedInsideListBox) {
+      this.showRowsChange = false;
+    }
+    }
+  }
+
+  @ViewChild('columnMultiSelect') columnMultiSelect: MultiSelect;
   shoeColumnsDisplay: boolean = false;
   selectedColumns: any[] = [];
 
@@ -148,11 +159,13 @@ export class UserTripComponent implements OnInit {
   ];
 
   showCloumnList() {
-    this.shoeColumnsDisplay = !this.shoeColumnsDisplay;
+    this.columnMultiSelect.show();
+    // this.shoeColumnsDisplay = !this.shoeColumnsDisplay;
   }
 
-  columnsChanged(event: Event) {
-    this.columnSelect.show()
+  columnsChanged(event) {
+    this.columnMultiSelect.show();
+    event.originalEvent?.stopPropagation?.();
     // console.log(this.selectedColumns);
     // this.shoeColumnsDisplay = false;    
   }
@@ -306,4 +319,23 @@ export class UserTripComponent implements OnInit {
       }
     }
   }
+  // @HostListener('document:click', ['$event'])
+  //   onDocumentClick(event: MouseEvent): void {
+  //     const target = event.target as HTMLElement;
+ 
+  //     // const clickedInsideDropdown =
+  //     //   this.menuDropdown?.nativeElement.contains(target) ||
+  //     //   this.menuToggle?.nativeElement.contains(target);
+ 
+  //     // if (!clickedInsideDropdown) {
+  //       this.showRowsChange = false;
+  //     // }
+  // }
+
+  // @HostListener('document:click', ['$event'])
+  // onDocumentClick(event: MouseEvent) {
+  //   console.log(event);
+    
+  //   this.showRowsChange = false;
+  // }
 }

@@ -199,23 +199,23 @@ export class SignupComponent implements OnInit, AfterViewChecked {
   ngOnInit(): void {
     this.reactiveForm = new FormGroup({
       profileImage: new FormControl(null),
-      username: new FormControl(null, Validators.required),
-      firstName: new FormControl(null, Validators.required),
-      lastName: new FormControl(null),
+      username: new FormControl(null, [Validators.required, Validators.maxLength(20),Validators.pattern(/^[a-zA-Z0-9]+$/)]),
+      firstName: new FormControl(null, [Validators.required, Validators.maxLength(30), Validators.pattern(/^[a-zA-Z0-9 ]+$/)]),
+      lastName: new FormControl(null, [Validators.maxLength(30), Validators.pattern(/^[a-zA-Z0-9 ]+$/)]),
       gender: new FormControl('male', Validators.required),
       dob: new FormControl(null, Validators.required),
-      email: new FormControl(null, [Validators.required, Validators.email]),
+      email: new FormControl(null, [Validators.required, Validators.email, Validators.maxLength(100)]),
       countryCode: new FormControl(null, Validators.required),
       phone: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)] ),
-      address: new FormControl(null, Validators.required),
+      address: new FormControl(null, [Validators.required, Validators.maxLength(100)]),
       country: new FormControl(null, Validators.required),
       state: new FormControl(null),
-      zipCode: new FormControl(null, Validators.required),
+      zipCode: new FormControl(null, [Validators.required, Validators.maxLength(20)]),
       timeZone: new FormControl(null, Validators.required),
       locale: new FormControl(null),
       isAdmin: new FormControl(false),
-      password: new FormControl(null, Validators.required),
-      confirmPassword: new FormControl(null, Validators.required),
+      password: new FormControl(null, [Validators.required, Validators.maxLength(50)]),
+      confirmPassword: new FormControl(null, [Validators.required, Validators.maxLength(50)]),
     });
   }
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
@@ -291,13 +291,23 @@ onResize(event: any) {
   currentUser: User;
   onSignupFormsubmit() {
     // this.reactiveForm.patchValue({phone: `${this.phoneCode + ' ' + this.reactiveForm.value.phone}`})
+    if(this.reactiveForm.controls['username'].invalid) {
+      let errMsg = 'For username! Only alphanumric characters Allowed, Space is not Allowed and Maximum lenght is 20 Characters';
+      this.messageService.add({severity:'warn', summary:'Warn', detail: errMsg})
+      return;
+    }
+    if(this.reactiveForm.controls['firstName'].invalid || this.reactiveForm.controls['lastName'].invalid) {
+      let errMsg = 'For FirstName and LastName! Only alphanumric characters and space Allowed and Maximum lenght is 30 Characters';
+      this.messageService.add({severity:'warn', summary:'Warn', detail: errMsg})
+      return;
+    }
     if(this.reactiveForm.controls['phone'].invalid) {
-      this.messageService.add({severity: 'error', summary:'Error', detail: 'Mobhile number should less than 10 digits'});
+      this.messageService.add({severity: 'warn', summary:'Warn', detail: 'Mobhile number should less than 10 digits'});
       return;
     }
     console.log(this.reactiveForm.value.dob);    
     if(new Date(this.reactiveForm.value.dob) > new Date()) {
-      this.messageService.add({severity:'error', summary:'Error',detail:'Date of Birth must less the today!.'})
+      this.messageService.add({severity:'warn', summary:'Warn',detail:'Date of Birth must less the today!.'})
       return;
     }
     if(this.reactiveForm.invalid) {
@@ -307,14 +317,22 @@ onResize(event: any) {
     //   console.log(`${key} → valid: ${control?.valid}, value: ${control?.value}, errors: ${JSON.stringify(control?.errors)}`);
     // });
     // return;
-      console.log(this.reactiveForm);      
-      this.messageService.add({severity: 'error', summary:'Error', detail: 'Please fill all the mandatory fields!.'});
+      console.log(this.reactiveForm.controls);
+      let formControls = this.reactiveForm.controls;
+      this.errorMessage = ''
+      for(let formField in formControls) {
+        console.log(formField);  
+        if(formControls[formField].status === "INVALID") {
+          this.errorMessage = formField + " field is INVALID!.";
+        }      
+      }    
+      this.messageService.add({severity: 'warn', summary:'Warn', detail: this.errorMessage});
       return;
     }
     console.log(this.reactiveForm.value);
     this.currentUser = this.reactiveForm.value;
     if(this.currentUser.password !== this.currentUser.confirmPassword || this.currentUser.password === null) {
-      this.messageService.add({severity: 'error', summary:'Error', detail: 'Password and Confirm password should same!.'})
+      this.messageService.add({severity: 'warn', summary:'Warn', detail: 'Password and Confirm password should same!.'})
       return;
     }
     console.log(this.currentUser);    

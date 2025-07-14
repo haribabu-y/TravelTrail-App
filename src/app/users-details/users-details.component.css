@@ -40,6 +40,11 @@
   gap: 10px;
 }
 
+.other-fileds, .display-formate {
+  display: flex;
+  gap: 10px;
+}
+
 .right-contents .pi-plus {
   background-color: #084880;
   padding: 5px;
@@ -118,6 +123,7 @@
   position: absolute;
   top: 50px;
   right: 75px;
+  z-index: 100;
 }
 
 ::ng-deep .p-listbox .p-highlight {
@@ -131,13 +137,24 @@ td i {
 
 /* Styling the change number of columns in the table */
 .selectingColumnDiv {
-  position: absolute;
-  top: 50px;
-  right: 10px;
+    position: absolute;
+    top: 25px;
+    right: 91px;
 }
 
-.pi-tag {
-  cursor: pointer;
+.selectingColumnDiv ::ng-deep .p-multiselect {
+    width: 0px;
+    height: 0px;
+}
+
+.selectingColumnDiv ::ng-deep .p-multiselect .p-multiselect-panel {
+    position: absolute;
+    right: -60px;
+    top: 10px;
+    width: 200px;
+}
+.selectingColumnDiv ::ng-deep .p-multiselect .p-multiselect-trigger-icon {
+    display: none;
 }
 
 /* Sty;ling the adding and editing the profile */
@@ -318,6 +335,14 @@ td i {
     width: 120px;
     height: 120px;
 }
+
+.users-detail-table ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+      padding: 0.5rem 1rem;
+}
+
+.users-detail-table ::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
+  background-color: #CEE8FF;
+}
 .text {
     display: flex;
     flex-direction: column;
@@ -407,7 +432,6 @@ input[type="number"]::-webkit-inner-spin-button {
         width: 150px !important;
     }
     ::ng-deep .p-datatable-header {
-        width: 768px;
         flex-direction: row;
     }
     ::ng-deep .p-dialog {
@@ -428,53 +452,77 @@ input[type="number"]::-webkit-inner-spin-button {
     }
     .row {
       flex-direction: column;
-      width: 90%;
+      width: 100%;
       gap: 10px;
       padding: 0 10px;
       justify-content: center;
+      align-items: center;
     }
     .row .inputfield {
-      width: 360px;
+      width: 108%;
     }
 
     .inputfield {
-      width: 360px;
+      width: 100%;
     }
 
-    ::ng-deep .inputfield .p-dropdown {
+    /* ::ng-deep .inputfield .p-dropdown {
       width: 360px;
-    }
+    } */
 
     .buttons {
-      width: 430px;
+      width: 100%;
+    }
+
+    .currency-formate ::ng-deep .p-dropdown {
+      width: 200px;
     }
 }
 
 @media screen and (max-width: 426px) {
-    ::ng-deep .p-datatable {
+  .currency-formate ::ng-deep .p-dropdown {
+        width: 395px;
+    }
+    /* ::ng-deep .p-datatable {
         width: 550px !important;
-    }    
+    }     */
     ::ng-deep .p-datatable-header {
         flex-direction: column;
         gap: 10px;
     }
     .right-contents {
         justify-content: flex-start;
-    }
-    /* ::ng-deep .p-datatable>.p-datatable-wrapper {
-        width: 550px !important;
-    }
-    ::ng-deep .p-datatable .p-paginator-bottom {
-        width: 550px;
-    } */
-    ::ng-deep .p-dropdown {
-        width: 150px !important;
+        flex-direction: column;
     }
     .searchField input{
-      width: 180px;
+      width: 205px;
     } 
-    body {
-      overflow-x: hidden !important;
+
+    ::ng-deep .p-dialog {
+      width: 80%;
+    }
+
+    .left-elements,
+    .right-elements {
+      width: 100%;
+    }
+
+    .inputfield, .row {
+      width: 100%;
+    }
+}
+
+@media screen and (max-width: 320px) {
+  .currency-formate ::ng-deep .p-dropdown {
+      width: 300px;
+    }
+
+    .searchField input{
+      width: 110px;
+    } 
+
+    ::ng-deep .p-dialog {
+      width: 90%;
     }
 }
 

@@ -26,6 +26,12 @@
     flex-direction: row;
     gap: 10px;
     margin-right: 10px;
+    align-items: center;
+}
+
+.right .profile {
+    display: flex;
+    gap: 10px;
 }
 
 .currency, .toggleDarkMode {
@@ -190,26 +196,6 @@
     border-bottom: 3px solid #084880;
 }
 
-/* Stying for 425 screen size */
-@media screen and (max-width: 770px) {
-    /* .header{
-        width: 875px;
-    }
-    .navbar {
-        width: 875px;
-    }  */
-}
-
-@media screen and (max-width: 426px) {
-    .navbar {
-        width: 550px;
-    } 
-    .header{
-        width: 550px;
-    }
-}
-
-
 
 /* Styling for dark mode */
 .dark-mode {
@@ -281,4 +267,85 @@ z-index: 1;
   border-bottom: 3px solid rgb(0, 187, 249);
 }
 
+/* Styling for the menu bar for mibile view */
+
+.menuIcon {
+    position: relative;
+}
+.menu-items {
+    position: absolute;
+    top: 30px;
+    right: -5px;
+    background-color: aliceblue;
+    border-radius: 4px;
+    padding: 15px 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    z-index: 100;
+}
+
+.dark-mode .menu-items {
+    background-color: #4d4747;
+}
+
+.menu-items div {
+    padding: 5px 10px;
+    border-radius: 8px;
+}
+.menuIcon i, .logout-icon i {
+    font-size: 20px;
+    font-weight: bolder;
+    cursor: pointer;
+}
+
+.menubar .profileImg {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.menubar .currency {
+    transform: translateX(-10px);
+}
+
+.menubar, .logout-icon {
+    display: none;
+}
+
+
+
+/* Stying for 425 screen size */
+@media screen and (max-width: 770px) {
+    /* .header{
+        width: 875px;
+    }
+    .navbar {
+        width: 875px;
+    }  */
+}
+
+@media screen and (max-width: 426px) {
+    /* .navbar {
+        width: 550px;
+    } 
+    .header{
+        width: 550px;
+    } */
+    .menubar, .logout-icon {
+        display: block;
+    }
+    .right .profile {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .home-icons {
+        transform: translateX(-20px);
+    }
+}
 

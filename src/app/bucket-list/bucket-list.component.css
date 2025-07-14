@@ -3,6 +3,7 @@
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 5px;
     padding: 10px;
+    /* place-items: center; */
 }
 
 .bucket-list-item {
@@ -79,8 +80,7 @@
 }
 
 /* Styling the dailog for adding new bucket place */
-
-::ng-deep .add-bucket-contsiner .p-dialog {
+ .add-bucket-contsiner ::ng-deep .p-dialog {
     width: 35%;
 }
 
@@ -169,6 +169,12 @@
     ::ng-deep .p-dialog {
         width: 50%;
     }
+     .add-bucket-contsiner ::ng-deep .p-dialog {
+    width: 50% !important;
+    }
+    .bucket-image i {
+        display: block;
+    }
 }
 
 @media screen and (max-width: 426px) {
@@ -176,13 +182,32 @@
         width: 80%;
     }
     .bucket-list-item {
-        width: 530px;
+        width: 90%;
+    }
+    .bucket-list-container {
+        place-items: center;
     }
 
-    .loader-container {
+     .add-bucket-contsiner ::ng-deep .p-dialog {
+    width: 80% !important;
+    }
+
+    /* .loader-container {
         transform: translateX(400px);
+    } */
+
+}
+@media screen and (max-width: 321px) {
+    .bucket-list-item {
+        width: 85%;
+    }
+    .bucket-list-container {
+        place-items: normal;
     }
 
+     .add-bucket-contsiner ::ng-deep .p-dialog {
+    width: 90% !important;
+    }
 }
 
 

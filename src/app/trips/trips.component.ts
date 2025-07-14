@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, DoCheck, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, DoCheck, ElementRef, HostListener, inject, OnInit, ViewChild } from '@angular/core';
 import { Authservice } from '../Services/auth.service';
 import { TripService } from '../Services/trip.service';
 import { Trip } from '../Models/trip';
@@ -24,7 +24,8 @@ export class TripsComponent implements OnInit {
   isLoading: boolean = false;
   isDarkMode: boolean = false;
 
-  @ViewChild('coloumnSelect') columnSelect: MultiSelect
+  @ViewChild('coloumnSelect') columnSelect: ElementRef;
+  @ViewChild('rowSelect') rowSelect: ElementRef;
 
   messageService: MessageService = inject(MessageService);
 
@@ -44,13 +45,13 @@ export class TripsComponent implements OnInit {
     this.selectedColumns = [...this.columnOptions]
   }
 
-  columnsChanged(event: Event) {
-    // this.loadTripsInTable();
-    // console.log(event)
-    this.columnSelect.show();
-    // console.log(this.selectedColumns);  
-    // this.shoeColumnsDisplay = false;  
-  }
+  // columnsChanged(event: Event) {
+  //   // this.loadTripsInTable();
+  //   // console.log(event)
+  //   this.columnSelect.show();
+  //   // console.log(this.selectedColumns);  
+  //   // this.shoeColumnsDisplay = false;  
+  // }
 
 
   loadTripsInTable() {
@@ -116,27 +117,42 @@ export class TripsComponent implements OnInit {
   }
 
   // For selcting the number of rows to display
-  rows: number = 5;
+  rows: number = 10;
   showRowsChange: boolean = false;
-  numOfRows: number = 5;
+  numOfRows: number = 10;
 
   rowOptions = [
-    { label: 'Show 5', value: 5},
     { label: 'Show 10', value: 10},
     { label: 'Show 15', value: 15},
     { label: 'Show 20', value: 20},
-  ]
+  ]  
+
+  changeRows() {
+    this.showRowsChange = !this.showRowsChange;
+  }
 
   closeListbox() {
     this.showRowsChange = false;
     this.numOfRows = this.rows;
   }
 
-  changeRows() {
-    this.showRowsChange = !this.showRowsChange;
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    console.log(target);
+    console.log(this.columnSelect);
+    if(this.showRowsChange) {
+      let clickedInsideListBox = this.rowSelect.nativeElement.contains(target);
+    if(!clickedInsideListBox) {
+      this.showRowsChange = false;
+    }
+    }
+    
   }
 
   //For showing the selected columns to the table using the multiple select primeNG component
+
+  @ViewChild('columnMultiSelect') columnMultiSelect: MultiSelect;
   shoeColumnsDisplay: boolean = false;
   selectedColumns: any[] = [];
 
@@ -149,7 +165,13 @@ export class TripsComponent implements OnInit {
   ];
 
   showCloumnList() {
-    this.shoeColumnsDisplay = !this.shoeColumnsDisplay;
+    this.columnMultiSelect.show();
+    // this.shoeColumnsDisplay = !this.shoeColumnsDisplay;
+  }
+  columnsChanged(event) {
+    console.log(event);    
+    this.columnMultiSelect.show();
+    event.originalEvent?.stopPropagation?.();
   }
 
   goToPageNumber: number = null;

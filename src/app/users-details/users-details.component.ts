@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, OnInit, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { SharedService } from '../Services/shared.service';
 import { UserDetail } from '../Models/userDetail';
@@ -25,8 +25,37 @@ export class UsersDetailsComponent implements OnInit {
   isDarkMode: boolean = false;
 
   ngOnInit(): void {
-    this.isLoading = true;
+    
+    this.getAllUserDetails();
     this.selectedColumns = [...this.columnOptions]
+    
+    this.addUserForm1 = new FormGroup({
+        profileImage: new FormControl(null),
+        username: new FormControl(null, [Validators.required, Validators.maxLength(20),Validators.pattern(/^[a-zA-Z0-9]+$/)]),
+        firstName: new FormControl(null, [Validators.required, Validators.maxLength(30), Validators.pattern(/^[a-zA-Z0-9 ]+$/)]),
+        lastName: new FormControl(null, [Validators.maxLength(30), Validators.pattern(/^[a-zA-Z0-9 ]+$/)]),
+        gender: new FormControl('male', Validators.required),
+        dob: new FormControl(null, Validators.required),
+        email: new FormControl(null, [Validators.required, Validators.email, Validators.maxLength(100)]),
+        countryCode: new FormControl(null, Validators.required),
+        phone: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
+        address: new FormControl(null, [Validators.required, Validators.maxLength(100)]),
+        country: new FormControl(null, Validators.required),
+        state: new FormControl(null),
+        zipCode: new FormControl(null, [Validators.required, Validators.maxLength(20)]),
+        timeZone: new FormControl(null, Validators.required),
+        locale: new FormControl(null),
+        isAdmin: new FormControl(false),
+        password: new FormControl(null, [Validators.required, Validators.maxLength(50)]),
+    })
+
+    this.sharedService.isDarkMode.subscribe((res) => this.isDarkMode = res);
+    localStorage.getItem('theme') === 'dark' ? this.isDarkMode = true : this.isDarkMode = false;
+  }
+
+  getAllUserDetails() {
+    this.isLoading = true;
+    let allUsers: UserDetail[] = [];
     this.sharedService.getAllUsers().subscribe((users) => {
       for(let user of users) {
         console.log(user);
@@ -46,35 +75,15 @@ export class UsersDetailsComponent implements OnInit {
           });
         }
         let userDetail = new UserDetail(id,username, userimage, age, country, totalExpense);
-        this.users.push(userDetail);   
+        allUsers.push(userDetail);   
       }
       console.log(this.users);
+      
+      this.users = allUsers;
       
       this.isLoading = false;
     });
 
-    this.addUserForm1 = new FormGroup({
-        profileImage: new FormControl(null),
-        username: new FormControl(null, Validators.required),
-        firstName: new FormControl(null, Validators.required),
-        lastName: new FormControl(null),
-        gender: new FormControl('male', Validators.required),
-        dob: new FormControl(null, Validators.required),
-        email: new FormControl(null, [Validators.required, Validators.email]),
-        countryCode: new FormControl(null, Validators.required),
-        phone: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
-        address: new FormControl(null, Validators.required),
-        country: new FormControl(null, Validators.required),
-        state: new FormControl(null),
-        zipCode: new FormControl(null, Validators.required),
-        timeZone: new FormControl(null, Validators.required),
-        locale: new FormControl(null),
-        isAdmin: new FormControl(false),
-        password: new FormControl(null, Validators.required),
-    })
-
-    this.sharedService.isDarkMode.subscribe((res) => this.isDarkMode = res);
-    localStorage.getItem('theme') === 'dark' ? this.isDarkMode = true : this.isDarkMode = false;
   }
 
   currencyFormate = [
@@ -115,11 +124,10 @@ export class UsersDetailsComponent implements OnInit {
     const input: HTMLInputElement = event.target as HTMLInputElement;
     return this.usersDetailTable.filterGlobal(input.value, 'contains');
   }
-
-  numOfRows: number = 5;
+   @ViewChild('rowSelect') rowSelect;
+  numOfRows: number = 10;
   showRowsChange: boolean = false;
   rowOptions = [
-    { label: 'Show 5', value: 5},
     { label: 'Show 10', value: 10},
     { label: 'Show 15', value: 15},
     { label: 'Show 20', value: 20},
@@ -131,7 +139,20 @@ export class UsersDetailsComponent implements OnInit {
   closeListbox() {
     this.showRowsChange = false;
   }
+  
+  @HostListener('document:click', ['$event'])
+    onDocumentClick(event: MouseEvent) {
+      const target = event.target as HTMLElement;
+      if(this.showRowsChange) {
+        let clickedInsideListBox = this.rowSelect.nativeElement.contains(target);
+      if(!clickedInsideListBox) {
+        this.showRowsChange = false;
+      }
+      }
+    }
+
   @ViewChild('columnSelect') columnSelect: MultiSelect;
+  @ViewChild('columnMultiSelect') columnMultiSelect: MultiSelect;
   shoeColumnsDisplay: boolean = false;
   selectedColumns: any[] = [];
 
@@ -143,13 +164,18 @@ export class UsersDetailsComponent implements OnInit {
   ]
 
   showCloumnList() {
-    this.shoeColumnsDisplay = !this.shoeColumnsDisplay
+    this.columnMultiSelect.show();
+    // this.shoeColumnsDisplay = !this.shoeColumnsDisplay
   }
-  columnsChanged(event: Event) {
-    this.columnSelect.show()
+  columnsChanged(event: any) {
+    console.log(event);    
+    this.columnMultiSelect.show();
+    event.originalEvent?.stopPropagation?.();
     // console.log(this.selectedColumns);
     // this.shoeColumnsDisplay = false;
   }
+
+
 
 // code for adding and updating the new user to the application
   showAddOrUpdateDailog: boolean = false;
@@ -390,19 +416,41 @@ export class UsersDetailsComponent implements OnInit {
   // phone: string = ''
   // password: string = ''
   addOrUpdateUser(id?: string) {
-    console.log(this.addUserForm1);    
+    console.log(this.addUserForm1);  
+    
+    if(this.addUserForm1.controls['username'].invalid) {
+      let errMsg = 'For username! Only alphanumric characters Allowed, Space is not Allowed and Maximum lenght is 20 Characters';
+      this.messageService.add({severity:'warn', summary:'Warn', detail: errMsg})
+      return;
+    }
+    if(this.addUserForm1.controls['firstName'].invalid || this.addUserForm1.controls['lastName'].invalid) {
+      let errMsg = 'For FirstName and LastName! Only alphanumric characters and space Allowed and Maximum lenght is 30 Characters';
+      this.messageService.add({severity:'warn', summary:'Warn', detail: errMsg})
+      return;
+    }
+    
     if(this.addUserForm1.controls['phone'].invalid) {
-      this.messageService.add({severity:'error', summary:'Error', detail:'Enter Valid Mobile number atleast 10 digits!.'})
+      this.messageService.add({severity:'warn', summary:'Warn', detail:'Enter Valid Mobile number atleast 10 digits!.'})
       return
     }
     if(new Date(this.addUserForm1.value.dob) > new Date()) {
-      this.messageService.add({severity:'error', summary:'Error', detail:'Date of Birth must less the today!.'})
+      this.messageService.add({severity:'warn', summary:'Warn', detail:'Date of Birth must less the today!.'})
       return;
     }
     if(this.addUserForm1.invalid){
-      // alert('Fill all manditory fields');
-      this.messageService.add({severity:'error', summary:'Error', detail:'Fill all manditory fields'})
-        return;
+      // // alert('Fill all manditory fields');
+      // this.messageService.add({severity:'error', summary:'Error', detail:'Fill all manditory fields'})
+      //   return;
+      let formControls = this.addUserForm1.controls;
+      let errorMessage = ''
+      for(let formField in formControls) {
+        console.log(formField);  
+        if(formControls[formField].status === "INVALID") {
+          errorMessage = formField + " field is INVALID!.";
+        }      
+      }    
+      this.messageService.add({severity: 'error', summary:'Error', detail: errorMessage});
+      return;
     }
     console.log(this.addUserForm1);
     let newUser: User = this.addUserForm1.value;
@@ -414,6 +462,7 @@ export class UsersDetailsComponent implements OnInit {
         this.userToEditId = ''; 
         this.messageService.add({severity:'success', summary:'Success', detail:'User Successfully Updated!.'})
         this.showAddOrUpdateDailog = false;
+        this.getAllUserDetails();
       });
       return;
     }   
@@ -429,12 +478,21 @@ export class UsersDetailsComponent implements OnInit {
           return;
         }
         
-        this.authService.signup(newUser);
+        // this.authService.signup(newUser);
+        this.http.post(
+        'https://travektrail-app-default-rtdb.firebaseio.com/users.json',
+        newUser
+      )
+      .subscribe((response) => {
+        console.log(response);
         console.log(newUser);  
         this.addUserForm1.reset(); 
         this.messageService.add({severity:'success', summary:'Success', detail:'UserSuccessFully Added!.'})
         this.profileImage = 'assets/users/defaultProfileImg.jpg';
         this.showAddOrUpdateDailog = false;
+        this.getAllUserDetails();
+      });
+        
       }
     })
   }
@@ -491,9 +549,12 @@ export class UsersDetailsComponent implements OnInit {
   }
 
   deleteUser() {
-    this.http.delete(`https://travektrail-app-default-rtdb.firebaseio.com/users/${this.userId}.json`).subscribe();
-    this.messageService.add({severity:'success', summary:'Success', detail:`User Successfully Deleted!.`})
+    this.http.delete(`https://travektrail-app-default-rtdb.firebaseio.com/users/${this.userId}.json`).subscribe((res) => {
+      this.messageService.add({severity:'success', summary:'Success', detail:`User Successfully Deleted!.`})
     this.showDeleteUserdailog = false;
+    this.getAllUserDetails();
+    });
+    
   }
 
   closeDeleteUserDailog() {

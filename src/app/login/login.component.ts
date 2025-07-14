@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Authservice } from '../Services/auth.service';
 import { Router } from '@angular/router';
@@ -12,11 +12,17 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   authService: Authservice = inject(Authservice);
   router: Router = inject(Router)
   errorMessage: string = ''
   messageService: MessageService = inject(MessageService);
+
+  ngOnInit(): void {
+    const body = document.body;
+    body.classList.remove('dark-mode');
+  }
+
   onLoginSubmit(form: NgForm) {
     if(form.invalid) {
       return;
@@ -32,10 +38,14 @@ export class LoginComponent {
           this.messageService.add({severity: 'success', summary: 'Success', detail: this.errorMessage})
           if(user.username === 'admin') {
             this.router.navigate(['/admin/UsersTrips']);
-          } else {
+          } else if(user.isAdmin) {
+            this.router.navigate(['/admin/UsersTrips']);
+          }
+          else {
             // console.log(user);    
             // this.loggedInUser.next(user);      
             this.router.navigate(['/user/Home']);
+            form.reset();
           }          
         } else {
           this.errorMessage = 'Invalid Username or Password';
@@ -51,6 +61,5 @@ export class LoginComponent {
         console.log('Login attempt complete.');        
       }
     });    
-    form.reset();
   }
 }

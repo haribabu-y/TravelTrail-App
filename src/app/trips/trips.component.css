@@ -1,3 +1,7 @@
+/* .trip-table {
+    height: 500px;
+} */
+
 ::ng-deep .p-datatable-table {
     padding: 0 15px;
 }
@@ -18,6 +22,14 @@
     font-size: 8px;
 }
 
+::ng-deep .p-datatable thead > tr > th:first-child {
+  border-top-left-radius: 8px;
+}
+
+::ng-deep .p-datatable thead > tr > th:last-child {
+  border-top-right-radius: 8px;
+}
+
 ::ng-deep .p-datatable-header {
     display: flex;
     flex-direction: row;
@@ -32,6 +44,10 @@
 ::ng-deep .p-datatable-header p {
     display: flex;
     align-items: center;
+}
+
+.trip-table ::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
+    background-color: #CEE8FF;
 }
 .right-captions {
     display: flex;
@@ -83,6 +99,14 @@
     border-radius: 2px;
     font-size: 10px;
     text-align: center;
+}
+
+.numColumns {
+    position: relative;
+}
+
+::ng-deep .p-listbox .p-listbox-list {
+    padding: 5px 0;
 }
 .right-captions .pi-plus {
     background-color: #084880;
@@ -147,6 +171,7 @@
     position: absolute;
     top: 50px;
     right: 75px;
+    z-index: 100;
 }
 
 ::ng-deep .p-listbox .p-highlight {
@@ -157,8 +182,23 @@
 /* Styling the change number of columns in the table */
 .selectingColumnDiv {
     position: absolute;
-    top: 50px;
-    right: 10px;
+    top: 30px;
+    right: 91px;
+}
+
+.selectingColumnDiv ::ng-deep .p-multiselect {
+    width: 0px;
+    height: 0px;
+}
+
+.selectingColumnDiv ::ng-deep .p-multiselect .p-multiselect-panel {
+    position: absolute;
+    right: -60px;
+    top: 10px;
+    width: 200px;
+}
+.selectingColumnDiv ::ng-deep .p-multiselect .p-multiselect-trigger-icon {
+    display: none;
 }
 
 /* Stying the pagination jumping input field */
@@ -227,9 +267,53 @@ input[type="number"]::-webkit-inner-spin-button {
     }
 }
 @media screen and (max-width: 426px) {
-    ::ng-deep .p-datatable {
-        width: 550px;
-    }    
+    
+    ::ng-deep .p-datatable-header {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    ::ng-deep .p-datatable-header .right-captions {
+        justify-content: flex-end;
+    }
+
+    ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page, .p-paginator .p-paginator-first, .p-paginator .p-paginator-prev, .p-paginator .p-paginator-next, .p-paginator .p-paginator-last {
+        margin: 0;
+        min-width: 1.5rem;
+    }
+     .jumpingPage {
+        margin-top: 5px;
+     }
+
+    .add-trip-container ::ng-deep .p-dialog {
+        width: 80%;
+    }
+
+}
+
+@media screen and (max-width: 320px) {
+    ::ng-deep .p-paginator-left-content {
+        margin-right: 70px !important;
+        margin-left: 65px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    .searchField input {
+        width: 100px;
+    }
+
+    .numRowChanges {
+        top: 80px;
+    }
+    .selectingColumnDiv ::ng-deep .p-multiselect .p-multiselect-panel {
+        top: 30px;
+    }
+
+    .add-trip-container ::ng-deep .p-dialog {
+        width: 90%;
+    }
 }
 
 

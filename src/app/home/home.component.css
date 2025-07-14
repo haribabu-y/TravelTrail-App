@@ -35,13 +35,25 @@
 }
 
 @media screen and (max-width: 426px) {
-    .graphtype {
+    /* .graphtype {
         width: 550px;
-    }
+    } */
 
     .barGraph, .lineBar, .pieChart {
-        width: 500px;
+        width: 90%;
         height: 450px;
+        margin-left: 20px;
+    }
+}
+@media screen and (max-width: 320px) {
+    /* .graphtype {
+        width: 550px;
+    } */
+
+    .barGraph, .lineBar, .pieChart {
+        width: 90%;
+        height: 450px;
+        margin-left: 10px;
     }
 }
 

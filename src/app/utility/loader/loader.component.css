@@ -23,7 +23,7 @@
     100% { transform: rotate(360deg); }
   }
 
-  @media screen and (max-width: 426px) {
+  /* @media screen and (max-width: 426px) {
     .loader-container {
       transform: translateX(60px);
     }
@@ -32,4 +32,4 @@
     .loader-container {
       transform: translateX(100px);
     }
-  }
+  } */

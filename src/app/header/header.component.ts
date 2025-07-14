@@ -1,9 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, HostListener, inject, OnInit, ViewChild } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Authservice } from '../Services/auth.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { User } from '../Models/user';
 import { SharedService } from '../Services/shared.service';
+import { filter, take } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -13,6 +14,7 @@ import { SharedService } from '../Services/shared.service';
 export class HeaderComponent implements OnInit {
 
   darkMode: boolean = false;
+  isDarkMode: boolean = false;
   router: Router = inject(Router);
   activeRoute: ActivatedRoute = inject(ActivatedRoute)
   authService: Authservice = inject(Authservice);
@@ -20,6 +22,7 @@ export class HeaderComponent implements OnInit {
   usertype: string;
   isAdmin: boolean = false;
   userExpense: number;
+
 
   currentPage: string = this.router.url.split('/')[2];
   ngDoCheck() {
@@ -45,11 +48,14 @@ export class HeaderComponent implements OnInit {
   }
   currentUser: User;
   profileImage: string = 'assets/users/defaultProfileImg.jpg'
+  username: string = '';
   ngOnInit(): void {
     let theme: string = localStorage.getItem('theme');
+    let currentUrl = this.router.url;
     const body = document.body;
     if(theme === 'dark') {
       body.classList.add('dark-mode');
+      this.isDarkMode = true;
       this.darkMode = true;
     } else {
       body.classList.remove('dark-mode');
@@ -62,11 +68,35 @@ export class HeaderComponent implements OnInit {
     })
 
     let localuser = JSON.parse(localStorage.getItem('user'));
+    console.log(localuser);    
     if(localuser.username === 'admin' || localuser.isAdmin) {
       this.usertype === 'admin';
       this.isAdmin = true;
-      this.router.navigate(['/admin/UsersTrips']);
-      this.profileImage = `https://ui-avatars.com/api/?name=Admin&bold=true`;
+      console.log(currentUrl);   
+      // this.router.navigate(['/admin/UsersTrips']);
+      if(localuser.isAdmin && localuser.username != 'admin') {
+        this.sharedService.getAllUsers().subscribe({
+      next: (allUsers) => {
+        this.currentUser = allUsers.find((user) => {
+          return user.username === localuser.username;
+        })
+        // console.log(this.currentUser);  
+        if(this.currentUser) {
+          this.username = this.currentUser.username;
+        if(this.currentUser.profileImage) {
+          this.profileImage = this.currentUser.profileImage;
+        } else {
+          let firstName = this.currentUser.firstName;
+          let lastName = this.currentUser.lastName;
+          this.profileImage = `https://ui-avatars.com/api/?name=${firstName}+${lastName ? lastName : ''}&bold=true`
+        }
+        }        
+      }
+    });
+      } else {
+        this.profileImage = `https://ui-avatars.com/api/?name=Admin&bold=true`;
+      }     
+      this.username = localuser.username;
       return;
     } else {
       this.usertype = localuser.username;
@@ -78,6 +108,7 @@ export class HeaderComponent implements OnInit {
           return user.username === localuser.username;
         })
         // console.log(this.currentUser);  
+        this.username = this.currentUser.username;
         if(this.currentUser.profileImage) {
           this.profileImage = this.currentUser.profileImage;
         } else {
@@ -88,4 +119,28 @@ export class HeaderComponent implements OnInit {
       }
     });
   };
+
+  isMobileView: boolean = false;
+  screenWidth: number = window.innerWidth;
+  showProfileInfo: boolean = false;
+
+  @ViewChild('menuBar') menubar: ElementRef;
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    console.log(target);
+    if(this.showProfileInfo) {
+      let clickedInsideListBox = this.menubar.nativeElement.contains(target);
+    if(!clickedInsideListBox) {
+      this.showProfileInfo = false;
+    }
+    }
+    
+  }
+
+
+  showProfileDetail() {
+    this.showProfileInfo = !this.showProfileInfo;
+  }
 }
