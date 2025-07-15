@@ -25,11 +25,13 @@
       <div class="right-captions">
         <div class="searchField">
           <input
+            #searchText
             pInputText
             type="text"
-            (input)="filterGlobal($event)"
+            (keydown.enter)="filterGlobal(searchText.value)"
+            (input)="reloadAll(searchText.value)"
           />
-          <i class="pi pi-search"></i>
+          <i class="pi pi-search" (click)="filterGlobal(searchText.value)"></i>
         </div>
         <div class="numRows" (click)="changeRows()" #rowSelect>
             <i class="pi pi-bars"></i>
@@ -108,7 +110,7 @@
     </ng-template>
     <ng-template pTemplate="body" let-trip>
       <tr>
-        <td *ngFor="let column of selectedColumns">{{ trip[column.value] }}</td>
+        <td *ngFor="let column of selectedColumns">{{ column.value === 'totalDistance' ? (trip[column.value] + 'kms') : column.value === 'totalExpense' ? (trip[column.value] | currency:currencyCode) : trip[column.value]}}</td>
         <!-- <td>{{ trip.destination }}</td>
         <td>{{ trip.totalDistance }}</td>
         <td>{{ trip.totalExpense }}</td>
@@ -135,7 +137,7 @@
   <ng-template pTemplate="content">
     <div class="inputFields">
       <div class="field">
-        <label for="sl">Start Location</label>
+        <label for="sl">Start Location *</label>
         <input
           type="text"
           pInputText
@@ -144,9 +146,10 @@
           autofocus
           required
         />
+        <span *ngIf="isSPV">Start Location is Invalid*</span>
       </div>
       <div class="field">
-        <label for="d">Destination</label>
+        <label for="d">Destination *</label>
         <input
           type="text"
           pInputText
@@ -154,9 +157,10 @@
           [(ngModel)]="destination"
           required
         />
+        <span *ngIf="isDV">Destination is Invalid*</span>
       </div>
       <div class="field">
-        <label for="td">Total Distance</label>
+        <label for="td">Total Distance *</label>
         <input
           type="number"
           pInputText
@@ -164,9 +168,10 @@
           [(ngModel)]="totalDistance"
           required
         />
+        <span *ngIf="isTDV">Total Distance is Invalid*</span>
       </div>
       <div class="field">
-        <label for="te">Total Expanse</label>
+        <label for="te">Total Expanse *</label>
         <input
           type="number"
           pInputText
@@ -174,9 +179,10 @@
           [(ngModel)]="totalExpense"
           required
         />
+        <span *ngIf="isTEV">Total Expanse is Invalid*</span>
       </div>
       <div class="field">
-        <label for="tm">Total Members</label>
+        <label for="tm">Total Members *</label>
         <input
           type="number"
           pInputText
@@ -184,6 +190,7 @@
           [(ngModel)]="totalMembers"
           required
         />
+        <span *ngIf="isTMV">Total Members is Invalid*</span>
       </div>
       <div class="buttons">
         <button (click)="closeDailog()" class="cancelbtn">Cancel</button>

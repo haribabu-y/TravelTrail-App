@@ -10,7 +10,7 @@
     [scrollable]="true"
     scrollHeight="500px"
     [rows]="numOfRows"
-    [globalFilterFields]="['userName', 'age', 'Country', 'TotalExpense']"
+    [globalFilterFields]="['username', 'age', 'Country', 'TotalExpense']"
   >
     <ng-template pTemplate="caption">
       <p>Users Details</p>
@@ -29,8 +29,14 @@
         </div>
         <div class="other-fileds">
           <div class="searchField">
-          <input pInputText type="text" (input)="filterGlobal($event)" />
-          <i class="pi pi-search"></i>
+          <input
+            #searchText 
+            pInputText 
+            type="text" 
+            (keydown.enter)="filterGlobal(searchText.value)"
+            (input)="reloadAll(searchText.value)"
+          />
+          <i class="pi pi-search" (click)="filterGlobal(searchText.value)"></i>
         </div>
         <div class="numRows" (click)="changeRows()" #rowSelect>
           <i class="pi pi-bars"></i>
@@ -119,14 +125,14 @@
               </div>
             </div>
           </th> -->
-          <th style="width: 5%;">Bucket List</th>
+          <th style="width: 12%;">Bucket List</th>
           <th style="width: 5%;">Delete</th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-user>
         <tr>
             <td><img [src]="user.userImage" alt="Profile image" width="30px" height="30px" style="border-radius: 10px;"></td>
-            <td *ngFor="let column of selectedColumns">{{(column.value === 'totalExpense') ? (convertAmount(user.totalExpense) | currency: currencyCode) : user[column.value]}}</td>
+            <td *ngFor="let column of selectedColumns">{{(column.value === 'totalExpense') ? (convertAmount(user.totalExpense) | currency: currencyCode:usercurrencySymbol) : user[column.value]}}</td>
             
             <!-- <td>{{user.username}}</td> 
             <td>{{user.age}}</td>
@@ -179,6 +185,7 @@
             required
             formControlName="username"
           />
+          <span *ngIf="isUV">Only alphanumric characters Allowed, Space is not Allowed </span>
         </div>
         <div class="row">
           <div class="inputfield">
@@ -189,6 +196,7 @@
               formControlName="firstName"
               required
             />
+            <span *ngIf="isFNLNV">Only alphanumric characters and space Allowed</span>
           </div>
           <div class="inputfield">
             <label for="lastName">Last name</label>
@@ -197,11 +205,11 @@
         </div>
         <div class="row">
           <div class="genderField inputfield">
-            <span>Gender*</span>
+            <p>Gender*</p>
             <div>
               <input
                 type="radio"
-                value="male"
+                value="Male"
                 id="male"
                 formControlName="gender"
                 (change)="changeGender('male')"
@@ -211,7 +219,7 @@
               >
               <input
                 type="radio"
-                value="female"
+                value="Female"
                 id="female"
                 formControlName="gender"
                 (change)="changeGender('female')"
@@ -221,7 +229,7 @@
               >
               <input
                 type="radio"
-                value="others"
+                value="Others"
                 id="others"
                 formControlName="gender"
                 (change)="changeGender('others')"
@@ -234,25 +242,28 @@
           <div class="inputfield">
             <label for="dob">DOB*</label>
             <input type="date" id="dob" formControlName="dob" required />
+            <span *ngIf="isDOBV">Date of Birth must less the today!.</span>
           </div>
         </div>
         <div class="inputfield">
           <label for="email">Email ID*</label>
           <input type="email" id="email" formControlName="email" required />
+          <span *ngIf="isEV">Email is Invalid*</span>
         </div>
         <div class="phone-number row">
           <div class="inputfield country-code-field">
           <label>Code*</label>
             <p-dropdown
-            [options]="countryCode"
-            optionLabel="code"
+            [options]="phoneCode"
             placeholder="Country code"
             formControlName="countryCode"
             />
+            <span *ngIf="isPNCV">Choose the Mobile code *</span>
         </div>
         <div class="inputfield phoneNumberField">
           <label for="mobile">Mobile Number*</label>
           <input type="text" id="mobile" formControlName="phone" />
+          <span *ngIf="isPNV">Mobile number must be less than 10 digits*</span>
         </div>
         </div>
       </div>
@@ -260,6 +271,7 @@
         <div class="inputfield">
           <label for="address">Address*</label>
           <textarea id="address" formControlName="address" required ></textarea>
+          <span *ngIf="isAV">Enter a valid Address *</span>
         </div>
         <div class="row">
           <div class="inputfield">
@@ -271,6 +283,7 @@
               formControlName="country"
               (onChange)="onCountryChanges($event.value)"
             />
+            <span *ngIf="isCV">Select your country</span>
           </div>
           <div class="inputfield">
             <label>State</label>
@@ -291,14 +304,16 @@
               formControlName="zipCode"
               required
             />
+            <span *ngIf="isZCV">Zipe Code is Invalid *</span>
           </div>
           <div class="inputfield">
             <label>Time Zone*</label>
             <p-dropdown
-              [options]="timezones"
+              [options]="timeZones"
               placeholder="Select Time Zone"
               formControlName="timeZone"
             />
+            <span *ngIf="isTZV">select the Time Zone*</span>
           </div>
         </div>
         <div class="row">
@@ -323,6 +338,7 @@
             formControlName="password"
             required
           />
+          <span *ngIf="isPV">Password must required*</span>
         </div>
       </div>
       </div>

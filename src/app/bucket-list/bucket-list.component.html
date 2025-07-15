@@ -1,13 +1,13 @@
 <app-loader *ngIf="isLoading"></app-loader>
 <p-toast></p-toast>
 <div class="bucket-list-container" [ngClass]="isDarkMode ? 'dark-mode' : ''" *ngIf="!isLoading">
-  <div class="bucket-list-item" *ngFor="let bucketListItem of userBucketLists">
+  <div #bucketListItem class="bucket-list-item" *ngFor="let bucketListItem of userBucketLists">
     <div class="bucket-image">
       <p-image
         [src]="bucketListItem.placeImage"
         alt="image"
         width="100%"
-        height="250px"
+        height="220px"
         alt="Place Image"
       ></p-image>
       <span class="distance-field">{{bucketListItem.estimatedDistance}} KMs</span>
@@ -21,10 +21,10 @@
       <p>
         {{bucketListItem.placeDescription}}
       </p>
-      <span>${{bucketListItem.estimatedBudget}}</span>
+      <span>{{bucketListItem.estimatedBudget | currency:currencyCode}}</span>
     </div>
   </div>
-  <div class="bucket-list-item adding-new-bucket" style="height: 350px;">
+  <div class="bucket-list-item adding-new-bucket" style="height: 300px;">
         <i class="pi pi-plus" (click)="showDailog()"></i>
         <p>Add a place to your Bucket List</p>
   </div>
@@ -42,7 +42,7 @@
     <ng-template pTemplate="content">
     <div class="inputFields">
       <div class="field">
-        <label for="pi">Place Image</label>
+        <label for="pi">Place Image *</label>
         <div class="image-upload-container" (click)="triggerFileinput()" *ngIf="!placeImage">
             <i class="pi pi-upload"></i>
             <p>Drag and Drop or Upload</p>
@@ -57,6 +57,7 @@
           hidden
           #fileInput
         />
+        
         <div class="selected-image" *ngIf="placeImage">
             <img [src]="placeImage" alt="Place image" width="100%" height="200px"/>
             <div>
@@ -64,9 +65,10 @@
                 <i class="pi pi-trash" (click)="deleteSelectedPlaceImage()"></i>
             </div>
         </div>
+        <span *ngIf="isPIV">Image is required*</span>
       </div>
       <div class="field">
-        <label for="pn">Place Name</label>
+        <label for="pn">Place Name *</label>
         <input
           type="text"
           pInputText
@@ -74,9 +76,10 @@
           [(ngModel)]="placeName"
           required
         />
+        <span *ngIf="isPNV">Place Name is Invalid*</span>
       </div>
       <div class="field">
-        <label for="pd">Place Description</label>
+        <label for="pd">Place Description *</label>
         <input
           type="text"
           pInputText
@@ -84,9 +87,10 @@
           [(ngModel)]="placeDescription"
           required
         />
+        <span *ngIf="isPDV">Place Description is Invalid*</span>
       </div>
       <div class="field">
-        <label for="ed">Estimated Distance</label>
+        <label for="ed">Estimated Distance *</label>
         <input
           type="number"
           pInputText
@@ -94,9 +98,10 @@
           [(ngModel)]="estimatedDistance"
           required
         />
+        <span *ngIf="isEDV">Estimated Distance is Invalid*</span>
       </div>
       <div class="field">
-        <label for="eb">Estimated Budget</label>
+        <label for="eb">Estimated Budget *</label>
         <input
           type="number"
           pInputText
@@ -104,6 +109,7 @@
           [(ngModel)]="estimatedBudget"
           required
         />
+        <span *ngIf="isEBV">Estimated Budget is Invalid*</span>
       </div>
       <div class="buttons">
         <button (click)="closeDailog()" class="cancelbtn">Cancel</button>

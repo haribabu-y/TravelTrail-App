@@ -43,6 +43,8 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { NotFoundComponent } from './not-found/not-found.component';
 
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -77,7 +79,8 @@ import { NotFoundComponent } from './not-found/not-found.component';
     MultiSelectModule,
     ImageModule,
     PaginatorModule,
-    ToastModule
+    ToastModule,
+    OverlayPanelModule
   ],
   providers: [MessageService],
   bootstrap: [AppComponent]

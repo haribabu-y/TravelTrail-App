@@ -30,7 +30,8 @@ export class LoginUser {
         public username: string,
         public id: string,
         public loginTime: number,
-        public isAdmin: boolean
+        public isAdmin: boolean,
+        public country?: Object
     ){
         
     }

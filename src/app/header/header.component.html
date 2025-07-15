@@ -11,7 +11,7 @@
         </div>
       </div>
       <div class="home-icons">
-        <i class="pi pi-home"></i>
+        <i class="pi pi-home" (click)="navigateToHome()"></i>
         <span>{{ currentPage }}</span>
       </div>
     </div>
@@ -19,78 +19,134 @@
       <div class="menubar">
         <div class="menuIcon">
           <i class="pi pi-bars" (click)="showProfileDetail()" #menuBar></i>
-          <div class="menu-items" *ngIf="showProfileInfo">
-            <div class="profileImg" >
-              <p>{{username}}</p>
-              <img [src]="profileImage" alt="UserProfileimage" />
+          <div class="menu-items" *ngIf="showProfileInfo" #profileInfo>
+            <div class="profileImg">
+              <p>{{ username }}</p>
+              <img [src]="profileImage" alt="UserProfileimage" (click)="profileInfo2.toggle($event)" />
+            </div>
+            <div class="profileInf">
+              <p-overlayPanel #profileInfo2>
+                <div class="user-details">
+                  <h3>User Details</h3>
+                  <img [src]="profileImage" alt="Profile Image" width="150px" height="150px"
+                    style="border-radius: 50%;">
+                  <div class="details">
+                    <p>
+                      <strong>Username:</strong>
+                      {{ userDetail.username ? userDetail.username : "" }}
+                    </p>
+                    <p><strong>First Name:</strong> {{ userDetail.firstName }}</p>
+                    <p>
+                      <strong>Last Name:</strong>
+                      {{ userDetail.lastName ? userDetail.lastName : "-" }}
+                    </p>
+                    <p><strong>Email:</strong> {{ userDetail.email }}</p>
+                    <p><strong>Gender:</strong> {{ userDetail.gender }}</p>
+                    <p>
+                      <strong>Date of Birth:</strong> {{ userDetail.dob | date }}
+                    </p>
+                    <p><strong>Phone Number:</strong> {{ userDetail.phone }}</p>
+                    <p><strong>Address:</strong> {{ userDetail.address }}</p>
+                    <p>
+                      <strong>Country:</strong> {{ userDetail.country["name"] }}
+                    </p>
+                    <p>
+                      <strong>State:</strong>
+                      {{
+                      userDetail.state["name"] ? userDetail.state["name"] : "-"
+                      }}
+                    </p>
+                    <p><strong>Zip Code:</strong> {{ userDetail.zipCode }}</p>
+                    <p><strong>Time Zone:</strong> {{ userDetail.timeZone }}</p>
+                    <p>
+                      <strong>Locale:</strong>
+                      {{ userDetail.locale ? userDetail.locale : "-" }}
+                    </p>
+                    <p><strong>Is Admin:</strong>{{ userDetail.isAdmin }}</p>
+                  </div>
+                </div>
+              </p-overlayPanel>
             </div>
             <div class="toggleDarkMode">
               <p>{{ darkMode ? "Light Theme" : "Dark Theme" }}</p>
-              <p-inputSwitch
-                (click)="toggleDarkMode()"
-                [(ngModel)]="isDarkMode"
-                styleClass="custom-inputswitch"
-              />
+              <p-inputSwitch (click)="toggleDarkMode()" [(ngModel)]="isDarkMode" styleClass="custom-inputswitch" />
             </div>
             <div class="currency" *ngIf="!isAdmin">
               <img src="./../../assets/currencyimg.png" alt="Currency Image" />
-              <span>${{ userExpense }}</span>
+              <span>{{ userExpense | currency }}</span>
             </div>
           </div>
         </div>
       </div>
-      <div (click)="logoutUser()" class="logout-icon"><i class="pi pi-sign-out"></i></div>
+      <div (click)="logoutUser()" class="logout-icon">
+        <i class="pi pi-sign-out"></i>
+      </div>
       <div class="profile">
         <div class="currency" *ngIf="!isAdmin">
-        <img src="./../../assets/currencyimg.png" alt="Currency Image" />
-        <span>${{ userExpense }}</span>
+          <img src="./../../assets/currencyimg.png" alt="Currency Image" />
+          <span>{{ userExpense | currency : currencyCode }}</span>
+        </div>
+        <div class="toggleDarkMode">
+          <p>{{ darkMode ? "Light Theme" : "Dark Theme" }}</p>
+          <p-inputSwitch (click)="toggleDarkMode()" [(ngModel)]="isDarkMode" styleClass="custom-inputswitch" />
+        </div>
+        <p-button label="Logout" (onClick)="logoutUser()" />
+        <div class="profileImg">
+          <img [src]="profileImage" alt="UserProfileimage" (click)="profileInfo.toggle($event)" />
+        </div>
+        <div class="profileInf">
+          <p-overlayPanel #profileInfo>
+            <div class="user-details">
+              <h3>User Details</h3>
+              <img [src]="profileImage" alt="Profile Image" width="150px" height="150px" style="border-radius: 50%;">
+              <div class="details">
+                <p>
+                  <strong>Username:</strong>
+                  {{ userDetail?.username ? userDetail.username : "" }}
+                </p>
+                <p><strong>First Name:</strong> {{ userDetail?.firstName }}</p>
+                <p>
+                  <strong>Last Name:</strong>
+                  {{ userDetail?.lastName ? userDetail.lastName : "-" }}
+                </p>
+                <p><strong>Email:</strong> {{ userDetail?.email }}</p>
+                <p><strong>Gender:</strong> {{ userDetail?.gender }}</p>
+                <p>
+                  <strong>Date of Birth:</strong> {{ userDetail?.dob | date }}
+                </p>
+                <p><strong>Phone Number:</strong> {{ userDetail?.phone }}</p>
+                <p><strong>Address:</strong> {{ userDetail?.address }}</p>
+                <p>
+                  <strong>Country:</strong> {{ userDetail?.country["name"] }}
+                </p>
+                <p>
+                  <strong>State:</strong>
+                  {{
+                  userDetail?.state["name"] ? userDetail.state["name"] : "-"
+                  }}
+                </p>
+                <p><strong>Zip Code:</strong> {{ userDetail?.zipCode }}</p>
+                <p><strong>Time Zone:</strong> {{ userDetail?.timeZone }}</p>
+                <p>
+                  <strong>Locale:</strong>
+                  {{ userDetail?.locale ? userDetail.locale : "-" }}
+                </p>
+                <p><strong>Is Admin:</strong>{{ userDetail?.isAdmin }}</p>
+              </div>
+            </div>
+          </p-overlayPanel>
+        </div>
       </div>
-      <div class="toggleDarkMode">
-        <p>{{ darkMode ? "Light Theme" : "Dark Theme" }}</p>
-        <p-inputSwitch
-          (click)="toggleDarkMode()"
-          [(ngModel)]="isDarkMode"
-          styleClass="custom-inputswitch"
-        />
-      </div>
-      <p-button label="Logout" (onClick)="logoutUser()" />
-      <div class="profileImg">
-        <img [src]="profileImage" alt="UserProfileimage" />
-      </div>
-      </div>
-      
     </div>
   </div>
   <div class="navbar">
-    <a
-      routerLink="/user/Home"
-      [routerLinkActive]="'activeLink'"
-      *ngIf="!isAdmin"
-      ><i class="pi pi-home"></i> Home</a
-    >
-    <a
-      routerLink="/user/Trips"
-      [routerLinkActive]="'activeLink'"
-      *ngIf="!isAdmin"
-      ><i class="pi pi-briefcase"></i> Trips</a
-    >
-    <a
-      routerLink="/user/BucketLists"
-      [routerLinkActive]="'activeLink'"
-      *ngIf="!isAdmin"
-      ><i class="pi pi-tag"></i> Bucket List</a
-    >
-    <a
-      routerLink="/admin/UsersTrips"
-      [routerLinkActive]="'activeLink'"
-      *ngIf="isAdmin"
-      ><i class="pi pi-briefcase"></i> User Trips</a
-    >
-    <a
-      routerLink="/admin/Users"
-      [routerLinkActive]="'activeLink'"
-      *ngIf="isAdmin"
-      ><i class="pi pi-users"></i> Users</a
-    >
+    <a routerLink="/user/Home" [routerLinkActive]="'activeLink'" *ngIf="!isAdmin"><i class="pi pi-home"></i> Home</a>
+    <a routerLink="/user/Trips" [routerLinkActive]="'activeLink'" *ngIf="!isAdmin"><i class="pi pi-briefcase"></i>
+      Trips</a>
+    <a routerLink="/user/BucketLists" [routerLinkActive]="'activeLink'" *ngIf="!isAdmin"><i class="pi pi-tag"></i>
+      Bucket List</a>
+    <a routerLink="/admin/UsersTrips" [routerLinkActive]="'activeLink'" *ngIf="isAdmin"><i class="pi pi-briefcase"></i>
+      User Trips</a>
+    <a routerLink="/admin/Users" [routerLinkActive]="'activeLink'" *ngIf="isAdmin"><i class="pi pi-users"></i> Users</a>
   </div>
 </div>

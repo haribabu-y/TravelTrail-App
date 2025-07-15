@@ -6,6 +6,7 @@ import { SharedService } from '../Services/shared.service';
 import { Table } from 'primeng/table';
 import { MultiSelect } from 'primeng/multiselect';
 import { MessageService } from 'primeng/api';
+import { LoginUser } from '../Models/loginUser';
 
 @Component({
   selector: 'app-trips',
@@ -23,6 +24,7 @@ export class TripsComponent implements OnInit {
   sharedService: SharedService = inject(SharedService);
   isLoading: boolean = false;
   isDarkMode: boolean = false;
+  currencyCode: string = '';
 
   @ViewChild('coloumnSelect') columnSelect: ElementRef;
   @ViewChild('rowSelect') rowSelect: ElementRef;
@@ -43,6 +45,14 @@ export class TripsComponent implements OnInit {
 
     this.loadTripsInTable();
     this.selectedColumns = [...this.columnOptions]
+
+    let user = JSON.parse(localStorage.getItem('user'));
+    console.log(user.country);
+    
+    if(user) {
+      this.currencyCode = user.country.currencyCode;
+    }
+    console.log(this.currencyCode);    
   }
 
   // columnsChanged(event: Event) {
@@ -90,12 +100,53 @@ export class TripsComponent implements OnInit {
 
   closeDailog() {
     this.showDailog = false;
+    this.isSPV = false;
+    this.isDV = false;
+    this.isTDV = false;
+    this.isTEV = false;
+    this.isTMV = false;
   }
+  isSPV: boolean = false;
+  isDV: boolean = false;
+  isTDV: boolean = false;
+  isTEV: boolean = false;
+  isTMV: boolean = false;
   onNewTripSubmit() {
-    if(this.startPlace === '' || this.destination === '' || this.totalDistance === 0 || this.totalExpense === 0 || this.totalMembers === 0){
-      this.messageService.add({severity: 'error', summary:'Error', detail:'Please fill all the fields!.'});
+    console.log(this.startPlace);    
+    if(this.startPlace === '') {
+      this.isSPV = true;
       return;
+    } else {
+      this.isSPV = false;
+    } 
+    if(this.destination === '') {
+      this.isDV = true;
+      return;
+    } else {
+      this.isDV = false;
     }
+      if(this.totalDistance === null || this.totalDistance === 0) {
+      this.isTDV = true;
+      return;
+    } else {
+      this.isTDV = false;
+    } 
+    if(this.totalExpense === null || this.totalExpense === 0){
+      this.isTEV = true;
+      return;
+    } else {
+      this.isTEV = false;
+    } 
+    if(this.totalMembers === null || this.totalMembers === 0){
+      this.isTMV = true;
+      return;
+    } else {
+      this.isTMV = false
+    }
+    // if(this.startPlace === '' || this.destination === '' || this.totalDistance === 0 || this.totalExpense === 0 || this.totalMembers === 0){
+    //   this.messageService.add({severity: 'error', summary:'Error', detail:'Please fill all the fields!.'});
+    //   return;
+    // }
     let data: Trip = {
       startLocation: this.startPlace,
       destination: this.destination,
@@ -111,9 +162,15 @@ export class TripsComponent implements OnInit {
   };
 
   // Method to filter trips based on a search term
-  filterGlobal(event: Event) {
-    const input: HTMLInputElement = event.target as HTMLInputElement;
-    return this.table.filterGlobal(input.value, 'contains');
+  filterGlobal(text: string) {
+    // const input: HTMLInputElement = event.target as HTMLInputElement;
+    return this.table.filterGlobal(text, 'contains');
+  }
+
+  reloadAll(text: string) {
+    if(text === '') {
+      this.filterGlobal(text);
+    }
   }
 
   // For selcting the number of rows to display

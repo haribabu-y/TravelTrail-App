@@ -14,6 +14,7 @@ export class BucketListComponent implements OnInit{
   isLoading: boolean = false;
   isAdmin: boolean = false;
   isDarkMode: boolean = false;
+  currencyCode: string = '';
 
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
@@ -27,6 +28,7 @@ export class BucketListComponent implements OnInit{
     this.sharedService.isDarkMode.subscribe((res) => this.isDarkMode = res)
     localStorage.getItem('theme') === 'dark' ? this.isDarkMode = true : this.isDarkMode = false;
     this.getbucketlists();
+    this.currencyCode = JSON.parse(localStorage.getItem('user')).country.currencyCode;
   }
 
   getbucketlists() {
@@ -87,6 +89,12 @@ export class BucketListComponent implements OnInit{
     this.placeDescription = '';
     this.estimatedDistance = null;
     this.estimatedBudget = null;
+
+    this.isPIV = false;
+    this.isPNV = false;
+    this.isPDV = false;
+    this.isEDV = false;
+    this.isEBV = false;
   }
 
   deleteSelectedPlaceImage() {
@@ -116,12 +124,46 @@ export class BucketListComponent implements OnInit{
     });
     this.closeDailog();
   }
-
+  isPIV: boolean = false;
+  isPNV: boolean = false;
+  isPDV: boolean = false;
+  isEDV: boolean = false;
+  isEBV: boolean = false;
   addRecord(id?: string) {
-    if(this.placeImage === '' || this.placeName === '' || this.placeDescription === '' || this.estimatedDistance === 0 || this.estimatedBudget === 0) {
-      this.messageService.add({severity:'error', summary:'Error', detail:'Please fill all the fields'});
+    if(this.placeImage === '') {
+      this.isPIV = true;
       return;
+    } else {
+      this.isPIV = false;
     }
+    if(this.placeName === '') {
+      this.isPNV = true;
+      return;
+    } else {
+      this.isPNV = false;
+    }
+    if(this.placeDescription === '') {
+      this.isPDV = true;
+      return;
+    } else {
+      this.isPDV = false;
+    }
+    if(this.estimatedDistance === 0 || this.estimatedDistance === null) {
+      this.isEDV = true;
+      return;
+    } else {
+      this.isEDV = false;
+    }
+    if(this.estimatedBudget === 0 || this.estimatedBudget === null) {
+      this.isEBV = true;
+      return;
+    } else {
+      this.isEBV = false;
+    }    
+    // if(this.placeImage === '' || this.placeName === '' || this.placeDescription === '' || this.estimatedDistance === 0 || this.estimatedBudget === 0) {
+    //   this.messageService.add({severity:'error', summary:'Error', detail:'Please fill all the fields'});
+    //   return;
+    // }
     let newBucketItem = {
       placeImage: this.placeImage,
       placeName: this.placeName,

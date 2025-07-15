@@ -18,17 +18,23 @@ export class UserTripComponent implements OnInit {
   @ViewChild('userTripTable') userTripTable: Table;
 
   usersTrips: UserTrips[] = [];
-  adminService: AdminService = inject(AdminService);
   sharedService: SharedService = inject(SharedService);
   bucketListService: BucketListService = inject(BucketListService);
   messageService: MessageService = inject(MessageService);
   userId: string = ''
   isLoading: boolean = false;
   isDarkMode: boolean = false;
+  currencyCode: string = '';
+  currencySymbol: string = '';
+  oldCurrencyCode: string;
 
   ngOnInit(): void {
     this.sharedService.isDarkMode.subscribe((res) => this.isDarkMode = res);
     localStorage.getItem('theme') === 'dark' ? this.isDarkMode = true : this.isDarkMode = false;
+
+    this.currencyCode = JSON.parse(localStorage.getItem('user')).country.currencyCode;
+    this.oldCurrencyCode = JSON.parse(localStorage.getItem('user')).country.currencyCode;
+    this.currencySymbol = JSON.parse(localStorage.getItem('user')).country.currencySymbol;
 
     this.selectedColumns = [...this.columnOptions]
     this.isLoading = true;
@@ -39,6 +45,9 @@ export class UserTripComponent implements OnInit {
         let gender: string = user.gender;
         let age: number = new Date().getFullYear() - new Date(user.dob).getFullYear();
         let id: string = user.id;
+        let country = user.country;
+        // console.log(country);        
+        
         let totalDistance: number = 0;
         let totalExpense: number = 0;
         // console.log(user.trips);
@@ -49,9 +58,14 @@ export class UserTripComponent implements OnInit {
             totalExpense += user.trips[key].totalExpense;
           });
         }
-        // console.log(totalDistance);
-        // console.log(totalExpense);
-        let userDetail = new UserTrips( username, totalDistance, gender, age, totalExpense, id);
+        let adminCurrencyCode = this.currencyCode;
+        let userCurrencyCode= country['currencyCode'];
+        // console.log(userCurrencyCode);
+        let userTotalExpense: number;
+
+        userTotalExpense = this.convertExpenseToAdminCurrency(totalExpense,adminCurrencyCode,userCurrencyCode);
+        // console.log(userTotalExpense);        
+        let userDetail = new UserTrips( username, totalDistance, gender, age, userTotalExpense, id);
         // console.log(userDetail);
         this.usersTrips.push(userDetail);
       }
@@ -60,34 +74,151 @@ export class UserTripComponent implements OnInit {
   }
 
     currencyFormate = [
-    { name: '$  Doller', code: 'USD', symbol: '$' },
-    { name: '₹  Rupees', code: 'INR', symbol: '₹' },
-    { name: '€  Euro', code: 'EUR', symbol: '€' },
-    { name: '£  Pound', code: 'GBP', symbol: '£' },
-    { name: '¥  Yen', code: 'JPY', symbol: '¥' },
+      { name: '₹ Rupees', code: 'INR', symbol: '₹' },
+      { name: '$ Dollar', code: 'USD', symbol: '$' },
+      { name: '€ Euro', code: 'EUR', symbol: '€' },
+      { name: 'лв Lev', code: 'BGN', symbol: 'лв' },
+      { name: 'kn Kuna', code: 'HRK', symbol: 'kn' },
+      { name: 'Kč Koruna', code: 'CZK', symbol: 'Kč' },
+      { name: 'kr Krone', code: 'DKK', symbol: 'kr' },
+      { name: 'Ft Forint', code: 'HUF', symbol: 'Ft' },
+      { name: 'kr Króna', code: 'ISK', symbol: 'kr' },
+      { name: 'kr Krone', code: 'NOK', symbol: 'kr' },
+      { name: 'zł Zloty', code: 'PLN', symbol: 'zł' },
+      { name: 'lei Leu', code: 'RON', symbol: 'lei' },
+      { name: 'kr Krona', code: 'SEK', symbol: 'kr' },
+      { name: 'Fr Franc', code: 'CHF', symbol: 'Fr' },
+      { name: '£ Pound', code: 'GBP', symbol: '£' },
+      { name: '$ Peso', code: 'ARS', symbol: '$' },
+      { name: 'Bs. Boliviano', code: 'BOB', symbol: 'Bs.' },
+      { name: 'R$ Real', code: 'BRL', symbol: 'R$' },
+      { name: '$ Peso', code: 'CLP', symbol: '$' },
+      { name: '$ Peso', code: 'COP', symbol: '$' },
+      { name: 'G$ Dollar', code: 'GYD', symbol: 'G$' },
+      { name: '₲ Guarani', code: 'PYG', symbol: '₲' },
+      { name: 'S/. Sol', code: 'PEN', symbol: 'S/.' },
+      { name: '$ Dollar', code: 'SRD', symbol: '$' },
+      { name: '$U Peso', code: 'UYU', symbol: '$U' },
+      { name: 'Bs.S. Bolívar', code: 'VES', symbol: 'Bs.S.' },
+      { name: '¥ Yen', code: 'JPY', symbol: '¥' }, // For comparison only
   ];
 
   exchangeRates: { [key: string]: number } = {
-    'INR': 1,      // 1 INR is 1 INR
-    'USD': 0.012,  // 1 INR = 0.012 USD (example rate as of July 2025)
-    'EUR': 0.011,  // 1 INR = 0.011 EUR
-    'GBP': 0.0095, // 1 INR = 0.0095 GBP
-    'JPY': 1.85,   // 1 INR = 1.85 JPY
+    'INR': 1,        // Base
+    'USD': 0.012,    // US Dollar
+    'EUR': 0.011,    // Euro
+    'BGN': 0.021,    // Bulgarian Lev
+    'HRK': 0.083,    // Croatian Kuna (historical, now uses EUR)
+    'CZK': 0.27,     // Czech Koruna
+    'DKK': 0.082,    // Danish Krone
+    'HUF': 4.4,      // Hungarian Forint
+    'ISK': 1.6,      // Icelandic Króna
+    'NOK': 0.13,     // Norwegian Krone
+    'PLN': 0.048,    // Polish Złoty
+    'RON': 0.056,    // Romanian Leu
+    'SEK': 0.13,     // Swedish Krona
+    'CHF': 0.0108,   // Swiss Franc
+    'GBP': 0.0095,   // British Pound
+    'ARS': 10.2,     // Argentine Peso
+    'BOB': 0.083,    // Boliviano
+    'BRL': 0.065,    // Brazilian Real
+    'CLP': 11.1,     // Chilean Peso
+    'COP': 48.2,     // Colombian Peso
+    'GYD': 2.5,      // Guyanese Dollar
+    'PYG': 88.0,     // Paraguayan Guarani
+    'PEN': 0.045,    // Peruvian Sol
+    'SRD': 0.45,     // Surinamese Dollar
+    'UYU': 0.47,     // Uruguayan Peso
+    'VES': 0.44,     // Venezuelan Bolívar Soberano
+    // Duplicate currencies across countries
+    'JPY': 1.85
   };
+
+  exchangeRatesToINR: { [key: string]: number } = {
+  'INR': 1,           // Base
+  'USD': 83.33,       // 1 USD = 83.33 INR
+  'EUR': 90.91,       // 1 EUR = 90.91 INR
+  'BGN': 47.62,       // 1 BGN = 47.62 INR
+  'HRK': 12.05,       // 1 HRK = 12.05 INR
+  'CZK': 3.70,        // 1 CZK = 3.70 INR
+  'DKK': 12.20,       // 1 DKK = 12.20 INR
+  'HUF': 0.227,       // 1 HUF = 0.227 INR
+  'ISK': 0.625,       // 1 ISK = 0.625 INR
+  'NOK': 7.69,        // 1 NOK = 7.69 INR
+  'PLN': 20.83,       // 1 PLN = 20.83 INR
+  'RON': 17.86,       // 1 RON = 17.86 INR
+  'SEK': 7.69,        // 1 SEK = 7.69 INR
+  'CHF': 92.59,       // 1 CHF = 92.59 INR
+  'GBP': 105.26,      // 1 GBP = 105.26 INR
+  'ARS': 0.098,       // 1 ARS = 0.098 INR
+  'BOB': 12.05,       // 1 BOB = 12.05 INR
+  'BRL': 15.38,       // 1 BRL = 15.38 INR
+  'CLP': 0.090,       // 1 CLP = 0.090 INR
+  'COP': 0.021,       // 1 COP = 0.021 INR
+  'GYD': 0.40,        // 1 GYD = 0.40 INR
+  'PYG': 0.0114,      // 1 PYG = 0.0114 INR
+  'PEN': 22.22,       // 1 PEN = 22.22 INR
+  'SRD': 2.22,        // 1 SRD = 2.22 INR
+  'UYU': 2.13,        // 1 UYU = 2.13 INR
+  'VES': 2.27,        // 1 VES = 2.27 INR
+  'JPY': 0.54         // 1 JPY = 0.54 INR
+};
+
   selectedCurrency: any;
-  currencyCode: string = 'INR';
-  displayAmount: number;
+  userCurrencyCode: string;
+  usercurrencySymbol: string;
+
   currencyFormateChanged() {
-    console.log(this.selectedCurrency);
+
     this.currencyCode = this.selectedCurrency.code;
-    console.log(this.currencyCode);    
+    this.userCurrencyCode = this.selectedCurrency.code;
+    this.usercurrencySymbol = this.selectedCurrency.symbol;
+        
   }
   convertAmount(baseAmount?: number): number {
+    // console.log("Base mount" + baseAmount);   
+    // console.log(this.currencyCode);       
     if (this.selectedCurrency && this.exchangeRates[this.selectedCurrency.code]) {
-      const rate = this.exchangeRates[this.selectedCurrency.code];
-      return baseAmount * rate;
+      // let amountInINR = baseAmount * this.exchangeRatesToINR[this.oldCurrencyCode]
+      // console.log(amountInINR);      
+      const rate = this.exchangeRates[this.selectedCurrency.code];   
+      // let amount: number = this.convertCurrency(baseAmount,this.oldCurrencyCode,this.selectedCurrency.code);
+      // console.log(amount);   
+      console.log(this.convertExpenseToselectedCurrency(baseAmount,this.oldCurrencyCode,this.selectedCurrency.code));
+      // return baseAmount * rate;
+      return this.convertExpenseToselectedCurrency(baseAmount,this.oldCurrencyCode,this.selectedCurrency.code);
     }
     return baseAmount;
+  }
+
+  convertExpenseToAdminCurrency(amount: number, adminCurrencyCode: string, usercurrencycode: string): number | null {
+    const rateToINRUser = this.exchangeRates[usercurrencycode];
+    const reteToINRAdmin = this.exchangeRates[adminCurrencyCode];
+    if(!rateToINRUser || !reteToINRAdmin) {
+      alert("Invalid currency codes or missing exchange rates");
+      return null;
+    }
+    //converting thr user amount to INR
+    const userAmountInINR = amount / rateToINRUser;
+    // console.log(userAmountInINR);
+    //converting the user INR amount to admin currency
+    const amountInAdminCurrency = userAmountInINR * reteToINRAdmin;
+    // console.log(amountInAdminCurrency);
+
+    return parseFloat(amountInAdminCurrency.toFixed(2));        
+  }
+
+  convertExpenseToselectedCurrency(amount: number, sourceCurrencyCode: string, resultcurrencyCode: string) {
+    
+    if(!this.exchangeRatesToINR[sourceCurrencyCode] || !this.exchangeRatesToINR[resultcurrencyCode]) {
+      console.error("Unsupported currency code");      
+    }
+    let amountToINR: number = amount * this.exchangeRatesToINR[sourceCurrencyCode];
+    // console.log(amountToINR);
+    const convertedAmount = amountToINR / this.exchangeRatesToINR[resultcurrencyCode];
+    // console.log(convertedAmount);
+        
+    return convertedAmount;
   }
 
   distanceFormate = [
@@ -114,9 +245,14 @@ export class UserTripComponent implements OnInit {
     return this.distanceLabel;
   }
 
-  filterGlobal(event: Event) {
-    const input: HTMLInputElement = event.target as HTMLInputElement;
-    return this.userTripTable.filterGlobal(input.value, 'contains');
+  filterGlobal(text: string) {
+    return this.userTripTable.filterGlobal(text, 'contains');
+  }
+
+    reloadAll(text: string) {
+    if(text === '') {
+      this.filterGlobal(text);
+    }
   }
 
     @ViewChild('rowSelect') rowSelect!: ElementRef;
@@ -259,20 +395,60 @@ export class UserTripComponent implements OnInit {
 
   closeEditDailog() {
     this.showEditBucketDialog = false;
+    this.isPIV = false;
+    this.isPNV = false;
+    this.isPDV = false;
+    this.isEDV = false;
+    this.isEBV = false;
   }
-
+  isPIV: boolean = false;
+  isPNV: boolean = false;
+  isPDV: boolean = false;
+  isEDV: boolean = false;
+  isEBV: boolean = false;
   updateBucketItem() {
+    if(this.placeImage === '') {
+      this.isPIV = true;
+      return;
+    } else {
+      this.isPIV = false;
+    }
+    if(this.placeName === '') {
+      this.isPNV = true;
+      return;
+    } else {
+      this.isPNV = false;
+    }
+    if(this.placeDescription === '') {
+      this.isPDV = true;
+      return;
+    } else {
+      this.isPDV = false;
+    }
+    if(this.estimatedDistance === 0 || this.estimatedDistance === null) {
+      this.isEDV = true;
+      return;
+    } else {
+      this.isEDV = false;
+    }
+    if(this.estimatedBudget === 0 || this.estimatedBudget === null) {
+      this.isEBV = true;
+      return;
+    } else {
+      this.isEBV = false;
+    }
+    // if(!this.placeImage || !this.placeName || !this.placeDescription || !this.estimatedDistance || !this.estimatedBudget) {
+    //   this.messageService.add({severity:'error',summary:'Error',detail:'please all the fields!.'})
+    //   return;
+    // }
+
     let updateBucketData = {
       placeImage: this.placeImage,
       placeName: this.placeName,
       placeDescription: this.placeDescription,
       estimatedDistance: this.estimatedDistance,
       estimatedBudget: this.estimatedBudget
-    }
-    if(!this.placeImage || !this.placeName || !this.placeDescription || !this.estimatedDistance || !this.estimatedBudget) {
-      this.messageService.add({severity:'error',summary:'Error',detail:'please all the fields!.'})
-      return;
-    }
+    }   
 
     this.bucketListService.updateUserBucketItem(this.bucketlistId, updateBucketData, this.userId).subscribe((res) => {
       this.openUserBucketList(this.userId);
@@ -319,23 +495,4 @@ export class UserTripComponent implements OnInit {
       }
     }
   }
-  // @HostListener('document:click', ['$event'])
-  //   onDocumentClick(event: MouseEvent): void {
-  //     const target = event.target as HTMLElement;
- 
-  //     // const clickedInsideDropdown =
-  //     //   this.menuDropdown?.nativeElement.contains(target) ||
-  //     //   this.menuToggle?.nativeElement.contains(target);
- 
-  //     // if (!clickedInsideDropdown) {
-  //       this.showRowsChange = false;
-  //     // }
-  // }
-
-  // @HostListener('document:click', ['$event'])
-  // onDocumentClick(event: MouseEvent) {
-  //   console.log(event);
-    
-  //   this.showRowsChange = false;
-  // }
 }

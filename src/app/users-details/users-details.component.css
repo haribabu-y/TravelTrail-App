@@ -51,15 +51,17 @@
   border-radius: 2px;
   color: white;
   cursor: pointer;
+  height: 26px;
 }
 
-::ng-deep .p-dropdown {
+.currency-formate ::ng-deep .p-dropdown {
   height: 30px !important;
   display: flex;
   align-items: center;
+  width: 250px;
 }
 
-::ng-deep .p-dropdown .p-highlight {
+.currency-formate ::ng-deep .p-dropdown .p-highlight {
   background-color: #f3f3f3 !important;
   color: black !important;
 }
@@ -76,6 +78,10 @@
   padding: 10px;
   border-radius: 4px;
   height: 30px;
+}
+
+.searchField i {
+    cursor: pointer;
 }
 
 .searchField input {
@@ -156,6 +162,9 @@ td i {
 .selectingColumnDiv ::ng-deep .p-multiselect .p-multiselect-trigger-icon {
     display: none;
 }
+.selectingColumnDiv ::ng-deep .p-multiselect-panel .p-multiselect-items {
+  padding: 0;
+}
 
 /* Sty;ling the adding and editing the profile */
 /* .profile-img {
@@ -177,8 +186,12 @@ td i {
     color: white;
     cursor: pointer;
 } */
-::ng-deep .p-dialog .p-dialog-content {
-  padding: 20px !important;
+
+.add-Update-user ::ng-deep .p-dialog .p-dialog-header {
+  padding: 1rem 1.5rem;
+}
+ .add-Update-user ::ng-deep .p-dialog .p-dialog-content {
+  padding: 10px 20px !important;
 }
 .form-fields {
   display: flex;
@@ -240,6 +253,16 @@ td i {
     background-color: #F3F3F3;
     border: none;
     border-radius: 4px;
+}
+
+.inputfield textarea {
+  resize: none;
+}
+
+.inputfield span {
+  font-size: 12px;
+  color: red;
+  transform: translateY(-5px);
 }
 .inputfield input:focus {
     outline: none;
@@ -392,6 +415,7 @@ td i {
     border-radius: 8px;
     padding: 10px;
     font-weight: bold;
+    cursor: pointer;
 }
 
 input[type="number"]::-webkit-outer-spin-button,
@@ -480,6 +504,11 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 @media screen and (max-width: 426px) {
+
+  ::ng-deep .tableHead {
+        width: 100px !important;
+    }
+
   .currency-formate ::ng-deep .p-dropdown {
         width: 395px;
     }

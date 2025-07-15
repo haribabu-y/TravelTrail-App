@@ -65,6 +65,10 @@
     border-radius: 4px;    
 }
 
+.searchField i {
+    cursor: pointer;
+}
+
 .searchField input {
     border: none;
     background-color: #F3F3F3;
@@ -108,6 +112,10 @@
 ::ng-deep .p-listbox .p-listbox-list {
     padding: 5px 0;
 }
+
+ .add-trip-container ::ng-deep .p-dialog {
+    width: 35%;
+ }
 .right-captions .pi-plus {
     background-color: #084880;
     padding: 5px;
@@ -137,6 +145,11 @@
     background-color: #F1F1F1;
     border-radius: 4px;
     padding: 10px;
+}
+
+.field span {
+    font-size: 12px;
+    color: red;
 }
 
 .field input:focus {

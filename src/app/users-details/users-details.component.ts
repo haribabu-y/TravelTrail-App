@@ -10,6 +10,11 @@ import { Authservice } from '../Services/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
 import { MultiSelect } from 'primeng/multiselect';
+import { countries } from '../constants/countries';
+import { states } from '../constants/countries';
+import { timezones } from '../constants/countries';
+import { locales } from '../constants/countries';
+import { phoneCodes } from '../constants/countries';
 
 @Component({
   selector: 'app-users-details',
@@ -23,6 +28,8 @@ export class UsersDetailsComponent implements OnInit {
   bucketListService: BucketListService = inject(BucketListService)
   users: UserDetail[] = [];
   isDarkMode: boolean = false;
+  currencyCode: string;
+  oldCurrencyCode: string;
 
   ngOnInit(): void {
     
@@ -34,7 +41,7 @@ export class UsersDetailsComponent implements OnInit {
         username: new FormControl(null, [Validators.required, Validators.maxLength(20),Validators.pattern(/^[a-zA-Z0-9]+$/)]),
         firstName: new FormControl(null, [Validators.required, Validators.maxLength(30), Validators.pattern(/^[a-zA-Z0-9 ]+$/)]),
         lastName: new FormControl(null, [Validators.maxLength(30), Validators.pattern(/^[a-zA-Z0-9 ]+$/)]),
-        gender: new FormControl('male', Validators.required),
+        gender: new FormControl('Male', Validators.required),
         dob: new FormControl(null, Validators.required),
         email: new FormControl(null, [Validators.required, Validators.email, Validators.maxLength(100)]),
         countryCode: new FormControl(null, Validators.required),
@@ -51,6 +58,9 @@ export class UsersDetailsComponent implements OnInit {
 
     this.sharedService.isDarkMode.subscribe((res) => this.isDarkMode = res);
     localStorage.getItem('theme') === 'dark' ? this.isDarkMode = true : this.isDarkMode = false;
+
+    this.currencyCode = JSON.parse(localStorage.getItem('user')).country['currencyCode'];
+    this.oldCurrencyCode = JSON.parse(localStorage.getItem('user')).country['currencyCode'];
   }
 
   getAllUserDetails() {
@@ -65,7 +75,7 @@ export class UsersDetailsComponent implements OnInit {
         let age: number = new Date().getFullYear() - new Date(user.dob).getFullYear();
         console.log(user.country);        
         let countryObj = user.country;
-        let country = Object.values(countryObj)[1];
+        let country = Object.values(countryObj)[3];
         console.log(country);        
         let totalExpense: number = 0;
         if (user.trips) {
@@ -74,7 +84,14 @@ export class UsersDetailsComponent implements OnInit {
             totalExpense += user.trips[key].totalExpense;
           });
         }
-        let userDetail = new UserDetail(id,username, userimage, age, country, totalExpense);
+        let adminCurrencyCode = this.currencyCode;
+        let userCurrencyCode= user.country['currencyCode']; 
+        console.log(adminCurrencyCode);
+        console.log(userCurrencyCode); 
+        
+        let userTotalExpense: number = this.convertExpenseToAdminCurrency(totalExpense,adminCurrencyCode,userCurrencyCode)
+        console.log(userTotalExpense);        
+        let userDetail = new UserDetail(id,username, userimage, age, country, userTotalExpense);
         allUsers.push(userDetail);   
       }
       console.log(this.users);
@@ -87,43 +104,176 @@ export class UsersDetailsComponent implements OnInit {
   }
 
   currencyFormate = [
-    { name: '$  Doller', code: 'USD', symbol: '$' },
-    { name: '₹  Rupees', code: 'INR', symbol: '₹' },
-    { name: '€  Euro', code: 'EUR', symbol: '€' },
-    { name: '£  Pound', code: 'GBP', symbol: '£' },
-    { name: '¥  Yen', code: 'JPY', symbol: '¥' },
+    // { name: '$  Doller', code: 'USD', symbol: '$' },
+    // { name: '₹  Rupees', code: 'INR', symbol: '₹' },
+    // { name: '€  Euro', code: 'EUR', symbol: '€' },
+    // { name: '£  Pound', code: 'GBP', symbol: '£' },
+    // { name: '¥  Yen', code: 'JPY', symbol: '¥' },
+      { name: '₹ Rupees', code: 'INR', symbol: '₹' },
+      { name: '$ Dollar', code: 'USD', symbol: '$' },
+      { name: '€ Euro', code: 'EUR', symbol: '€' },
+      { name: 'лв Lev', code: 'BGN', symbol: 'лв' },
+      { name: 'kn Kuna', code: 'HRK', symbol: 'kn' },
+      { name: 'Kč Koruna', code: 'CZK', symbol: 'Kč' },
+      { name: 'kr Krone', code: 'DKK', symbol: 'kr' },
+      { name: 'Ft Forint', code: 'HUF', symbol: 'Ft' },
+      { name: 'kr Króna', code: 'ISK', symbol: 'kr' },
+      { name: 'kr Krone', code: 'NOK', symbol: 'kr' },
+      { name: 'zł Zloty', code: 'PLN', symbol: 'zł' },
+      { name: 'lei Leu', code: 'RON', symbol: 'lei' },
+      { name: 'kr Krona', code: 'SEK', symbol: 'kr' },
+      { name: 'Fr Franc', code: 'CHF', symbol: 'Fr' },
+      { name: '£ Pound', code: 'GBP', symbol: '£' },
+      { name: '$ Peso', code: 'ARS', symbol: '$' },
+      { name: 'Bs. Boliviano', code: 'BOB', symbol: 'Bs.' },
+      { name: 'R$ Real', code: 'BRL', symbol: 'R$' },
+      { name: '$ Peso', code: 'CLP', symbol: '$' },
+      { name: '$ Peso', code: 'COP', symbol: '$' },
+      { name: 'G$ Dollar', code: 'GYD', symbol: 'G$' },
+      { name: '₲ Guarani', code: 'PYG', symbol: '₲' },
+      { name: 'S/. Sol', code: 'PEN', symbol: 'S/.' },
+      { name: '$ Dollar', code: 'SRD', symbol: '$' },
+      { name: '$U Peso', code: 'UYU', symbol: '$U' },
+      { name: 'Bs.S. Bolívar', code: 'VES', symbol: 'Bs.S.' },
+      { name: '¥ Yen', code: 'JPY', symbol: '¥' }, // For comparison only
   ];
 
-  exchangeRates: { [key: string]: number } = {
-    'INR': 1,      // 1 INR is 1 INR
-    'USD': 0.012,  // 1 INR = 0.012 USD (example rate as of July 2025)
-    'EUR': 0.011,  // 1 INR = 0.011 EUR
-    'GBP': 0.0095, // 1 INR = 0.0095 GBP
-    'JPY': 1.85,   // 1 INR = 1.85 JPY
+exchangeRates: { [key: string]: number } = {
+    // 'INR': 1,      // 1 INR is 1 INR
+    // 'USD': 0.012,  // 1 INR = 0.012 USD (example rate as of July 2025)
+    // 'EUR': 0.011,  // 1 INR = 0.011 EUR
+    // 'GBP': 0.0095, // 1 INR = 0.0095 GBP
+    // 'JPY': 1.85,   // 1 INR = 1.85 JPY
+    'INR': 1,        // Base
+    'USD': 0.012,    // US Dollar
+    'EUR': 0.011,    // Euro
+    'BGN': 0.021,    // Bulgarian Lev
+    'HRK': 0.083,    // Croatian Kuna (historical, now uses EUR)
+    'CZK': 0.27,     // Czech Koruna
+    'DKK': 0.082,    // Danish Krone
+    'HUF': 4.4,      // Hungarian Forint
+    'ISK': 1.6,      // Icelandic Króna
+    'NOK': 0.13,     // Norwegian Krone
+    'PLN': 0.048,    // Polish Złoty
+    'RON': 0.056,    // Romanian Leu
+    'SEK': 0.13,     // Swedish Krona
+    'CHF': 0.0108,   // Swiss Franc
+    'GBP': 0.0095,   // British Pound
+    'ARS': 10.2,     // Argentine Peso
+    'BOB': 0.083,    // Boliviano
+    'BRL': 0.065,    // Brazilian Real
+    'CLP': 11.1,     // Chilean Peso
+    'COP': 48.2,     // Colombian Peso
+    'GYD': 2.5,      // Guyanese Dollar
+    'PYG': 88.0,     // Paraguayan Guarani
+    'PEN': 0.045,    // Peruvian Sol
+    'SRD': 0.45,     // Surinamese Dollar
+    'UYU': 0.47,     // Uruguayan Peso
+    'VES': 0.44,     // Venezuelan Bolívar Soberano
+    // Duplicate currencies across countries
+    'JPY': 1.85
   };
 
-  selectedCurrency: any;
-  currencyCode: string = 'INR';
-  displayAmount: number;
+  exchangeRatesToINR: { [key: string]: number } = {
+  'INR': 1,           // Base
+  'USD': 83.33,       // 1 USD = 83.33 INR
+  'EUR': 90.91,       // 1 EUR = 90.91 INR
+  'BGN': 47.62,       // 1 BGN = 47.62 INR
+  'HRK': 12.05,       // 1 HRK = 12.05 INR
+  'CZK': 3.70,        // 1 CZK = 3.70 INR
+  'DKK': 12.20,       // 1 DKK = 12.20 INR
+  'HUF': 0.227,       // 1 HUF = 0.227 INR
+  'ISK': 0.625,       // 1 ISK = 0.625 INR
+  'NOK': 7.69,        // 1 NOK = 7.69 INR
+  'PLN': 20.83,       // 1 PLN = 20.83 INR
+  'RON': 17.86,       // 1 RON = 17.86 INR
+  'SEK': 7.69,        // 1 SEK = 7.69 INR
+  'CHF': 92.59,       // 1 CHF = 92.59 INR
+  'GBP': 105.26,      // 1 GBP = 105.26 INR
+  'ARS': 0.098,       // 1 ARS = 0.098 INR
+  'BOB': 12.05,       // 1 BOB = 12.05 INR
+  'BRL': 15.38,       // 1 BRL = 15.38 INR
+  'CLP': 0.090,       // 1 CLP = 0.090 INR
+  'COP': 0.021,       // 1 COP = 0.021 INR
+  'GYD': 0.40,        // 1 GYD = 0.40 INR
+  'PYG': 0.0114,      // 1 PYG = 0.0114 INR
+  'PEN': 22.22,       // 1 PEN = 22.22 INR
+  'SRD': 2.22,        // 1 SRD = 2.22 INR
+  'UYU': 2.13,        // 1 UYU = 2.13 INR
+  'VES': 2.27,        // 1 VES = 2.27 INR
+  'JPY': 0.54         // 1 JPY = 0.54 INR
+};
 
+  selectedCurrency: any;
+  displayAmount: number;
+  userCurrencyCode: string;
+  usercurrencySymbol: string;
+  
   currencyFormateChanged() {
+    // this.oldCurrencyCode = this.currencyCode;
     this.currencyCode = this.selectedCurrency.code;
+    this.usercurrencySymbol = this.selectedCurrency.symbol;
   }
 
   convertAmount(baseAmount?: number): number {
     if (this.selectedCurrency && this.exchangeRates[this.selectedCurrency.code]) {
+      // console.log(this.oldCurrencyCode);      
+      // console.log(this.selectedCurrency.code);      
       const rate = this.exchangeRates[this.selectedCurrency.code];
-      return baseAmount * rate;
+      // console.log(rate);
+      // console.log(baseAmount);
+      console.log(this.convertExpenseToselectedCurrency(baseAmount,this.oldCurrencyCode,this.selectedCurrency.code));
+      
+      // return baseAmount * rate;
+      return this.convertExpenseToselectedCurrency(baseAmount,this.oldCurrencyCode,this.selectedCurrency.code);
     }
     return baseAmount;
   }
 
+    convertExpenseToAdminCurrency(amount: number, adminCurrencyCode: string, usercurrencycode: string): number | null {
+      console.log(adminCurrencyCode);
+      console.log(usercurrencycode);      
+    const rateToINRUser = this.exchangeRates[usercurrencycode];
+    const reteToINRAdmin = this.exchangeRates[adminCurrencyCode];
+    if(!rateToINRUser || !reteToINRAdmin) {
+      // alert("Invalid currency codes or missing exchange rates");
+      return null;
+    }
+    //converting thr user amount to INR
+    const userAmountInINR = amount / rateToINRUser;
+    // console.log(userAmountInINR);
+    //converting the user INR amount to admin currency
+    const amountInAdminCurrency = userAmountInINR * reteToINRAdmin;
+    // console.log(amountInAdminCurrency);
+
+    return parseFloat(amountInAdminCurrency.toFixed(2));        
+  }
+
+  convertExpenseToselectedCurrency(amount: number, sourceCurrencyCode: string, resultcurrencyCode: string) {
+    
+    if(!this.exchangeRatesToINR[sourceCurrencyCode] || !this.exchangeRatesToINR[resultcurrencyCode]) {
+      console.error("Unsupported currency code");      
+    }
+    let amountToINR: number = amount * this.exchangeRatesToINR[sourceCurrencyCode];
+    // console.log(amountToINR);
+    const convertedAmount = amountToINR / this.exchangeRatesToINR[resultcurrencyCode];
+    // console.log(convertedAmount);
+        
+    return convertedAmount;
+  }
+
   isLoading: boolean = false;
 
-  filterGlobal(event: Event) {
-    const input: HTMLInputElement = event.target as HTMLInputElement;
-    return this.usersDetailTable.filterGlobal(input.value, 'contains');
+  filterGlobal(text: string) {
+    return this.usersDetailTable.filterGlobal(text, 'contains');
   }
+
+    reloadAll(text: string) {
+    if(text === '') {
+      this.filterGlobal(text);
+    }
+  }
+
    @ViewChild('rowSelect') rowSelect;
   numOfRows: number = 10;
   showRowsChange: boolean = false;
@@ -231,165 +381,11 @@ export class UsersDetailsComponent implements OnInit {
     this.selectedGender = value;
   }
 
-  countries = [
-    { name: 'India', code: 'IN' },
-    { name: 'United States', code: 'US' },
-    { name: 'Armenia', code: 'AM' },
-    { name: 'Austria', code: 'AT' },
-    { name: 'Belgium', code: 'BE' },
-    { name: 'Finland', code: 'FI' },
-    { name: 'France', code: 'FR' },
-    { name: 'Germany', code: 'DE' },
-    { name: 'Iceland', code: 'IS' },
-    { name: 'Italy', code: 'IT' },
-    { name: 'Norway', code: 'NO' },
-    { name: 'Romania', code: 'RO' },
-    { name: 'Russia', code: 'RU' },
-    { name: 'Spain', code: 'ES' },
-    { name: 'Turkey', code: 'TR' },
-    { name: 'United Kingdom', code: 'GB' },
-    { name: 'Vatican City', code: 'VA' },
-    { name: 'Brazil', code: 'BR' },
-    { name: 'Colombia', code: 'CO' },
-    { name: 'Venezuela', code: 'VE' },
-  ];
-
-  states = {
-    IN: [
-      { name: 'Andhra Pradesh', code: 'AP' },
-      { name: 'Arunachal Pradesh', code: 'AR' },
-      { name: 'Assam', code: 'AS' },
-      { name: 'Bihar', code: 'BR' },
-      { name: 'Chhattisgarh', code: 'CG' },
-      { name: 'Goa', code: 'GA' },
-      { name: 'Gujarat', code: 'GJ' },
-      { name: 'Haryana', code: 'HR' },
-      { name: 'Himachal Pradesh', code: 'HP' },
-      { name: 'Jharkhand', code: 'JH' },
-      { name: 'Karnataka', code: 'KA' },
-      { name: 'Kerala', code: 'KL' },
-      { name: 'Madhya Pradesh', code: 'MP' },
-      { name: 'Maharashtra', code: 'MH' },
-      { name: 'Manipur', code: 'MN' },
-      { name: 'Meghalaya', code: 'ML' },
-      { name: 'Mizoram', code: 'MZ' },
-      { name: 'Nagaland', code: 'NL' },
-      { name: 'Odisha', code: 'OR' },
-      { name: 'Punjab', code: 'PB' },
-      { name: 'Rajasthan', code: 'RJ' },
-      { name: 'Sikkim', code: 'SK' },
-      { name: 'Tamil Nadu', code: 'TN' },
-      { name: 'Telangana', code: 'TG' },
-      { name: 'Tripura', code: 'TR' },
-      { name: 'Uttar Pradesh', code: 'UP' },
-      { name: 'Uttarakhand', code: 'UT' },
-      { name: 'West Bengal', code: 'WB' },
-      // Union Territories
-      { name: 'Andaman and Nicobar Islands', code: 'AN' },
-      { name: 'Chandigarh', code: 'CH' },
-      { name: 'Dadra and Nagar Haveli and Daman and Diu', code: 'DN' },
-      { name: 'Delhi', code: 'DL' },
-      { name: 'Jammu and Kashmir', code: 'JK' },
-      { name: 'Ladakh', code: 'LA' },
-      { name: 'Lakshadweep', code: 'LD' },
-      { name: 'Puducherry', code: 'PY' },
-    ],
-    US: [
-      { name: 'Alabama', code: 'AL' },
-      { name: 'Alaska', code: 'AK' },
-      { name: 'Arizona', code: 'AZ' },
-      { name: 'Arkansas', code: 'AR' },
-      { name: 'California', code: 'CA' },
-      { name: 'Colorado', code: 'CO' },
-      { name: 'Connecticut', code: 'CT' },
-      { name: 'Delaware', code: 'DE' },
-      { name: 'District of Columbia', code: 'DC' },
-      { name: 'Florida', code: 'FL' },
-      { name: 'Georgia', code: 'GA' },
-      { name: 'Hawaii', code: 'HI' },
-      { name: 'Idaho', code: 'ID' },
-      { name: 'Illinois', code: 'IL' },
-      { name: 'Indiana', code: 'IN' },
-      { name: 'Iowa', code: 'IA' },
-      { name: 'Kansas', code: 'KS' },
-      { name: 'Kentucky', code: 'KY' },
-      { name: 'Louisiana', code: 'LA' },
-      { name: 'Maine', code: 'ME' },
-      { name: 'Maryland', code: 'MD' },
-      { name: 'Massachusetts', code: 'MA' },
-      { name: 'Michigan', code: 'MI' },
-      { name: 'Minnesota', code: 'MN' },
-      { name: 'Mississippi', code: 'MS' },
-      { name: 'Missouri', code: 'MO' },
-      { name: 'Montana', code: 'MT' },
-      { name: 'Nebraska', code: 'NE' },
-      { name: 'Nevada', code: 'NV' },
-      { name: 'New Hampshire', code: 'NH' },
-      { name: 'New Jersey', code: 'NJ' },
-      { name: 'New Mexico', code: 'NM' },
-      { name: 'New York', code: 'NY' },
-      { name: 'North Carolina', code: 'NC' },
-      { name: 'North Dakota', code: 'ND' },
-      { name: 'Ohio', code: 'OH' },
-      { name: 'Oklahoma', code: 'OK' },
-      { name: 'Oregon', code: 'OR' },
-      { name: 'Pennsylvania', code: 'PA' },
-      { name: 'Rhode Island', code: 'RI' },
-      { name: 'South Carolina', code: 'SC' },
-      { name: 'South Dakota', code: 'SD' },
-      { name: 'Tennessee', code: 'TN' },
-      { name: 'Texas', code: 'TX' },
-      { name: 'Utah', code: 'UT' },
-      { name: 'Vermont', code: 'VT' },
-      { name: 'Virginia', code: 'VA' },
-      { name: 'Washington', code: 'WA' },
-      { name: 'West Virginia', code: 'WV' },
-      { name: 'Wisconsin', code: 'WI' },
-      { name: 'Wyoming', code: 'WY' },
-    ],
-  };
-  timezones = [
-    'Asia/Kolkata',
-    'America/New_York',
-    'Europe/London',
-    'America/Los_Angeles',
-    // Add more timezones
-  ];
-
-  locales = [
-    'en-US',
-    'en-GB',
-    'hi-IN',
-    'de-DE',
-    // Add more locales
-  ];
-
-  countryCode = [
-    { name: 'India', code: '+91' },
-    { name: 'USA', code: '+1' },
-    { name: 'United Kingdom', code: '+44' },
-    { name: 'Germany', code: '+49' },
-    { name: 'France', code: '+33' },
-    { name: 'Brazil', code: '+55' },
-    { name: 'Argentina', code: '+54' },
-    { name: 'Spain', code: '+34' },
-    { name: 'Italy', code: '+39' },
-    { name: 'Netherlands', code: '+31' },
-    { name: 'Poland', code: '+48' },
-    { name: 'Sweden', code: '+46' },
-    { name: 'Portugal', code: '+351' },
-    { name: 'Mexico', code: '+52' },
-    { name: 'Colombia', code: '+57' },
-    { name: 'Peru', code: '+51' },
-    { name: 'Chile', code: '+56' },
-    { name: 'Venezuela', code: '+58' },
-    { name: 'Uruguay', code: '+598' },
-    { name: 'Norway', code: '+47' },
-    { name: 'Denmark', code: '+45' },
-    { name: 'Finland', code: '+358' },
-    { name: 'Belgium', code: '+32' },
-    { name: 'Austria', code: '+43' }
-  ]
+  countries = countries;
+  states = states;
+  timeZones = timezones;
+  locales = locales;
+  phoneCode = phoneCodes;
 
   filteredstates: any[] = [];
   // @ViewChild('addUserForm') addUserForm: NgForm;
@@ -400,43 +396,95 @@ export class UsersDetailsComponent implements OnInit {
   onCountryChanges(country: any) {
     this.filteredstates = this.states[country.code] || [];
   }
-  // username: string = ''
-  // firstname: string = ''
-  // lastname: string = ''
-  // gender: string = 'male'
-  // dob: Date
-  // email: string = ''
-  // address: string = ''
-  // country: string = ''
-  // state: string = ''
-  // zipcode: number = null;
-  // timezone: string = ''
-  // locale: string = ''
-  // isAdmin: boolean = false;
-  // phone: string = ''
-  // password: string = ''
+
+  isUV: boolean = false;
+  isFNLNV: boolean = false;
+  isPNCV: boolean = false;
+  isPNV: boolean = false;
+  isDOBV: boolean = false;
+  isEV: boolean = false;
+  isAV: boolean = false;
+  isCV: boolean = false;
+  isZCV: boolean = false;
+  isTZV: boolean = false;
+  isPV: boolean = false;
+
   addOrUpdateUser(id?: string) {
     console.log(this.addUserForm1);  
     
     if(this.addUserForm1.controls['username'].invalid) {
       let errMsg = 'For username! Only alphanumric characters Allowed, Space is not Allowed and Maximum lenght is 20 Characters';
       this.messageService.add({severity:'warn', summary:'Warn', detail: errMsg})
+      this.isUV = true;
       return;
+    } else {
+      this.isUV = false;
     }
     if(this.addUserForm1.controls['firstName'].invalid || this.addUserForm1.controls['lastName'].invalid) {
       let errMsg = 'For FirstName and LastName! Only alphanumric characters and space Allowed and Maximum lenght is 30 Characters';
       this.messageService.add({severity:'warn', summary:'Warn', detail: errMsg})
+      this.isFNLNV = true;
       return;
+    } else {
+      this.isFNLNV = false;
     }
-    
+    if(this.addUserForm1.controls['email'].invalid) {
+      this.isEV = true;
+      return;
+    } else {
+      this.isEV = false;
+    }
+    if(this.addUserForm1.controls['countryCode'].invalid) {
+      this.isPNCV = true;
+      return;
+    } else {
+      this.isPNCV = false;
+    }
     if(this.addUserForm1.controls['phone'].invalid) {
-      this.messageService.add({severity:'warn', summary:'Warn', detail:'Enter Valid Mobile number atleast 10 digits!.'})
-      return
-    }
-    if(new Date(this.addUserForm1.value.dob) > new Date()) {
-      this.messageService.add({severity:'warn', summary:'Warn', detail:'Date of Birth must less the today!.'})
+      this.messageService.add({severity:'warn', summary:'Warn', detail:'Enter Valid Mobile number atleast 10 digits!.'});
+      this.isPNV = true;
       return;
+    } else {
+      this.isPNV = false;
     }
+    if(new Date(this.addUserForm1.value.dob) > new Date() || this.addUserForm1.controls['dob'].invalid) {
+      this.messageService.add({severity:'warn', summary:'Warn', detail:'Date of Birth must less the today!.'});
+      this.isDOBV = true;
+      return;
+    } else{
+      this.isDOBV = false;
+    }
+    if(this.addUserForm1.controls['address'].invalid) {
+      this.isAV = true;
+      return;
+    } else {
+      this.isAV = false;
+    }
+    if(this.addUserForm1.controls['country'].invalid) {
+      this.isCV = true;
+      return;
+    } else {
+      this.isCV = false;
+    }
+    if(this.addUserForm1.controls['zipCode'].invalid) {
+      this.isZCV = true;
+      return;
+    } else {
+      this.isZCV = false;
+    }
+    if(this.addUserForm1.controls['timeZone'].invalid) {
+      this.isTZV = true;
+      return;
+    } else {
+    this.isTZV = false;
+    }
+    if(this.addUserForm1.controls['password'].invalid) {
+      this.isPV = true;
+      return;
+    } else {
+      this.isPV = false;
+    }
+
     if(this.addUserForm1.invalid){
       // // alert('Fill all manditory fields');
       // this.messageService.add({severity:'error', summary:'Error', detail:'Fill all manditory fields'})
@@ -502,6 +550,18 @@ export class UsersDetailsComponent implements OnInit {
     this.userToEditId = ''
     this.profileImage = 'assets/users/defaultProfileImg.jpg';
 
+    this.isUV = false;
+    this.isFNLNV = false;
+    this.isDOBV = false;
+    this.isEV = false;
+    this.isPNCV = false;
+    this.isPNV = false;
+    this.isAV = false;
+    this.isCV = false;
+    this.isZCV = false;
+    this.isTZV = false;
+    this.isPV = false;
+
   }
   userToEdit: User;
   userToEditId: string;
@@ -520,31 +580,17 @@ export class UsersDetailsComponent implements OnInit {
       this.profileImage = user.profileImage ? user.profileImage : `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName ? user.lastName : ''}&bold=true`;
       this.addUserForm1.patchValue(this.userToEdit);
       this.addUserForm1.patchValue({profileImage: this.profileImage});
-      // this.addUserForm1.setValue({
-      //   profileImage: user.profileImage,
-      //   username: user.username,
-      //   firstName: user.firstName,
-      //   lastName: user.lastName || '',
-      //   gender: user.gender,
-      //   dob: user.dob || '',
-      //   email: user.email,
-      //   phone: user.phone,
-      //   address: user.address || '',
-      //   country: user.country || '',
-      //   state: user.state,
-      //   zipCode: user.zipCode || '',
-      //   timeZone: user.timeZone || '',
-      //   locale: user.locale || '',
-      //   isAdmin: user.isAdmin || false,
-      //   password: user.password,
-      // });
     })
   }
   showDeleteUserdailog: boolean = false;
   userId: string = '';
   showDeleteUser(id: string) {
     console.log(id); 
-    this.userId = id;   
+    this.userId = id;
+    if(id === JSON.parse(localStorage.getItem('user')).id) {
+      this.messageService.add({severity:'warn', summary:'Warn', detail:"Admin can't delete himself!."});
+      return;
+    }
     this.showDeleteUserdailog = true;
   }
 

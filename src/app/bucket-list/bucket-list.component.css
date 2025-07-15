@@ -107,6 +107,12 @@
     padding: 10px;
 }
 
+.field span {
+    font-size: 12px;
+    color: red;
+    transform: translateY(-5px);
+}
+
 .field input:focus {
     outline: none;
 }

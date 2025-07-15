@@ -124,6 +124,7 @@ body {
     border: none;
     padding: 10px;
     font-size: 20px;
+    cursor: pointer;
 }
 
 .login-container p {

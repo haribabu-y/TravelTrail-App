@@ -7,6 +7,11 @@ import { catchError, map, throwError } from 'rxjs';
 import { SharedService } from '../Services/shared.service';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
+import { countries } from '../constants/countries';
+import { states } from '../constants/countries';
+import { timezones } from '../constants/countries';
+import { locales } from '../constants/countries';
+import { phoneCodes } from '../constants/countries';
 
 
 @Component({
@@ -22,167 +27,176 @@ export class SignupComponent implements OnInit, AfterViewChecked {
     this.selectedGender = value;
   }
 
-  countries = [
-    { name: 'India', code: 'IN' },
-    { name: 'United States', code: 'US' },
-    { name: 'Armenia', code: 'AM' },
-    { name: 'Austria', code: 'AT' },
-    { name: 'Belgium', code: 'BE' },
-    { name: 'Finland', code: 'FI' },
-    { name: 'France', code: 'FR' },
-    { name: 'Germany', code: 'DE' },
-    { name: 'Iceland', code: 'IS' },
-    { name: 'Italy', code: 'IT' },
-    { name: 'Norway', code: 'NO' },
-    { name: 'Romania', code: 'RO' },
-    { name: 'Russia', code: 'RU' },
-    { name: 'Spain', code: 'ES' },
-    { name: 'Turkey', code: 'TR' },
-    { name: 'United Kingdom', code: 'GB' },
-    { name: 'Vatican City', code: 'VA' },
-    { name: 'Brazil', code: 'BR' },
-    { name: 'Colombia', code: 'CO' },
-    { name: 'Venezuela', code: 'VE' },
-  ];
+  countries = countries;
 
-  states = {
-    IN: [
-      { name: 'Andhra Pradesh', code: 'AP' },
-      { name: 'Arunachal Pradesh', code: 'AR' },
-      { name: 'Assam', code: 'AS' },
-      { name: 'Bihar', code: 'BR' },
-      { name: 'Chhattisgarh', code: 'CG' },
-      { name: 'Goa', code: 'GA' },
-      { name: 'Gujarat', code: 'GJ' },
-      { name: 'Haryana', code: 'HR' },
-      { name: 'Himachal Pradesh', code: 'HP' },
-      { name: 'Jharkhand', code: 'JH' },
-      { name: 'Karnataka', code: 'KA' },
-      { name: 'Kerala', code: 'KL' },
-      { name: 'Madhya Pradesh', code: 'MP' },
-      { name: 'Maharashtra', code: 'MH' },
-      { name: 'Manipur', code: 'MN' },
-      { name: 'Meghalaya', code: 'ML' },
-      { name: 'Mizoram', code: 'MZ' },
-      { name: 'Nagaland', code: 'NL' },
-      { name: 'Odisha', code: 'OR' },
-      { name: 'Punjab', code: 'PB' },
-      { name: 'Rajasthan', code: 'RJ' },
-      { name: 'Sikkim', code: 'SK' },
-      { name: 'Tamil Nadu', code: 'TN' },
-      { name: 'Telangana', code: 'TG' },
-      { name: 'Tripura', code: 'TR' },
-      { name: 'Uttar Pradesh', code: 'UP' },
-      { name: 'Uttarakhand', code: 'UT' },
-      { name: 'West Bengal', code: 'WB' },
-      // Union Territories
-      { name: 'Andaman and Nicobar Islands', code: 'AN' },
-      { name: 'Chandigarh', code: 'CH' },
-      { name: 'Dadra and Nagar Haveli and Daman and Diu', code: 'DN' },
-      { name: 'Delhi', code: 'DL' },
-      { name: 'Jammu and Kashmir', code: 'JK' },
-      { name: 'Ladakh', code: 'LA' },
-      { name: 'Lakshadweep', code: 'LD' },
-      { name: 'Puducherry', code: 'PY' },
-    ],
-    US: [
-      { name: 'Alabama', code: 'AL' },
-      { name: 'Alaska', code: 'AK' },
-      { name: 'Arizona', code: 'AZ' },
-      { name: 'Arkansas', code: 'AR' },
-      { name: 'California', code: 'CA' },
-      { name: 'Colorado', code: 'CO' },
-      { name: 'Connecticut', code: 'CT' },
-      { name: 'Delaware', code: 'DE' },
-      { name: 'District of Columbia', code: 'DC' },
-      { name: 'Florida', code: 'FL' },
-      { name: 'Georgia', code: 'GA' },
-      { name: 'Hawaii', code: 'HI' },
-      { name: 'Idaho', code: 'ID' },
-      { name: 'Illinois', code: 'IL' },
-      { name: 'Indiana', code: 'IN' },
-      { name: 'Iowa', code: 'IA' },
-      { name: 'Kansas', code: 'KS' },
-      { name: 'Kentucky', code: 'KY' },
-      { name: 'Louisiana', code: 'LA' },
-      { name: 'Maine', code: 'ME' },
-      { name: 'Maryland', code: 'MD' },
-      { name: 'Massachusetts', code: 'MA' },
-      { name: 'Michigan', code: 'MI' },
-      { name: 'Minnesota', code: 'MN' },
-      { name: 'Mississippi', code: 'MS' },
-      { name: 'Missouri', code: 'MO' },
-      { name: 'Montana', code: 'MT' },
-      { name: 'Nebraska', code: 'NE' },
-      { name: 'Nevada', code: 'NV' },
-      { name: 'New Hampshire', code: 'NH' },
-      { name: 'New Jersey', code: 'NJ' },
-      { name: 'New Mexico', code: 'NM' },
-      { name: 'New York', code: 'NY' },
-      { name: 'North Carolina', code: 'NC' },
-      { name: 'North Dakota', code: 'ND' },
-      { name: 'Ohio', code: 'OH' },
-      { name: 'Oklahoma', code: 'OK' },
-      { name: 'Oregon', code: 'OR' },
-      { name: 'Pennsylvania', code: 'PA' },
-      { name: 'Rhode Island', code: 'RI' },
-      { name: 'South Carolina', code: 'SC' },
-      { name: 'South Dakota', code: 'SD' },
-      { name: 'Tennessee', code: 'TN' },
-      { name: 'Texas', code: 'TX' },
-      { name: 'Utah', code: 'UT' },
-      { name: 'Vermont', code: 'VT' },
-      { name: 'Virginia', code: 'VA' },
-      { name: 'Washington', code: 'WA' },
-      { name: 'West Virginia', code: 'WV' },
-      { name: 'Wisconsin', code: 'WI' },
-      { name: 'Wyoming', code: 'WY' },
-    ],
-  };
+  // countries = [
+  //   { name: 'India', code: 'IN' },
+  //   { name: 'United States', code: 'US' },
+  //   { name: 'Armenia', code: 'AM' },
+  //   { name: 'Austria', code: 'AT' },
+  //   { name: 'Belgium', code: 'BE' },
+  //   { name: 'Finland', code: 'FI' },
+  //   { name: 'France', code: 'FR' },
+  //   { name: 'Germany', code: 'DE' },
+  //   { name: 'Iceland', code: 'IS' },
+  //   { name: 'Italy', code: 'IT' },
+  //   { name: 'Norway', code: 'NO' },
+  //   { name: 'Romania', code: 'RO' },
+  //   { name: 'Russia', code: 'RU' },
+  //   { name: 'Spain', code: 'ES' },
+  //   { name: 'Turkey', code: 'TR' },
+  //   { name: 'United Kingdom', code: 'GB' },
+  //   { name: 'Vatican City', code: 'VA' },
+  //   { name: 'Brazil', code: 'BR' },
+  //   { name: 'Colombia', code: 'CO' },
+  //   { name: 'Venezuela', code: 'VE' },
+  // ];
 
-  timezones = [
-    'Asia/Kolkata',
-    'America/New_York',
-    'Europe/London',
-    'America/Los_Angeles',
-    // Add more timezones
-  ];
+  states = states;
 
-  locales = [
-    'en-US',
-    'en-GB',
-    'hi-IN',
-    'de-DE',
-    // Add more locales
-  ];
+  // states = {
+  //   IN: [
+  //     { name: 'Andhra Pradesh', code: 'AP' },
+  //     { name: 'Arunachal Pradesh', code: 'AR' },
+  //     { name: 'Assam', code: 'AS' },
+  //     { name: 'Bihar', code: 'BR' },
+  //     { name: 'Chhattisgarh', code: 'CG' },
+  //     { name: 'Goa', code: 'GA' },
+  //     { name: 'Gujarat', code: 'GJ' },
+  //     { name: 'Haryana', code: 'HR' },
+  //     { name: 'Himachal Pradesh', code: 'HP' },
+  //     { name: 'Jharkhand', code: 'JH' },
+  //     { name: 'Karnataka', code: 'KA' },
+  //     { name: 'Kerala', code: 'KL' },
+  //     { name: 'Madhya Pradesh', code: 'MP' },
+  //     { name: 'Maharashtra', code: 'MH' },
+  //     { name: 'Manipur', code: 'MN' },
+  //     { name: 'Meghalaya', code: 'ML' },
+  //     { name: 'Mizoram', code: 'MZ' },
+  //     { name: 'Nagaland', code: 'NL' },
+  //     { name: 'Odisha', code: 'OR' },
+  //     { name: 'Punjab', code: 'PB' },
+  //     { name: 'Rajasthan', code: 'RJ' },
+  //     { name: 'Sikkim', code: 'SK' },
+  //     { name: 'Tamil Nadu', code: 'TN' },
+  //     { name: 'Telangana', code: 'TG' },
+  //     { name: 'Tripura', code: 'TR' },
+  //     { name: 'Uttar Pradesh', code: 'UP' },
+  //     { name: 'Uttarakhand', code: 'UT' },
+  //     { name: 'West Bengal', code: 'WB' },
+  //     // Union Territories
+  //     { name: 'Andaman and Nicobar Islands', code: 'AN' },
+  //     { name: 'Chandigarh', code: 'CH' },
+  //     { name: 'Dadra and Nagar Haveli and Daman and Diu', code: 'DN' },
+  //     { name: 'Delhi', code: 'DL' },
+  //     { name: 'Jammu and Kashmir', code: 'JK' },
+  //     { name: 'Ladakh', code: 'LA' },
+  //     { name: 'Lakshadweep', code: 'LD' },
+  //     { name: 'Puducherry', code: 'PY' },
+  //   ],
+  //   US: [
+  //     { name: 'Alabama', code: 'AL' },
+  //     { name: 'Alaska', code: 'AK' },
+  //     { name: 'Arizona', code: 'AZ' },
+  //     { name: 'Arkansas', code: 'AR' },
+  //     { name: 'California', code: 'CA' },
+  //     { name: 'Colorado', code: 'CO' },
+  //     { name: 'Connecticut', code: 'CT' },
+  //     { name: 'Delaware', code: 'DE' },
+  //     { name: 'District of Columbia', code: 'DC' },
+  //     { name: 'Florida', code: 'FL' },
+  //     { name: 'Georgia', code: 'GA' },
+  //     { name: 'Hawaii', code: 'HI' },
+  //     { name: 'Idaho', code: 'ID' },
+  //     { name: 'Illinois', code: 'IL' },
+  //     { name: 'Indiana', code: 'IN' },
+  //     { name: 'Iowa', code: 'IA' },
+  //     { name: 'Kansas', code: 'KS' },
+  //     { name: 'Kentucky', code: 'KY' },
+  //     { name: 'Louisiana', code: 'LA' },
+  //     { name: 'Maine', code: 'ME' },
+  //     { name: 'Maryland', code: 'MD' },
+  //     { name: 'Massachusetts', code: 'MA' },
+  //     { name: 'Michigan', code: 'MI' },
+  //     { name: 'Minnesota', code: 'MN' },
+  //     { name: 'Mississippi', code: 'MS' },
+  //     { name: 'Missouri', code: 'MO' },
+  //     { name: 'Montana', code: 'MT' },
+  //     { name: 'Nebraska', code: 'NE' },
+  //     { name: 'Nevada', code: 'NV' },
+  //     { name: 'New Hampshire', code: 'NH' },
+  //     { name: 'New Jersey', code: 'NJ' },
+  //     { name: 'New Mexico', code: 'NM' },
+  //     { name: 'New York', code: 'NY' },
+  //     { name: 'North Carolina', code: 'NC' },
+  //     { name: 'North Dakota', code: 'ND' },
+  //     { name: 'Ohio', code: 'OH' },
+  //     { name: 'Oklahoma', code: 'OK' },
+  //     { name: 'Oregon', code: 'OR' },
+  //     { name: 'Pennsylvania', code: 'PA' },
+  //     { name: 'Rhode Island', code: 'RI' },
+  //     { name: 'South Carolina', code: 'SC' },
+  //     { name: 'South Dakota', code: 'SD' },
+  //     { name: 'Tennessee', code: 'TN' },
+  //     { name: 'Texas', code: 'TX' },
+  //     { name: 'Utah', code: 'UT' },
+  //     { name: 'Vermont', code: 'VT' },
+  //     { name: 'Virginia', code: 'VA' },
+  //     { name: 'Washington', code: 'WA' },
+  //     { name: 'West Virginia', code: 'WV' },
+  //     { name: 'Wisconsin', code: 'WI' },
+  //     { name: 'Wyoming', code: 'WY' },
+  //   ],
+  // };
 
+  timezones = timezones;
 
-  countryCode = [
-    { name: 'India', code: '+91' },
-    { name: 'USA', code: '+1' },
-    { name: 'United Kingdom', code: '+44' },
-    { name: 'Germany', code: '+49' },
-    { name: 'France', code: '+33' },
-    { name: 'Brazil', code: '+55' },
-    { name: 'Argentina', code: '+54' },
-    { name: 'Spain', code: '+34' },
-    { name: 'Italy', code: '+39' },
-    { name: 'Netherlands', code: '+31' },
-    { name: 'Poland', code: '+48' },
-    { name: 'Sweden', code: '+46' },
-    { name: 'Portugal', code: '+351' },
-    { name: 'Mexico', code: '+52' },
-    { name: 'Colombia', code: '+57' },
-    { name: 'Peru', code: '+51' },
-    { name: 'Chile', code: '+56' },
-    { name: 'Venezuela', code: '+58' },
-    { name: 'Uruguay', code: '+598' },
-    { name: 'Norway', code: '+47' },
-    { name: 'Denmark', code: '+45' },
-    { name: 'Finland', code: '+358' },
-    { name: 'Belgium', code: '+32' },
-    { name: 'Austria', code: '+43' }
-  ]
+  // timezones = [
+  //   'Asia/Kolkata',
+  //   'America/New_York',
+  //   'Europe/London',
+  //   'America/Los_Angeles',
+  //   // Add more timezones
+  // ];
+
+  locales = locales;
+
+  // locales = [
+  //   'en-US',
+  //   'en-GB',
+  //   'hi-IN',
+  //   'de-DE',
+  //   // Add more locales
+  // ];
+
+  phoneCodes = phoneCodes;
+
+  // countryCode = [
+  //   { name: 'India', code: '+91' },
+  //   { name: 'USA', code: '+1' },
+  //   { name: 'United Kingdom', code: '+44' },
+  //   { name: 'Germany', code: '+49' },
+  //   { name: 'France', code: '+33' },
+  //   { name: 'Brazil', code: '+55' },
+  //   { name: 'Argentina', code: '+54' },
+  //   { name: 'Spain', code: '+34' },
+  //   { name: 'Italy', code: '+39' },
+  //   { name: 'Netherlands', code: '+31' },
+  //   { name: 'Poland', code: '+48' },
+  //   { name: 'Sweden', code: '+46' },
+  //   { name: 'Portugal', code: '+351' },
+  //   { name: 'Mexico', code: '+52' },
+  //   { name: 'Colombia', code: '+57' },
+  //   { name: 'Peru', code: '+51' },
+  //   { name: 'Chile', code: '+56' },
+  //   { name: 'Venezuela', code: '+58' },
+  //   { name: 'Uruguay', code: '+598' },
+  //   { name: 'Norway', code: '+47' },
+  //   { name: 'Denmark', code: '+45' },
+  //   { name: 'Finland', code: '+358' },
+  //   { name: 'Belgium', code: '+32' },
+  //   { name: 'Austria', code: '+43' }
+  // ]
 
   phoneCode;
   onCountryCodeChandes(code: any) {
@@ -202,7 +216,7 @@ export class SignupComponent implements OnInit, AfterViewChecked {
       username: new FormControl(null, [Validators.required, Validators.maxLength(20),Validators.pattern(/^[a-zA-Z0-9]+$/)]),
       firstName: new FormControl(null, [Validators.required, Validators.maxLength(30), Validators.pattern(/^[a-zA-Z0-9 ]+$/)]),
       lastName: new FormControl(null, [Validators.maxLength(30), Validators.pattern(/^[a-zA-Z0-9 ]+$/)]),
-      gender: new FormControl('male', Validators.required),
+      gender: new FormControl('Male', Validators.required),
       dob: new FormControl(null, Validators.required),
       email: new FormControl(null, [Validators.required, Validators.email, Validators.maxLength(100)]),
       countryCode: new FormControl(null, Validators.required),
@@ -289,26 +303,97 @@ onResize(event: any) {
   router: Router = inject(Router);
 
   currentUser: User;
+
+  isUV: boolean = false;
+  isFNLNV: boolean = false;
+  isPNCV: boolean = false;
+  isPNV: boolean = false;
+  isDOBV: boolean = false;
+  isEV: boolean = false;
+  isAV: boolean = false;
+  isCV: boolean = false;
+  isZCV: boolean = false;
+  isTZV: boolean = false;
+  isPV: boolean = false;
+  passMM: boolean = false;
+
   onSignupFormsubmit() {
     // this.reactiveForm.patchValue({phone: `${this.phoneCode + ' ' + this.reactiveForm.value.phone}`})
+    console.log(this.reactiveForm.controls);
+    
     if(this.reactiveForm.controls['username'].invalid) {
       let errMsg = 'For username! Only alphanumric characters Allowed, Space is not Allowed and Maximum lenght is 20 Characters';
       this.messageService.add({severity:'warn', summary:'Warn', detail: errMsg})
+      this.isUV = true;
       return;
+    } else {
+      this.isUV = false;
     }
     if(this.reactiveForm.controls['firstName'].invalid || this.reactiveForm.controls['lastName'].invalid) {
       let errMsg = 'For FirstName and LastName! Only alphanumric characters and space Allowed and Maximum lenght is 30 Characters';
       this.messageService.add({severity:'warn', summary:'Warn', detail: errMsg})
+      this.isFNLNV = true;
       return;
+    } else {
+      this.isFNLNV = false;
+    }
+    if(this.reactiveForm.controls['email'].invalid) {
+      console.log(this.reactiveForm.controls['email'].invalid);      
+      this.isEV = true;
+      // return;
+    } else {
+      this.isEV = false;
+    }
+    if(this.reactiveForm.controls['countryCode'].invalid) {
+      this.isPNCV = true;
+      return;
+    } else {
+      this.isPNCV = false;
     }
     if(this.reactiveForm.controls['phone'].invalid) {
       this.messageService.add({severity: 'warn', summary:'Warn', detail: 'Mobhile number should less than 10 digits'});
+      this.isPNV = true;
       return;
+    } else {
+      this.isPNV = false;
     }
-    console.log(this.reactiveForm.value.dob);    
-    if(new Date(this.reactiveForm.value.dob) > new Date()) {
+    // console.log(this.reactiveForm.value.dob);    
+    if(new Date(this.reactiveForm.value.dob) > new Date() || this.reactiveForm.controls['dob'].invalid) {
       this.messageService.add({severity:'warn', summary:'Warn',detail:'Date of Birth must less the today!.'})
+      this.isDOBV = true;
       return;
+    } else {
+      this.isDOBV = false;
+    }
+    if(this.reactiveForm.controls['address'].invalid) {
+      this.isAV = true;
+      return;
+    } else {
+      this.isAV = false;
+    }
+    if(this.reactiveForm.controls['country'].invalid) {
+      this.isCV = true;
+      return;
+    } else {
+      this.isCV = false;
+    }
+    if(this.reactiveForm.controls['zipCode'].invalid) {
+      this.isZCV = true;
+      return;
+    } else {
+      this.isZCV = false;
+    }
+    if(this.reactiveForm.controls['timeZone'].invalid) {
+      this.isTZV = true;
+      return;
+    } else {
+      this.isTZV = false;
+    }
+    if(this.reactiveForm.controls['password'].invalid) {
+      this.isPV = true;
+      return;
+    } else {
+      this.isPV = false;
     }
     if(this.reactiveForm.invalid) {
     //   console.log('Form is invalid. Checking controls:');
@@ -332,8 +417,11 @@ onResize(event: any) {
     console.log(this.reactiveForm.value);
     this.currentUser = this.reactiveForm.value;
     if(this.currentUser.password !== this.currentUser.confirmPassword || this.currentUser.password === null) {
-      this.messageService.add({severity: 'warn', summary:'Warn', detail: 'Password and Confirm password should same!.'})
+      this.messageService.add({severity: 'warn', summary:'Warn', detail: 'Password and Confirm password should same!.'});
+      this.passMM = true;
       return;
+    } else {
+      this.passMM = false;
     }
     console.log(this.currentUser);    
     this.sharedService.getAllUsers().subscribe({
@@ -344,9 +432,12 @@ onResize(event: any) {
           return (user.username === this.currentUser.username || user.email === this.currentUser.email);
         });
         if (isUserExits) {
-          alert('User already exits');
+          // alert('User already exits');
           this.messageService.add({severity: 'error', summary: 'Error', detail:'User already exits. Please Login!.'})
-          this.router.navigate(['/login']);
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          },1500)
+          // this.router.navigate(['/login']);
           return;
         }
         console.log(this.currentUser);        

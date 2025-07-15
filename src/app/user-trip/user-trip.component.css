@@ -75,6 +75,10 @@
     height: 30px;   
 }
 
+.searchField i {
+    cursor: pointer;
+}
+
 .searchField input {
     border: none;
     background-color: #F3F3F3;
@@ -144,6 +148,10 @@
 }
 .selectingColumnDiv ::ng-deep .p-multiselect .p-multiselect-trigger-icon {
     display: none;
+}
+
+.selectingColumnDiv ::ng-deep .p-multiselect-panel .p-multiselect-items {
+    padding: 0;
 }
 
 
@@ -225,6 +233,10 @@
     padding: 10px;
 }
 
+.editBucketItem ::ng-deep .p-dialog {
+        width: 35%;
+    }
+
 .inputFields {
     display: flex;
     flex-direction: column;
@@ -246,6 +258,12 @@
     background-color: #F1F1F1;
     border-radius: 4px;
     padding: 10px;
+}
+
+.field span {
+    font-size: 12px;
+    color: red;
+    transform: translateY(-5px);
 }
 
 .field input:focus {
@@ -368,6 +386,7 @@
     border-radius: 8px;
     padding: 10px;
     font-weight: bold;
+    cursor: pointer;
 }
 
 input[type="number"]::-webkit-outer-spin-button,

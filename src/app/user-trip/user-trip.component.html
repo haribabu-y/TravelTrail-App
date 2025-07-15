@@ -65,8 +65,15 @@
           </div> -->
           <div class="other-Fields">
             <div class="searchField">
-            <input pInputText type="text" (input)="filterGlobal($event)" />
-            <i class="pi pi-search"></i>
+            <input 
+              #searchText
+              pInputText 
+              type="text" 
+              (keydown.enter)="filterGlobal(searchText.value)"
+              (input)="reloadAll(searchText.value)"
+
+            />
+            <i class="pi pi-search" (click)="filterGlobal(searchText.value)"></i>
           </div>
           <div class="numRows" (click)="changeRows()" #rowSelect>
             <i class="pi pi-bars"></i>
@@ -176,7 +183,7 @@
       <ng-template pTemplate="body" let-userTrip>
         <tr>
           <td *ngFor="let column of selectedColumns">
-            {{(column.value === 'totalDistance') ? (getConvertedDistance(userTrip.totalDistance)) : (column.value === 'totalExpense') ? (convertAmount(userTrip.totalExpense) | currency: currencyCode) : userTrip[column.value]}}
+            {{(column.value === 'totalDistance') ? (getConvertedDistance(userTrip.totalDistance)) : (column.value === 'totalExpense') ? (convertAmount(userTrip.totalExpense) | currency: currencyCode:usercurrencySymbol) : userTrip[column.value]}}
           </td>
           
           <!-- <td>{{ userTrip.username }}</td>
@@ -258,7 +265,7 @@
     <ng-template pTemplate="content">
       <div class="inputFields">
         <div class="field">
-          <label for="pi">Place Image</label>
+          <label for="pi">Place Image*</label>
           <div
             class="image-upload-container"
             (click)="triggerFileinput()"
@@ -277,6 +284,7 @@
             hidden
             #fileInput
           />
+          
           <div class="selected-image" *ngIf="placeImage">
             <img
               [src]="placeImage"
@@ -289,9 +297,10 @@
               <i class="pi pi-trash" (click)="deleteSelectedPlaceImage()"></i>
             </div>
           </div>
+          <span *ngIf="isPIV">Image is required*</span>
         </div>
         <div class="field">
-          <label for="pn">Place Name</label>
+          <label for="pn">Place Name*</label>
           <input
             type="text"
             pInputText
@@ -299,9 +308,10 @@
             [(ngModel)]="placeName"
             required
           />
+          <span *ngIf="isPNV">Place Name is Invalid*</span>
         </div>
         <div class="field">
-          <label for="pd">Place Description</label>
+          <label for="pd">Place Description*</label>
           <input
             type="text"
             pInputText
@@ -309,9 +319,10 @@
             [(ngModel)]="placeDescription"
             required
           />
+          <span *ngIf="isPDV">Place Description is Invalid*</span>
         </div>
         <div class="field">
-          <label for="ed">Estimated Distance</label>
+          <label for="ed">Estimated Distance*</label>
           <input
             type="number"
             pInputText
@@ -319,9 +330,10 @@
             [(ngModel)]="estimatedDistance"
             required
           />
+          <span *ngIf="isEDV">Estimated Distance is Invalid*</span>
         </div>
         <div class="field">
-          <label for="eb">Estimated Budget</label>
+          <label for="eb">Estimated Budget*</label>
           <input
             type="number"
             pInputText
@@ -329,6 +341,7 @@
             [(ngModel)]="estimatedBudget"
             required
           />
+          <span *ngIf="isEBV">Estimated Budget is Invalid*</span>
         </div>
         <div class="buttons">
           <button (click)="closeEditDailog()" class="cancelbtn">Cancel</button>

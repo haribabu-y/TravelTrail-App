@@ -50,6 +50,7 @@
             id="username"
             formControlName="username"
           />
+          <span *ngIf="isUV">Only alphanumric characters Allowed, Space is not Allowed </span>
         </div>
         <div class="row">
           <div class="inputfield">
@@ -59,6 +60,7 @@
               id="firstName"
               formControlName="firstName"
             />
+            <span *ngIf="isFNLNV">Only alphanumric characters and space Allowed</span>
           </div>
           <div class="inputfield">
             <label for="lastName">Last name</label>
@@ -67,12 +69,12 @@
         </div>
         <div class="row">
           <div class="genderField inputfield">
-            <span>Gender*</span>
+            <p>Gender*</p>
             <div>
               <input
                 type="radio"
                 formControlName="gender"
-                value="male"
+                value="Male"
                 id="male"
                 hidden
                 (change)="changeGender('male')"
@@ -85,7 +87,7 @@
               <input
                 type="radio"
                 formControlName="gender"
-                value="female"
+                value="Female"
                 id="female"
                 hidden
                 (change)="changeGender('female')"
@@ -98,7 +100,7 @@
               <input
                 type="radio"
                 formControlName="gender"
-                value="others"
+                value="Others"
                 id="others"
                 hidden
                 (change)="changeGender('others')"
@@ -113,26 +115,29 @@
           <div class="inputfield">
             <label for="dob">DOB*</label>
             <input type="date" id="dob" formControlName="dob"  />
+            <span *ngIf="isDOBV">Date of Birth must less the today!.</span>
           </div>
         </div>
 
         <div class="inputfield">
           <label for="email">Email ID*</label>
           <input type="email" id="email" formControlName="email"  />
+          <span *ngIf="isEV">Email is Invalid*</span>
         </div>
         <div class="phone-number row">
           <div class="inputfield country-code-field">
           <label>Code*</label>
             <p-dropdown
-            [options]="countryCode"
-            optionLabel="code"
+            [options]="phoneCodes"
             placeholder="select Country code"
             formControlName="countryCode"
             />
+            <span *ngIf="isPNCV">Choose the Mobile code *</span>
         </div>
         <div class="inputfield phoneNumberField">
           <label for="mobile">Mobile Number*</label>
           <input type="text" id="mobile" formControlName="phone" />
+          <span *ngIf="isPNV">Mobile number must be less than 10 digits*</span>
         </div>
         </div>
       </div>
@@ -140,6 +145,7 @@
         <div class="inputfield">
           <label for="address">Address*</label>
           <textarea id="address" formControlName="address" ></textarea>
+          <span *ngIf="isAV">Enter a valid Address *</span>
         </div>
         <div class="row">
           <div class="inputfield">
@@ -151,6 +157,7 @@
               formControlName="country"
               (onChange)="onCountryChanges($event.value)"
             />
+            <span *ngIf="isCV">Select your country</span>
           </div>
           <div class="inputfield">
             <label>State</label>
@@ -170,6 +177,7 @@
               id="zipcode"
               formControlName="zipCode"
             />
+            <span *ngIf="isZCV">Zipe Code is Invalid *</span>
           </div>
           <div class="inputfield">
             <label>Time Zone*</label>
@@ -178,6 +186,7 @@
               placeholder="Select Time Zone"
               formControlName="timeZone"
             />
+            <span *ngIf="isTZV">select the Time Zone*</span>
           </div>
         </div>
         <div class="row">
@@ -201,10 +210,12 @@
             id="password"
             formControlName="password"
           />
+          <span *ngIf="isPV">Password must required*</span>
         </div>
         <div class="inputfield">
           <label for="confirmPassword">Confirm Password*</label>
           <input type="password" formControlName="confirmPassword" />
+          <span *ngIf="passMM">Password and Confirm password should same!.</span>
         </div>
         <div class="submitBtn inputfield">
           <button type="submit">Sign Up</button>

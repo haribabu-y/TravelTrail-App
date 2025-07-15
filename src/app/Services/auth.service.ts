@@ -34,7 +34,8 @@ export class Authservice {
       let loginTime = new Date().getTime();
       let expiryTime = loginTime + 10 * 60 * 1000;
       let isAdmin = true;
-      let user: LoginUser = { username: username, id: '', loginTime: loginTime, isAdmin};
+      let country = { name: 'India', code: 'IN', currencyCode: 'INR', currencySymbol: '₹', phoneCode: '+91' };
+      let user: LoginUser = { username: username, id: '', loginTime: loginTime, isAdmin, country};
       localStorage.setItem('user', JSON.stringify(user));
       this.router.navigate(['/admin/UsersTrips']);
       return of(user);
@@ -51,7 +52,9 @@ export class Authservice {
           const loginTime = new Date().getTime();
           const expiryTime = loginTime + 10 * 60 * 1000;
           let isAdmin = foundUser.isAdmin;
-          let user: LoginUser = { username: foundUser.username, id: foundUser.id, loginTime: loginTime, isAdmin };
+          let country = foundUser.country;
+          console.log(foundUser.country);       
+          let user: LoginUser = { username: foundUser.username, id: foundUser.id, loginTime: loginTime, isAdmin, country };
           localStorage.setItem('user', JSON.stringify(user));
           // alert('User login successfully');
           this.loggedInUser.next(foundUser);
