@@ -24,7 +24,7 @@
       <span>{{bucketListItem.estimatedBudget | currency:currencyCode}}</span>
     </div>
   </div>
-  <div class="bucket-list-item adding-new-bucket" style="height: 300px;">
+  <div class="bucket-list-item adding-new-bucket" style="height: 300px;" (click)="showDailog()">
         <i class="pi pi-plus" (click)="showDailog()"></i>
         <p>Add a place to your Bucket List</p>
   </div>
@@ -65,7 +65,7 @@
                 <i class="pi pi-trash" (click)="deleteSelectedPlaceImage()"></i>
             </div>
         </div>
-        <span *ngIf="isPIV">Image is required*</span>
+        <span *ngIf="isPIV">{{placeImageErrormsg}}</span>
       </div>
       <div class="field">
         <label for="pn">Place Name *</label>
@@ -74,6 +74,8 @@
           pInputText
           id="pn"
           [(ngModel)]="placeName"
+          pattern="^[a-zA-Z\s]+$"
+          (ngModelChange)="validatePlaceName()"
           required
         />
         <span *ngIf="isPNV">Place Name is Invalid*</span>
@@ -85,6 +87,7 @@
           pInputText
           id="pd"
           [(ngModel)]="placeDescription"
+          (ngModelChange)="validatePlaceName()"
           required
         />
         <span *ngIf="isPDV">Place Description is Invalid*</span>

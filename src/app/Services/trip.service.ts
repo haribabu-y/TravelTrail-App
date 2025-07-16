@@ -11,7 +11,6 @@ import { map, Subject } from "rxjs";
 export class TripService {
     authService: Authservice = inject(Authservice);
     currentUser: User;
-    userTrips: Subject<Trip[]>;
     http: HttpClient = inject(HttpClient);
     
     getAllTrips(id?: string) {
@@ -40,11 +39,7 @@ export class TripService {
           }
           console.log(trips);
           return trips;
-        }))
-        // .subscribe((res) => {
-        //     console.log(res);  
-        //     this.userTrips.next(res)          
-        // })        
+        }))       
     }
 
     addNewtrip(trip: Trip) {

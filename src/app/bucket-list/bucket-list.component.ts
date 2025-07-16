@@ -44,6 +44,7 @@ export class BucketListComponent implements OnInit{
   placeDescription: string = '';
   estimatedDistance: number;
   estimatedBudget: number;
+  placeImageErrormsg: string;
 
   showDailog() {
     this.showAddBucketDailog = true;
@@ -62,13 +63,22 @@ export class BucketListComponent implements OnInit{
     const allowedTypes = ['image/png', 'image/jpg', 'image/jpeg'];
 
     if(!allowedTypes.includes(file.type)) {
-      alert("Only JPG and PNG formats are allowed.");
+      this.placeImageErrormsg = "Only JPG and PNG formats are allowed.";
+      this.isPIV = true;
+      // alert("Only JPG and PNG formats are allowed.");
+      // this.messageService.add({severity:'warn', summary: 'Warn', detail:'Only JPG and PNG formats are allowed.'})
       return;
+    } else {
+      this.isPIV = false
     }
 
     if(file.size > maxInputSize * 1024 * 1024) {
-      alert("File size must be 2MB.");
+      this.placeImageErrormsg = "File size must be 2MB.";
+      this.isPIV = true;
+      // alert("File size must be 2MB.");
       return;
+    } else {
+      this.isPIV = false;
     }
 
     const reader = new FileReader();
@@ -124,46 +134,53 @@ export class BucketListComponent implements OnInit{
     });
     this.closeDailog();
   }
+  validatePlaceName() {
+    const pattern = /^[a-zA-Z\s]*$/;
+    this.isPNV = !pattern.test(this.placeName || '');
+    this.isPDV = !pattern.test(this.placeDescription || '');
+  }
   isPIV: boolean = false;
   isPNV: boolean = false;
   isPDV: boolean = false;
   isEDV: boolean = false;
   isEBV: boolean = false;
   addRecord(id?: string) {
+    console.log(typeof this.estimatedDistance);    
     if(this.placeImage === '') {
+      this.placeImageErrormsg = "Place Image is required!."
       this.isPIV = true;
-      return;
+      // return;
     } else {
       this.isPIV = false;
     }
     if(this.placeName === '') {
       this.isPNV = true;
-      return;
+      // return;
     } else {
       this.isPNV = false;
     }
     if(this.placeDescription === '') {
       this.isPDV = true;
-      return;
+      // return;
     } else {
       this.isPDV = false;
     }
-    if(this.estimatedDistance === 0 || this.estimatedDistance === null) {
+    if(this.estimatedDistance === 0 || this.estimatedDistance === undefined || this.estimatedDistance === null) {
       this.isEDV = true;
-      return;
+      // return;
     } else {
       this.isEDV = false;
     }
-    if(this.estimatedBudget === 0 || this.estimatedBudget === null) {
+    if(this.estimatedBudget === 0 || this.estimatedBudget === undefined || this.estimatedBudget === null) {
       this.isEBV = true;
-      return;
+      // return;
     } else {
       this.isEBV = false;
     }    
-    // if(this.placeImage === '' || this.placeName === '' || this.placeDescription === '' || this.estimatedDistance === 0 || this.estimatedBudget === 0) {
-    //   this.messageService.add({severity:'error', summary:'Error', detail:'Please fill all the fields'});
-    //   return;
-    // }
+    if(this.placeImage === '' || this.placeName === '' || this.placeDescription === '' || (this.estimatedDistance === 0 || this.estimatedDistance === undefined || this.estimatedDistance === null) || (this.estimatedBudget === 0 || this.estimatedBudget === undefined || this.estimatedBudget === null)) {
+      // this.messageService.add({severity:'error', summary:'Error', detail:'Please fill all the fields'});
+      return;
+    }
     let newBucketItem = {
       placeImage: this.placeImage,
       placeName: this.placeName,

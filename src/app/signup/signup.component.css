@@ -129,11 +129,15 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 10px;
+}  
+.page2 {
+    gap: 5px;
 }
 .row {
     display: flex;
     align-items: center;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 15px;
     width: 80%;
 }
 .inputfield {
@@ -141,9 +145,13 @@ body {
     display: flex;
     flex-direction: column;
 }
+.row .inputfield {
+    width: 48%;
+}
 
 ::ng-deep .inputfield .p-dropdown {
-    width: 235px !important;
+    /* width: 235px !important; */
+    width: 100% !important;
     height: 35px;
     padding: 5px !important;
     display: flex;
@@ -152,11 +160,11 @@ body {
     border: none;
 }
 
-.phone-number {
+/* .phone-number {
     display: flex;
     width: 80%;
     gap: 10px;
-}
+} */
 /* .country-code-field ::ng-deep .p-dropdown {
     width: 40% !important;
 }
@@ -170,12 +178,18 @@ body {
     border-radius: 4px;
     font-size: 14px !important;
     width: 75px;
+    /* width: 65px; */
     height: 37px;
     text-align: center;
 }
 .genderField div {
     display: flex;
+    /* gap: 5px; */
     gap: 10px;
+}
+
+.country-code-field ::ng-deep .inputfield .p-dropdown {
+    width: 97% !important;
 }
 
 .selectedGender {
@@ -183,7 +197,7 @@ body {
     color: white;
 }
 
- .inputfield label {
+ .inputfield label, .genderField p {
     font-size: 18px;
 }
 .inputfield input, .inputfield textarea {
@@ -206,7 +220,7 @@ body {
 }
 
 #address {
-    height: 100px;
+    height: 70px;
 }
 
 .adminCheck {
@@ -230,7 +244,7 @@ body {
     cursor: pointer;
 }
 .login-container p {
-    font-size: 15px;
+    font-size: 18px;
     font-weight: 400;
 }
 
@@ -266,13 +280,13 @@ body {
     font-size: 12px;
  }
 
+  @media screen and (max-width: 1175px) {
+    .row .inputfield {
+        width: 100%;
+    }
+  }
+
  @media screen and (max-width: 1024px) and (max-height: 850px){
-  /* .container {
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
-    justify-content: flex-start;
-  } */
      .backgroundImage {
     width: 1800px;
     height: 1100px;
@@ -332,62 +346,13 @@ body {
     flex-direction: column;
     width: 100%;
 }
+.row .inputfield {
+    width: 80%;
+}
 
 ::ng-deep .inputfield .p-dropdown {
     width: 100% !important;
 }
-
-  /* .logo-icon img {
-    position: static;
-    margin-top: 20px;
-    transform: none;
-  }
-
-  .logo-text {
-    position: static;
-    text-align: center;
-  }
-
-  .tagline {
-    position: static;
-    text-align: center;
-    width: 90%;
-    margin: 20px auto;
-  }
-
-  .login-container {
-    position: static;
-    width: 90%;
-    margin: 0 auto;
-    padding: 20px;
-  }
-
-  .row {
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-  }
-
-  .inputfield {
-    width: 100%;
-  }
-
-  ::ng-deep .inputfield .p-dropdown {
-    width: 100% !important;
-  }
-
-  .adminCheck {
-    flex-direction: column;
-    align-items: flex-start !important;
-  }
-
-  .submitBtn button {
-    width: 100%;
-  }
-
-  .paginators {
-    gap: 5px;
-  } */
 }
 
 /* --- For mobile devices (max-width: 768px) --- */
@@ -441,8 +406,8 @@ body {
 
     .login-container {
         /* position: static; */
-        top: 160px;
-        left: 10px;
+        top: 150px;
+        left: 0px;
         width: 100%;
         padding: 20px;
         border-radius: 15px;
@@ -457,6 +422,10 @@ body {
         position: relative;
         top: 80px;
     } */
+
+    .row .inputfield {
+    width: 90%;
+}
 
     .inputfield {
         width: 90%;
@@ -475,6 +444,10 @@ body {
         font-size: 14px;
         transform: translateY(0px);
     }
+    .paginators {
+    padding-bottom: 20px;
+   }
+
 }
 
 @media (max-width: 426px) {
@@ -499,8 +472,9 @@ body {
 }
 
 .tagline {
+     width: 300px;
     font-size: 10px;
-    left: -40px;
+    left: 50px;
     top: 68px;
 }
 }
@@ -510,27 +484,28 @@ body {
     }
     .logo-icon img {
         top: 40px;
-        width: 40px;
-        height: 40px;
+        width: 60px;
+        height: 60px;
+        left: 0px;
     }
 
     .logo-text {
     top: 35px;
-    left: 0px;
+    left: -15px;
 }
 
 .travel {
-    font-size: 20px;
+    font-size: 28px;
 }
 
 .trail {
-    font-size: 18px;
+     font-size: 24px;
 }
 
 .tagline {
-    font-size: 8px;
-    left: -80px;
-    top: 55px;
+    font-size: 10px;
+    left: 20px;
+    top: 65px;
 }
 .login-container h2 {
     transform: translateY(-5px);

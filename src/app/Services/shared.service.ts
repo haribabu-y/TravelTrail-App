@@ -2,7 +2,6 @@ import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { catchError, map, Observable, Subject, throwError } from "rxjs";
 import { User } from "../Models/user";
-import { Trip } from "../Models/trip";
 
 @Injectable({
     providedIn: 'root'

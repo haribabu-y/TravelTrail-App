@@ -119,8 +119,7 @@ export class HomeComponent implements OnInit {
       // this.userExpenses = res[1];
       console.log(this.userTrips);
       console.log(this.userExpenses);
-      const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--text-color');
+    const documentStyle = getComputedStyle(document.documentElement);
     const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
     this.barGraphData = {

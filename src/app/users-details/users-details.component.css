@@ -132,7 +132,11 @@
   z-index: 100;
 }
 
-::ng-deep .p-listbox .p-highlight {
+.numRowChanges ::ng-deep .p-listbox .p-listbox-list {
+  padding: 5px 0;
+}
+
+.numRowChanges ::ng-deep .p-listbox .p-highlight {
   background-color: #084880 !important;
   color: #ffffff !important;
 }
@@ -241,9 +245,9 @@ td i {
     border: none;
 }
 
-::ng-deep .p-dialog .p-dialog-content {
+/* ::ng-deep .p-dialog .p-dialog-content {
     padding: 0;
-}
+} */
 
 .inputfield label {
     font-size: 14px;
@@ -339,6 +343,10 @@ td i {
 .submitBtn {
     background-color: #084880;
     color: white;
+}
+
+.inputfield ::ng-deep .p-dropdown-panel .p-dropdown-items {
+  width: 170px !important;
 }
 
 

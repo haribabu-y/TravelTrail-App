@@ -1,17 +1,17 @@
-import { AfterViewChecked, Component, ElementRef, HostListener, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Authservice } from '../Services/auth.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { User } from '../Models/user';
 import { SharedService } from '../Services/shared.service';
-import { filter, take } from 'rxjs';
+import { filter, Subscription, take } from 'rxjs';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit,OnDestroy {
 
   darkMode: boolean = false;
   isDarkMode: boolean = false;
@@ -22,6 +22,7 @@ export class HeaderComponent implements OnInit {
   usertype: string;
   isAdmin: boolean = false;
   userExpense: number;
+  userExpenseSubscription: Subscription;
   userDetail: User;
 
   currentPage: string = this.router.url.split('/')[2];
@@ -35,6 +36,8 @@ export class HeaderComponent implements OnInit {
 
     if (!this.isAdmin) {
       this.router.navigate(['/user/Home'])
+    } else {
+      this.router.navigate(['/admin/UsersTrips']);
     }
   }
 
@@ -72,7 +75,7 @@ export class HeaderComponent implements OnInit {
       this.darkMode = false;
     }
 
-    this.sharedService.userExpense.subscribe((res) => {
+    this.userExpenseSubscription = this.sharedService.userExpense.subscribe((res) => {
       console.log(res);
       this.userExpense = res;
     })
@@ -154,8 +157,11 @@ export class HeaderComponent implements OnInit {
 
   }
 
-
   showProfileDetail() {
     this.showProfileInfo = !this.showProfileInfo;
+  }
+
+  ngOnDestroy(): void {
+    this.userExpenseSubscription.unsubscribe();
   }
 }

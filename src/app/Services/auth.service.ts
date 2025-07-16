@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { User } from '../Models/user';
-import { BehaviorSubject, catchError, map, Observable, of, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
 import { LoginUser } from '../Models/loginUser';
 import { Router } from '@angular/router';
 import { SharedService } from './shared.service';
@@ -99,24 +99,4 @@ export class Authservice {
       this.logout();
     }, expiryTime);
   }
-
-  // private handleError(err) {
-  //   let errorMessage = 'An unknown error has occured!';
-  //   console.log(err);
-  //   if (!err.error || !err.error.error) {
-  //     return throwError(() => errorMessage);
-  //   }
-  //   switch (err.error.error.message) {
-  //     case 'EMAIL_EXISTS':
-  //       errorMessage = 'This email already exists.';
-  //       break;
-  //     case 'OPERATION_NOT_ALLOWED':
-  //       errorMessage = 'This operation is not allowed.';
-  //       break;
-  //     case 'INVALID_LOGIN_CREDENTIALS':
-  //       errorMessage = 'The email ID or Password is not correct.';
-  //       break;
-  //   }
-  //   return throwError(() => errorMessage);
-  // }
 }

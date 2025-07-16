@@ -1,6 +1,10 @@
 <app-loader *ngIf="isLoading"></app-loader>
 <p-toast></p-toast>
-<div class="users-detail-table" [ngClass]="isDarkMode ? 'dark-mode' : ''" *ngIf="!isLoading">
+<div
+  class="users-detail-table"
+  [ngClass]="isDarkMode ? 'dark-mode' : ''"
+  *ngIf="!isLoading"
+>
   <p-table
     #usersDetailTable
     [value]="users"
@@ -17,88 +21,104 @@
       <div class="right-contents">
         <div class="display-formate">
           <div class="currency-formate">
-          <p-dropdown
-            [options]="currencyFormate"
-            [(ngModel)]="selectedCurrency"
-            optionLabel="name"
-            placeholder="Choose Currency Format"
-            (onChange)="currencyFormateChanged()"
-          >
-          </p-dropdown>
-        </div>
+            <p-dropdown
+              [options]="currencyFormate"
+              [(ngModel)]="selectedCurrency"
+              optionLabel="name"
+              placeholder="Choose Currency Format"
+              (onChange)="currencyFormateChanged()"
+            >
+            </p-dropdown>
+          </div>
         </div>
         <div class="other-fileds">
           <div class="searchField">
-          <input
-            #searchText 
-            pInputText 
-            type="text" 
-            (keydown.enter)="filterGlobal(searchText.value)"
-            (input)="reloadAll(searchText.value)"
-          />
-          <i class="pi pi-search" (click)="filterGlobal(searchText.value)"></i>
-        </div>
-        <div class="numRows" (click)="changeRows()" #rowSelect>
-          <i class="pi pi-bars"></i>
-          <span>{{ numOfRows }}</span>
-        </div>
-        <div *ngIf="showRowsChange" class="numRowChanges">
-          <p-listbox
-            [options]="rowOptions"
-            [(ngModel)]="numOfRows"
-            (onChange)="closeListbox()"
-          />
-        </div>
-        <div class="numColumns" (click)="showCloumnList()" #coloumnSelect>
-          <i class="pi pi-bars"></i>
-          <span>{{selectedColumns.length + 3}}</span>
-        </div>
-        <div class="selectingColumnDiv">
-          <p-multiSelect 
+            <input
+              #searchText
+              pInputText
+              type="text"
+              (keydown.enter)="filterGlobal(searchText.value)"
+              (input)="reloadAll(searchText.value)"
+            />
+            <i
+              class="pi pi-search"
+              (click)="filterGlobal(searchText.value)"
+            ></i>
+          </div>
+          <div class="numRows" (click)="changeRows()" #rowSelect>
+            <i class="pi pi-bars"></i>
+            <span>{{ numOfRows }}</span>
+          </div>
+          <div *ngIf="showRowsChange" class="numRowChanges">
+            <p-listbox
+              [options]="rowOptions"
+              [(ngModel)]="numOfRows"
+              (onChange)="closeListbox()"
+            />
+          </div>
+          <div class="numColumns" (click)="showCloumnList()" #coloumnSelect>
+            <i class="pi pi-bars"></i>
+            <span>{{ selectedColumns.length + 3 }}</span>
+          </div>
+          <div class="selectingColumnDiv">
+            <p-multiSelect
               #columnMultiSelect
               [options]="columnOptions"
               [(ngModel)]="selectedColumns"
               (onChange)="columnsChanged($event)"
               optionLabel="label"
               [displaySelectedLabel]="false"
-          />
+            />
+          </div>
+          <i class="pi pi-plus" (click)="openNew()"></i>
         </div>
-        <i class="pi pi-plus" (click)="openNew()"></i>
-        </div>
-        
       </div>
     </ng-template>
     <ng-template pTemplate="paginatorleft" let-state>
-    <span class="p-paginator-pages">
-      {{state.first + 1}} to {{state.first + state.rows > state.totalRecords ? state.totalRecords : state.first + state.rows}} of {{state.totalRecords}} Records
-    </span>
-  </ng-template>
+      <span class="p-paginator-pages">
+        {{ state.first + 1 }} to
+        {{
+          state.first + state.rows > state.totalRecords
+            ? state.totalRecords
+            : state.first + state.rows
+        }}
+        of {{ state.totalRecords }} Records
+      </span>
+    </ng-template>
     <ng-template pTemplate="paginatorright" let-state>
-    <div class="jumpingPage" style="margin-left: 10px;">
-      <input id="goToPageInput" type="number" pInputText [(ngModel)]="goToPageNumber"
-        (keyup.enter)="goToPage()">
-      <button label="Go" (click)="goToPage()">Go</button>
-    </div>
-  </ng-template>
-  <ng-template pTemplate="paginatorfirstpagelinkicon">
-    <i class="pi pi-step-backward" style="font-size: 12px;"></i>
-  </ng-template>
-  <ng-template pTemplate="paginatorlastpagelinkicon">
-    <i class="pi pi-step-forward" style="font-size: 12px;"></i>
-  </ng-template>
+      <div class="jumpingPage" style="margin-left: 10px">
+        <input
+          id="goToPageInput"
+          type="number"
+          pInputText
+          [(ngModel)]="goToPageNumber"
+          (keyup.enter)="goToPage()"
+        />
+        <button label="Go" (click)="goToPage()">Go</button>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="paginatorfirstpagelinkicon">
+      <i class="pi pi-step-backward" style="font-size: 12px"></i>
+    </ng-template>
+    <ng-template pTemplate="paginatorlastpagelinkicon">
+      <i class="pi pi-step-forward" style="font-size: 12px"></i>
+    </ng-template>
     <ng-template pTemplate="header">
-        <tr>
-          <th>Profile</th>
-          <th [pSortableColumn]="column.value" *ngFor="let column of selectedColumns">
-            <div class="tableHead">
-              {{column.label}}
-              <div class="sort-icons">
-                <i class="pi pi-sort-up-fill"></i>
-                <i class="pi pi-sort-down-fill"></i>
-              </div>
+      <tr>
+        <th>Profile</th>
+        <th
+          [pSortableColumn]="column.value"
+          *ngFor="let column of selectedColumns"
+        >
+          <div class="tableHead">
+            {{ column.label }}
+            <div class="sort-icons">
+              <i class="pi pi-sort-up-fill"></i>
+              <i class="pi pi-sort-down-fill"></i>
             </div>
-          </th>
-          <!-- <th pSortableColumn="age">
+          </div>
+        </th>
+        <!-- <th pSortableColumn="age">
             <div class="tableHead">
               Age
               <div class="sort-icons">
@@ -125,27 +145,42 @@
               </div>
             </div>
           </th> -->
-          <th style="width: 12%;">Bucket List</th>
-          <th style="width: 5%;">Delete</th>
-        </tr>
+        <th style="width: 12%">Bucket List</th>
+        <th style="width: 5%">Delete</th>
+      </tr>
     </ng-template>
     <ng-template pTemplate="body" let-user>
-        <tr>
-            <td><img [src]="user.userImage" alt="Profile image" width="30px" height="30px" style="border-radius: 10px;"></td>
-            <td *ngFor="let column of selectedColumns">{{(column.value === 'totalExpense') ? (convertAmount(user.totalExpense) | currency: currencyCode:usercurrencySymbol) : user[column.value]}}</td>
-            
-            <!-- <td>{{user.username}}</td> 
+      <tr>
+        <td>
+          <img
+            [src]="user.userImage"
+            alt="Profile image"
+            width="30px"
+            height="30px"
+            style="border-radius: 10px"
+          />
+        </td>
+        <td *ngFor="let column of selectedColumns">
+          {{
+            column.value === "totalExpense"
+              ? (convertAmount(user.totalExpense)
+                | currency : currencyCode : usercurrencySymbol)
+              : user[column.value]
+          }}
+        </td>
+
+        <!-- <td>{{user.username}}</td> 
             <td>{{user.age}}</td>
             <td>{{convertAmount(user.totalExpense) | currency: currencyCode }}</td>
             <td>{{user.country}}</td> -->
-            <td><i class="pi pi-pencil" (click)="openEditDialog(user.id)"></i></td>
-            <td><i class="pi pi-trash" (click)="showDeleteUser(user.id)"></i></td>
-        </tr>
+        <td><i class="pi pi-pencil" (click)="openEditDialog(user.id)"></i></td>
+        <td><i class="pi pi-trash" (click)="showDeleteUser(user.id)"></i></td>
+      </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">
-        <tr>
-          <td colspan="6">No Users Found!.</td>
-        </tr>
+      <tr>
+        <td colspan="6">No Users Found!.</td>
+      </tr>
     </ng-template>
   </p-table>
 </div>
@@ -160,194 +195,229 @@
     [draggable]="false"
     (onHide)="closeDailog()"
   >
-  <ng-template pTemplate="content">
-    <form #addUserForm [formGroup]="addUserForm1" (ngSubmit)="addOrUpdateUser(userToEditId)">
-      <div class="form-fields">
-        <div class="left-elements">
-        <div class="image-upload-container">
-          <div class="profile-img">
-            <img [src]="profileImage" alt="ProfileImage" class="profile-img" />
-            <i class="pi pi-pencil" (click)="triggerFileinput()"></i>
-          </div>
-          <input
-            type="file"
-            accept=".png, .jpg, .jpeg"
-            #fileInput
-            (change)="onFilechanges($event)"
-            hidden
-          />
-        </div>
-        <div class="inputfield">
-          <label for="username">User Name*</label>
-          <input
-            type="text"
-            id="username"
-            required
-            formControlName="username"
-          />
-          <span *ngIf="isUV">Only alphanumric characters Allowed, Space is not Allowed </span>
-        </div>
-        <div class="row">
-          <div class="inputfield">
-            <label for="firstName">First name*</label>
-            <input
-              type="text"
-              id="firstName"
-              formControlName="firstName"
-              required
-            />
-            <span *ngIf="isFNLNV">Only alphanumric characters and space Allowed</span>
-          </div>
-          <div class="inputfield">
-            <label for="lastName">Last name</label>
-            <input type="text" id="lastName" formControlName="lastName" />
-          </div>
-        </div>
-        <div class="row">
-          <div class="genderField inputfield">
-            <p>Gender*</p>
-            <div>
+    <ng-template pTemplate="content">
+      <form
+        #addUserForm
+        [formGroup]="addUserForm1"
+        (ngSubmit)="addOrUpdateUser(userToEditId)"
+      >
+        <div class="form-fields">
+          <div class="left-elements">
+            <div class="image-upload-container">
+              <div class="profile-img">
+                <img
+                  [src]="profileImage"
+                  alt="ProfileImage"
+                  class="profile-img"
+                />
+                <i class="pi pi-pencil" (click)="triggerFileinput()"></i>
+              </div>
               <input
-                type="radio"
-                value="Male"
-                id="male"
-                formControlName="gender"
-                (change)="changeGender('male')"
+                type="file"
+                accept=".png, .jpg, .jpeg"
+                #fileInput
+                (change)="onFilechanges($event)"
                 hidden
               />
-              <label for="male" [class.selectedGender]="selectedGender === 'male'">Male</label
-              >
+            </div>
+            <div class="inputfield">
+              <label for="username">User Name*</label>
               <input
-                type="radio"
-                value="Female"
-                id="female"
-                formControlName="gender"
-                (change)="changeGender('female')"
-                hidden
+                type="text"
+                id="username"
+                required
+                formControlName="username"
               />
-              <label for="female" [class.selectedGender]="selectedGender === 'female'">Female</label
-              >
-              <input
-                type="radio"
-                value="Others"
-                id="others"
-                formControlName="gender"
-                (change)="changeGender('others')"
-                hidden
-              />
-              <label for="others" [class.selectedGender]="selectedGender === 'others'">Others</label
-              >
+              <span *ngIf="isUV"
+                >Only alphanumric characters Allowed, Space is not Allowed
+              </span>
+            </div>
+            <div class="row">
+              <div class="inputfield">
+                <label for="firstName">First name*</label>
+                <input
+                  type="text"
+                  id="firstName"
+                  formControlName="firstName"
+                  required
+                />
+                <span *ngIf="isFNLNV"
+                  >Only alphanumric characters and space Allowed</span
+                >
+              </div>
+              <div class="inputfield">
+                <label for="lastName">Last name</label>
+                <input type="text" id="lastName" formControlName="lastName" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="genderField inputfield">
+                <p>Gender*</p>
+                <div>
+                  <input
+                    type="radio"
+                    value="Male"
+                    id="male"
+                    formControlName="gender"
+                    (change)="changeGender('male')"
+                    hidden
+                  />
+                  <label
+                    for="male"
+                    [class.selectedGender]="selectedGender === 'male'"
+                    >Male</label
+                  >
+                  <input
+                    type="radio"
+                    value="Female"
+                    id="female"
+                    formControlName="gender"
+                    (change)="changeGender('female')"
+                    hidden
+                  />
+                  <label
+                    for="female"
+                    [class.selectedGender]="selectedGender === 'female'"
+                    >Female</label
+                  >
+                  <input
+                    type="radio"
+                    value="Others"
+                    id="others"
+                    formControlName="gender"
+                    (change)="changeGender('others')"
+                    hidden
+                  />
+                  <label
+                    for="others"
+                    [class.selectedGender]="selectedGender === 'others'"
+                    >Others</label
+                  >
+                </div>
+              </div>
+              <div class="inputfield">
+                <label for="dob">DOB*</label>
+                <input type="date" id="dob" formControlName="dob" required />
+                <span *ngIf="isDOBV">Date of Birth must less the today!.</span>
+              </div>
+            </div>
+            <div class="inputfield">
+              <label for="email">Email ID*</label>
+              <input type="email" id="email" formControlName="email" required />
+              <span *ngIf="isEV">Email is Invalid*</span>
+            </div>
+            <div class="phone-number row">
+              <div class="inputfield country-code-field">
+                <label>Code*</label>
+                <p-dropdown
+                  [options]="phoneCode"
+                  placeholder="Country code"
+                  formControlName="countryCode"
+                  appendTo="body"
+                  panelClass="dropdown-up"
+                />
+                <span *ngIf="isPNCV">Choose the Mobile code *</span>
+              </div>
+              <div class="inputfield phoneNumberField">
+                <label for="mobile">Mobile Number*</label>
+                <input type="text" id="mobile" formControlName="phone" />
+                <span *ngIf="isPNV"
+                  >Mobile number must be less than 10 digits*</span
+                >
+              </div>
             </div>
           </div>
-          <div class="inputfield">
-            <label for="dob">DOB*</label>
-            <input type="date" id="dob" formControlName="dob" required />
-            <span *ngIf="isDOBV">Date of Birth must less the today!.</span>
+          <div class="right-elements">
+            <div class="inputfield">
+              <label for="address">Address*</label>
+              <textarea
+                id="address"
+                formControlName="address"
+                required
+              ></textarea>
+              <span *ngIf="isAV">Enter a valid Address *</span>
+            </div>
+            <div class="row">
+              <div class="inputfield">
+                <label>Country*</label>
+                <p-dropdown
+                  [options]="countries"
+                  placeholder="Select a Country"
+                  optionLabel="name"
+                  formControlName="country"
+                  (onChange)="onCountryChanges($event.value)"
+                />
+                <span *ngIf="isCV">Select your country</span>
+              </div>
+              <div class="inputfield">
+                <label>State</label>
+                <p-dropdown
+                  [options]="filteredstates"
+                  placeholder="Select a State"
+                  optionLabel="name"
+                  formControlName="state"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="inputfield">
+                <label for="zipcode">Zip Code*</label>
+                <input
+                  type="text"
+                  id="zipcode"
+                  formControlName="zipCode"
+                  required
+                />
+                <span *ngIf="isZCV">Zipe Code is Invalid *</span>
+              </div>
+              <div class="inputfield">
+                <label>Time Zone*</label>
+                <p-dropdown
+                  [options]="timeZones"
+                  placeholder="Select Time Zone"
+                  formControlName="timeZone"
+                  panelClass="dropdown-up"
+                  [style]="{ width: '170px' }"
+                />
+                <span *ngIf="isTZV">select the Time Zone*</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="inputfield">
+                <label>Locale</label>
+                <p-dropdown
+                  [options]="locales"
+                  placeholder="Select Locale"
+                  formControlName="locale"
+                  appendTo="body"
+                  panelClass="dropdown-up"
+                />
+              </div>
+              <div class="inputfield adminCheck">
+                <input type="checkbox" formControlName="isAdmin" />
+                <label>Is Admin</label>
+              </div>
+            </div>
+            <div class="inputfield">
+              <label for="password">Password*</label>
+              <input
+                type="password"
+                id="password"
+                formControlName="password"
+                required
+              />
+              <span *ngIf="isPV">Password must required*</span>
+            </div>
           </div>
         </div>
-        <div class="inputfield">
-          <label for="email">Email ID*</label>
-          <input type="email" id="email" formControlName="email" required />
-          <span *ngIf="isEV">Email is Invalid*</span>
+        <div class="buttons">
+          <button type="button" (click)="closeDailog()">Cancel</button>
+          <button type="submit" class="submitBtn">
+            {{ userToEditId ? "Update" : "Submit" }}
+          </button>
         </div>
-        <div class="phone-number row">
-          <div class="inputfield country-code-field">
-          <label>Code*</label>
-            <p-dropdown
-            [options]="phoneCode"
-            placeholder="Country code"
-            formControlName="countryCode"
-            />
-            <span *ngIf="isPNCV">Choose the Mobile code *</span>
-        </div>
-        <div class="inputfield phoneNumberField">
-          <label for="mobile">Mobile Number*</label>
-          <input type="text" id="mobile" formControlName="phone" />
-          <span *ngIf="isPNV">Mobile number must be less than 10 digits*</span>
-        </div>
-        </div>
-      </div>
-      <div class="right-elements">
-        <div class="inputfield">
-          <label for="address">Address*</label>
-          <textarea id="address" formControlName="address" required ></textarea>
-          <span *ngIf="isAV">Enter a valid Address *</span>
-        </div>
-        <div class="row">
-          <div class="inputfield">
-            <label>Country*</label>
-            <p-dropdown
-              [options]="countries"
-              placeholder="Select a Country"
-              optionLabel="name"
-              formControlName="country"
-              (onChange)="onCountryChanges($event.value)"
-            />
-            <span *ngIf="isCV">Select your country</span>
-          </div>
-          <div class="inputfield">
-            <label>State</label>
-            <p-dropdown
-              [options]="filteredstates"
-              placeholder="Select a State"
-              optionLabel="name"
-              formControlName="state"
-            />
-          </div>
-        </div>
-        <div class="row">
-          <div class="inputfield">
-            <label for="zipcode">Zip Code*</label>
-            <input
-              type="text"
-              id="zipcode"
-              formControlName="zipCode"
-              required
-            />
-            <span *ngIf="isZCV">Zipe Code is Invalid *</span>
-          </div>
-          <div class="inputfield">
-            <label>Time Zone*</label>
-            <p-dropdown
-              [options]="timeZones"
-              placeholder="Select Time Zone"
-              formControlName="timeZone"
-            />
-            <span *ngIf="isTZV">select the Time Zone*</span>
-          </div>
-        </div>
-        <div class="row">
-          <div class="inputfield">
-            <label>Locale</label>
-            <p-dropdown
-              [options]="locales"
-              placeholder="Select Locale"
-              formControlName="locale"
-            />
-          </div>
-          <div class="inputfield adminCheck">
-            <input type="checkbox" formControlName="isAdmin" />
-            <label>Is Admin</label>
-          </div>
-        </div>
-        <div class="inputfield">
-          <label for="password">Password*</label>
-          <input
-            type="password"
-            id="password"
-            formControlName="password"
-            required
-          />
-          <span *ngIf="isPV">Password must required*</span>
-        </div>
-      </div>
-      </div>
-      <div class="buttons">
-        <button type="button" (click)="closeDailog()">Cancel</button>
-        <button type="submit" class="submitBtn">{{userToEditId ? 'Update' : 'Submit'}}</button>
-      </div>      
-    </form>
-  </ng-template>
+      </form>
+    </ng-template>
   </p-dialog>
 </div>
 

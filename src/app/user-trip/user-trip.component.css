@@ -123,6 +123,10 @@
     z-index: 100;
 }
 
+.numRowChanges ::ng-deep .p-listbox .p-listbox-list {
+  padding: 5px 0;
+}
+
 ::ng-deep .p-listbox .p-highlight {
     background-color: #084880 !important;
     color: #ffffff !important;

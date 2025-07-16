@@ -8,7 +8,6 @@ import { BucketListComponent } from './bucket-list/bucket-list.component';
 import { UserTripComponent } from './user-trip/user-trip.component';
 import { UsersDetailsComponent } from './users-details/users-details.component';
 import { canActivateRouteGuard } from './RouteGuards/authGuard'
-import { FooterComponent } from './footer/footer.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 
 const routes: Routes = [

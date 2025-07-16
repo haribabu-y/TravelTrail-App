@@ -410,7 +410,6 @@ export const timezones = [
   'Atlantic/Canary',
   'Europe/Paris',
   'Europe/Rome',
-  'America/Argentina/Buenos_Aires',
   'America/Sao_Paulo',
   'America/Manaus',
   'America/Campo_Grande',

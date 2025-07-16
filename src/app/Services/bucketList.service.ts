@@ -1,5 +1,4 @@
 import { inject, Injectable } from "@angular/core";
-import { User } from "../Models/user";
 import { LoginUser } from "../Models/loginUser";
 import { HttpClient } from "@angular/common/http";
 import { map } from "rxjs";

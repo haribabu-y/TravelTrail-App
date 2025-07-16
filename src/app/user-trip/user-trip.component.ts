@@ -1,6 +1,5 @@
 import { Component, ElementRef, HostListener, inject, OnInit, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
-import { AdminService } from '../Services/admin.service';
 import { UserTrips } from '../Models/usertrips';
 import { SharedService } from '../Services/shared.service';
 import { BucketListService } from '../Services/bucketList.service';

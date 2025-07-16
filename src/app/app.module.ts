@@ -18,7 +18,6 @@ import { AuthComponent } from './auth/auth.component';
 
 import { ToggleButtonModule } from 'primeng/togglebutton'
 import { ButtonModule } from 'primeng/button';
-import { MenubarModule } from 'primeng/menubar';
 import { InputSwitchModule } from 'primeng/inputswitch';
 
 import { ChartModule } from 'primeng/chart';
@@ -44,6 +43,8 @@ import { MessageService } from 'primeng/api';
 import { NotFoundComponent } from './not-found/not-found.component';
 
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @NgModule({
   declarations: [
@@ -80,7 +81,8 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
     ImageModule,
     PaginatorModule,
     ToastModule,
-    OverlayPanelModule
+    OverlayPanelModule,
+    ConfirmDialogModule
   ],
   providers: [MessageService],
   bootstrap: [AppComponent]

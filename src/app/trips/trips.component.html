@@ -143,6 +143,8 @@
           pInputText
           id="sl"
           [(ngModel)]="startPlace"
+          pattern="^[a-zA-Z\s]+$"
+          (ngModelChange)="validatePlaceName()"
           autofocus
           required
         />
@@ -155,6 +157,8 @@
           pInputText
           id="d"
           [(ngModel)]="destination"
+          pattern="^[a-zA-Z\s]+$"
+          (ngModelChange)="validatePlaceName()"
           required
         />
         <span *ngIf="isDV">Destination is Invalid*</span>

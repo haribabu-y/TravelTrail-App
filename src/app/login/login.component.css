@@ -185,13 +185,13 @@ body {
 
 /* --- For mobile devices (max-width: 768px) --- */
 @media (max-width: 768px) {
-    .backgroundImage {
+    /* .backgroundImage {
         width: 100%;
         height: auto;
         top: 0;
         left: -100px;
         object-fit: cover;
-    }
+    } */
     .container {
         width: 100vw;
         flex-direction: column;
@@ -232,6 +232,8 @@ body {
     font-size: 12px;
     left: 15px;
     top: 135px;
+    width: 300px;
+    left: 105px;
 }
 
     .login-container {
@@ -270,10 +272,11 @@ body {
 @media (max-width: 426px) {
     .logo-icon img {
         top: 130px;
+        left: 10px;
     }
     .logo-text {
     top: 130px;
-    left: 40px;
+    left: 20px;
 }
     .travel {
         font-size: 32px;
@@ -285,14 +288,15 @@ body {
     .tagline {
         left: 5px;
         top: 165px;
+        left: 72px;
     }
 
-    .login-container {
-        /* position: static !important; */
+    /* .login-container {
+        position: static !important;
         top: 150px;
         width: 140%;
         left: 10px;
-    }
+    } */
 
     .login-container h2 {
         font-size: 18px;
@@ -304,7 +308,32 @@ body {
 }
 
 @media (max-width: 321px) {
+    .logo-icon img {
+        width: 60px;
+        height: 60px;
+        top: 130px;
+        left: 0px;
+    }
+
+    .logo-text {
+    top: 125px;
+    left: -12px;
+}
+    .travel {
+        font-size: 28px;
+    }
+
+    .trail {
+        font-size: 24px;
+    }
     .login-container {
-        left: 30px;
+        left: 0px;
+    }
+
+    .tagline {
+        width: 285px;
+        font-size: 10px;
+        top: 160px;
+        left: 35px;
     }
 }

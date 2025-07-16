@@ -2,9 +2,8 @@ import { Component, ElementRef, HostListener, inject, OnInit, ViewChild } from '
 import { Table } from 'primeng/table';
 import { SharedService } from '../Services/shared.service';
 import { UserDetail } from '../Models/userDetail';
-import { BucketList } from '../Models/bucketList';
 import { BucketListService } from '../Services/bucketList.service';
-import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { User } from '../Models/user';
 import { Authservice } from '../Services/auth.service';
 import { HttpClient } from '@angular/common/http';
@@ -104,11 +103,6 @@ export class UsersDetailsComponent implements OnInit {
   }
 
   currencyFormate = [
-    // { name: '$  Doller', code: 'USD', symbol: '$' },
-    // { name: '₹  Rupees', code: 'INR', symbol: '₹' },
-    // { name: '€  Euro', code: 'EUR', symbol: '€' },
-    // { name: '£  Pound', code: 'GBP', symbol: '£' },
-    // { name: '¥  Yen', code: 'JPY', symbol: '¥' },
       { name: '₹ Rupees', code: 'INR', symbol: '₹' },
       { name: '$ Dollar', code: 'USD', symbol: '$' },
       { name: '€ Euro', code: 'EUR', symbol: '€' },
@@ -139,11 +133,6 @@ export class UsersDetailsComponent implements OnInit {
   ];
 
 exchangeRates: { [key: string]: number } = {
-    // 'INR': 1,      // 1 INR is 1 INR
-    // 'USD': 0.012,  // 1 INR = 0.012 USD (example rate as of July 2025)
-    // 'EUR': 0.011,  // 1 INR = 0.011 EUR
-    // 'GBP': 0.0095, // 1 INR = 0.0095 GBP
-    // 'JPY': 1.85,   // 1 INR = 1.85 JPY
     'INR': 1,        // Base
     'USD': 0.012,    // US Dollar
     'EUR': 0.011,    // Euro
@@ -414,7 +403,7 @@ exchangeRates: { [key: string]: number } = {
     
     if(this.addUserForm1.controls['username'].invalid) {
       let errMsg = 'For username! Only alphanumric characters Allowed, Space is not Allowed and Maximum lenght is 20 Characters';
-      this.messageService.add({severity:'warn', summary:'Warn', detail: errMsg})
+      // this.messageService.add({severity:'warn', summary:'Warn', detail: errMsg})
       this.isUV = true;
       return;
     } else {
@@ -422,7 +411,7 @@ exchangeRates: { [key: string]: number } = {
     }
     if(this.addUserForm1.controls['firstName'].invalid || this.addUserForm1.controls['lastName'].invalid) {
       let errMsg = 'For FirstName and LastName! Only alphanumric characters and space Allowed and Maximum lenght is 30 Characters';
-      this.messageService.add({severity:'warn', summary:'Warn', detail: errMsg})
+      // this.messageService.add({severity:'warn', summary:'Warn', detail: errMsg})
       this.isFNLNV = true;
       return;
     } else {
@@ -441,14 +430,14 @@ exchangeRates: { [key: string]: number } = {
       this.isPNCV = false;
     }
     if(this.addUserForm1.controls['phone'].invalid) {
-      this.messageService.add({severity:'warn', summary:'Warn', detail:'Enter Valid Mobile number atleast 10 digits!.'});
+      // this.messageService.add({severity:'warn', summary:'Warn', detail:'Enter Valid Mobile number atleast 10 digits!.'});
       this.isPNV = true;
       return;
     } else {
       this.isPNV = false;
     }
     if(new Date(this.addUserForm1.value.dob) > new Date() || this.addUserForm1.controls['dob'].invalid) {
-      this.messageService.add({severity:'warn', summary:'Warn', detail:'Date of Birth must less the today!.'});
+      // this.messageService.add({severity:'warn', summary:'Warn', detail:'Date of Birth must less the today!.'});
       this.isDOBV = true;
       return;
     } else{
@@ -492,7 +481,7 @@ exchangeRates: { [key: string]: number } = {
       let formControls = this.addUserForm1.controls;
       let errorMessage = ''
       for(let formField in formControls) {
-        console.log(formField);  
+        // console.log(formField);  
         if(formControls[formField].status === "INVALID") {
           errorMessage = formField + " field is INVALID!.";
         }      
@@ -500,13 +489,13 @@ exchangeRates: { [key: string]: number } = {
       this.messageService.add({severity: 'error', summary:'Error', detail: errorMessage});
       return;
     }
-    console.log(this.addUserForm1);
+    // console.log(this.addUserForm1);
     let newUser: User = this.addUserForm1.value;
-    console.log(newUser); 
+    // console.log(newUser); 
     if(id) {
       let userToUpdate: User = this.addUserForm1.value;
       this.http.patch(`https://travektrail-app-default-rtdb.firebaseio.com/users/${id}.json`, userToUpdate).subscribe((res) => {
-        console.log(res);       
+        // console.log(res);       
         this.userToEditId = ''; 
         this.messageService.add({severity:'success', summary:'Success', detail:'User Successfully Updated!.'})
         this.showAddOrUpdateDailog = false;
@@ -520,7 +509,7 @@ exchangeRates: { [key: string]: number } = {
           return (user.username === newUser.username || user.email === newUser.email);
         });
         if(isUserExit) {
-          console.log(isUserExit);          
+          // console.log(isUserExit);          
           // alert("User already exits");
           this.messageService.add({severity:'error', summary:'Error',detail:'User already exits!.'})
           return;
@@ -532,8 +521,8 @@ exchangeRates: { [key: string]: number } = {
         newUser
       )
       .subscribe((response) => {
-        console.log(response);
-        console.log(newUser);  
+        // console.log(response);
+        // console.log(newUser);  
         this.addUserForm1.reset(); 
         this.messageService.add({severity:'success', summary:'Success', detail:'UserSuccessFully Added!.'})
         this.profileImage = 'assets/users/defaultProfileImg.jpg';
@@ -545,6 +534,7 @@ exchangeRates: { [key: string]: number } = {
     })
   }
   closeDailog() {
+    console.log(this.addUserForm1);    
     this.showAddOrUpdateDailog = false;
     this.addUserForm1.reset();
     this.userToEditId = ''
@@ -565,8 +555,9 @@ exchangeRates: { [key: string]: number } = {
   }
   userToEdit: User;
   userToEditId: string;
+  statesForEdit: any;
   openEditDialog(userId: string) {
-    console.log(userId);
+    // console.log(userId);
     this.userToEditId = userId;
     this.showAddOrUpdateDailog = true;
     if(userId) {
@@ -575,17 +566,25 @@ exchangeRates: { [key: string]: number } = {
     }
     this.http.get(`https://travektrail-app-default-rtdb.firebaseio.com/users/${userId}.json`).subscribe((user: User) => {
       this.userToEdit = user;
-      console.log(this.userToEdit);
+      // console.log(this.userToEdit);
       this.selectedGender = user.gender;
+      this.filteredstates = this.states[user.country['code']] || [];
+      console.log(this.statesForEdit);
+      
       this.profileImage = user.profileImage ? user.profileImage : `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName ? user.lastName : ''}&bold=true`;
       this.addUserForm1.patchValue(this.userToEdit);
       this.addUserForm1.patchValue({profileImage: this.profileImage});
+      if(this.addUserForm1.controls['country']) {
+        this.filteredstates = this.states[user.country['code']] || [];
+      }
+      console.log(this.addUserForm1);
+      
     })
   }
   showDeleteUserdailog: boolean = false;
   userId: string = '';
   showDeleteUser(id: string) {
-    console.log(id); 
+    // console.log(id); 
     this.userId = id;
     if(id === JSON.parse(localStorage.getItem('user')).id) {
       this.messageService.add({severity:'warn', summary:'Warn', detail:"Admin can't delete himself!."});
@@ -609,7 +608,7 @@ exchangeRates: { [key: string]: number } = {
   goToPageNumber: number = null;
 
   onPageChange(event: any) {
-    console.log(event);
+    // console.log(event);
     this.goToPageNumber = event.page + 1;
     this.numOfRows = event.rows;
   }

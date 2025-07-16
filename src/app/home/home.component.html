@@ -12,11 +12,7 @@
   </div>
 </div>
 <div class="barGraph" *ngIf="selectedRadio === 'barGraph'">
-  <p-chart 
-    type="bar" 
-    [data]="barGraphData" 
-    [options]="barGraphOptions"
-  ></p-chart>
+  <p-chart type="bar" [data]="barGraphData" [options]="barGraphOptions"></p-chart>
 </div>
 <div class="lineBar" *ngIf="selectedRadio === 'lineGraph'">
   <p-chart type="line" [data]="lineGraphData" [options]="lineGraphOptions" />

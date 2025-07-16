@@ -4,8 +4,6 @@ import { Authservice } from '../Services/auth.service';
 import { Router } from '@angular/router';
 import { User } from '../Models/user';
 import { MessageService } from 'primeng/api';
-import { LoginUser } from '../Models/loginUser';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-login',

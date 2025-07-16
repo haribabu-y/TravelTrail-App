@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, DoCheck, ElementRef, HostListener, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, OnInit, ViewChild } from '@angular/core';
 import { Authservice } from '../Services/auth.service';
 import { TripService } from '../Services/trip.service';
 import { Trip } from '../Models/trip';
@@ -6,7 +6,6 @@ import { SharedService } from '../Services/shared.service';
 import { Table } from 'primeng/table';
 import { MultiSelect } from 'primeng/multiselect';
 import { MessageService } from 'primeng/api';
-import { LoginUser } from '../Models/loginUser';
 
 @Component({
   selector: 'app-trips',
@@ -55,15 +54,6 @@ export class TripsComponent implements OnInit {
     console.log(this.currencyCode);    
   }
 
-  // columnsChanged(event: Event) {
-  //   // this.loadTripsInTable();
-  //   // console.log(event)
-  //   this.columnSelect.show();
-  //   // console.log(this.selectedColumns);  
-  //   // this.shoeColumnsDisplay = false;  
-  // }
-
-
   loadTripsInTable() {
     this.isLoading = true;
     this.tripService.getAllTrips().subscribe((res: Trip[]) => {
@@ -106,6 +96,11 @@ export class TripsComponent implements OnInit {
     this.isTEV = false;
     this.isTMV = false;
   }
+  validatePlaceName() {
+    const pattern = /^[a-zA-Z\s]*$/;
+    this.isSPV = !pattern.test(this.startPlace || '');
+    this.isDV = !pattern.test(this.destination || '');
+  }
   isSPV: boolean = false;
   isDV: boolean = false;
   isTDV: boolean = false;
@@ -115,38 +110,38 @@ export class TripsComponent implements OnInit {
     console.log(this.startPlace);    
     if(this.startPlace === '') {
       this.isSPV = true;
-      return;
+      // return;
     } else {
       this.isSPV = false;
     } 
     if(this.destination === '') {
       this.isDV = true;
-      return;
+      // return;
     } else {
       this.isDV = false;
     }
       if(this.totalDistance === null || this.totalDistance === 0) {
       this.isTDV = true;
-      return;
+      // return;
     } else {
       this.isTDV = false;
     } 
     if(this.totalExpense === null || this.totalExpense === 0){
       this.isTEV = true;
-      return;
+      // return;
     } else {
       this.isTEV = false;
     } 
     if(this.totalMembers === null || this.totalMembers === 0){
       this.isTMV = true;
-      return;
+      // return;
     } else {
       this.isTMV = false
     }
-    // if(this.startPlace === '' || this.destination === '' || this.totalDistance === 0 || this.totalExpense === 0 || this.totalMembers === 0){
-    //   this.messageService.add({severity: 'error', summary:'Error', detail:'Please fill all the fields!.'});
-    //   return;
-    // }
+    if(this.startPlace === '' || this.destination === '' || this.totalDistance === 0 || this.totalExpense === 0 || this.totalMembers === 0){
+      // this.messageService.add({severity: 'error', summary:'Error', detail:'Please fill all the fields!.'});
+      return;
+    }
     let data: Trip = {
       startLocation: this.startPlace,
       destination: this.destination,
@@ -252,10 +247,5 @@ export class TripsComponent implements OnInit {
       }
     }
   }
-  
-
-  // ngAfterViewInit(): void {
-  //   console.log(this.table.value);      
-  // }
   
 }
