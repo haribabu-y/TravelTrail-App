@@ -1,29 +1,29 @@
 body {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 .backgroundimage {
-    width: 100vw;
-    height: 100vh;
+  width: 100vw;
+  height: 100vh;
 }
 .backgroundImage {
-    width: 2000px;
-    height: 1100px;
-    position: relative;
-    top: -230px;
-    left: -475px;
-    overflow: hidden;
+  width: 2000px;
+  height: 1100px;
+  position: relative;
+  top: -230px;
+  left: -475px;
+  overflow: hidden;
 }
 
 .container {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    gap: 400px;
-    justify-content: space-between;
-    /* position: absolute; */
-    /* background: url('./../../assets/loginSignup-Bg.jpg'); */
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  gap: 400px;
+  justify-content: space-between;
+  /* position: absolute; */
+  /* background: url('./../../assets/loginSignup-Bg.jpg'); */
 }
 /* .logo-container {
     background-color: #fdf5e6;
@@ -31,62 +31,68 @@ body {
 } */
 
 .logo-icon img {
-    transform: rotate(180deg);
-    width: 114px;
-    height: 114px;
-    position: absolute;
-    top: 90px;
-    left: 30px;
+  transform: rotate(180deg);
+  width: 114px;
+  height: 114px;
+  position: absolute;
+  top: 90px;
+  left: 30px;
 }
 
 .logo-text {
-    width: 204px;
-    height: 66px;
-    position: absolute;
-    top: 90px;
-    left: 93px;
+  width: 204px;
+  height: 66px;
+  position: absolute;
+  top: 90px;
+  left: 93px;
 }
 
 .travel {
-    font-family: "Madimi One", sans-serif;
-    font-weight: 400;
-    font-size: 60px;
-    line-height: 100%;
-    letter-spacing: 0%;
-    color: blue;
+  font-family: "Madimi One", sans-serif;
+  font-weight: 400;
+  font-size: 60px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: blue;
 }
 
 .trail {
-    font-family: "Montez", cursive;
-    font-weight: 400;
-    font-size: 55px;
-    line-height: 100%;
-    letter-spacing: 0%;
-    color: green;
+  font-family: "Montez", cursive;
+  font-weight: 400;
+  font-size: 55px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: green;
 }
 
 .tagline {
-    width: 500px;
-    font-family: "Inter", sans-serif;
-    position: absolute;
-    left: 140px;
-    top: 150px;
+  width: 500px;
+  font-family: "Inter", sans-serif;
+  position: absolute;
+  left: 140px;
+  top: 150px;
+}
+.login-container {
+  position: absolute;
+  top: 20px;
+  right: 50px;
+  width: 40%;
+  height: 95%;
+  background-color: white;
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }
 
-.login-container {
-    position: absolute;
-    top: 30px;
-    right: 50px;
-    width: 40%;
-    /* height: 680px; */
-    height: 93%;
-    background-color: white;
-    border-radius: 25px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 40px;
+form {
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .login-container h2 {
@@ -98,419 +104,378 @@ body {
     transform: rotate(180deg);
 }
 
-.login-container form {
-    width: 100%;
+.image-upload-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-
 .profile-img {
-    width: 100px;
-    height: 100px;
-    position: relative;
+  width: 100px;
+  height: 100px;
+  position: relative;
 }
 
 .profile-img img {
-    border-radius: 50%;
-    border: 1px solid #084880;
-    padding: 1px;
+  border-radius: 50%;
+  border: 1px solid #084880;
+  padding: 1px;
 }
 
 .profile-img i {
-    position: absolute;
-    top: 25px;
-    right: 12px;
-    color: white;
-    cursor: pointer;
+  position: absolute;
+  top: 25px;
+  right: 12px;
+  color: white;
+  cursor: pointer;
+}
+.inputField input, .field textarea, .field ::ng-deep .p-dropdown {
+    background-color: #f3f3f3;
 }
 
-.page1, .page2 {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}  
-.page2 {
-    gap: 5px;
-}
-.row {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-    width: 80%;
-}
-.inputfield {
-    width: 80%;
-    display: flex;
-    flex-direction: column;
-}
-.row .inputfield {
-    width: 48%;
-}
-
-::ng-deep .inputfield .p-dropdown {
-    /* width: 235px !important; */
-    width: 100% !important;
-    height: 35px;
-    padding: 5px !important;
-    display: flex;
-    align-items: center;
-    background-color: #F3F3F3;
+.field ::ng-deep .p-dropdown {
     border: none;
 }
 
-/* .phone-number {
-    display: flex;
-    width: 80%;
-    gap: 10px;
-} */
-/* .country-code-field ::ng-deep .p-dropdown {
-    width: 40% !important;
-}
-.phoneNumberField {
-    width: 400px;
-} */
-
-.genderField label {
-    background-color: #F3F3F3;
-    padding: 10px;
-    border-radius: 4px;
-    font-size: 14px !important;
-    width: 75px;
-    /* width: 65px; */
-    height: 37px;
-    text-align: center;
-}
-.genderField div {
-    display: flex;
-    /* gap: 5px; */
-    gap: 10px;
+.field {
+    margin-bottom: 10px;
 }
 
-.country-code-field ::ng-deep .inputfield .p-dropdown {
-    width: 97% !important;
+.field > label {
+    margin-bottom: 3px;
+}
+
+.field ::ng-deep .p-dropdown {
+  width: 100%;
+}
+.field ::ng-deep .p-dropdown .p-inputtext {
+  padding: 7px;
+}
+.field ::ng-deep .p-dropdown .p-dropdown-trigger {
+  width: 2rem;
+}
+
+.field ::ng-deep .p-dropdown .p-dropdown-trigger .p-icon {
+    width: 13px;
+}
+
+.field-checkbox {
+  margin-top: 2rem;
+  margin-bottom: 0;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.md\:col-6, .md\:col-8, .md\:col-4 {
+    padding: 5px;
 }
 
 .selectedGender {
-    background-color: #1E88E5 !important;
-    color: white;
+  background-color: #1e88e5 !important;
+  color: white;
 }
-
- .inputfield label, .genderField p {
-    font-size: 18px;
+.gender-container .formgroup-inline {
+  padding: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
 }
-.inputfield input, .inputfield textarea {
-    padding: 10px;
-    background-color: #F3F3F3;
-    border: none;
-    border-radius: 4px;
-}
-.inputfield textarea {
-    resize: none;
-}
-.inputfield span {
-    font-size: 12px;
-    color: red;
-    /* transform: translateY(-5px); */
-}
-.inputfield input:focus {
-    outline: none;
-    border: 1px solid #1E88E5
-}
-
-#address {
-    height: 70px;
-}
-
-.adminCheck {
-    display: flex !important;
-    flex-direction: row;
-    align-items: center !important;
-    gap: 15px;
-    padding: 10px 0;
-    transform: translateY(10px);
-    /* margin-top: 10px; */
-}
-
-.submitBtn button{
-    background-color: #1E88E5;
-    color: white;
-    border-radius: 5px;
-    border: none;
-    padding: 10px;
-    font-size: 20px;
-    margin: 10px 0 0;
-    cursor: pointer;
-}
-.login-container p {
-    font-size: 18px;
-    font-weight: 400;
-}
-
- .paginators {
-    display: flex;
+.gender-container .field-radiobutton {
+  margin: 0;
+  padding: 0;
+  /* display: flex;
     justify-content: center;
-    align-items: center;
-    gap: 10px;
- }
+    align-items: center; */
+}
 
- .paginators .pi-stop {
-    font-size: 10px;
-    transform: rotate(45deg);
-    color: #1E88E5;
-    border-radius: 4px;
- }
+.gender-container .field-radiobutton label {
+  margin: 0;
+  padding: 10px 15px;
+  border-radius: 6px;
+  background-color: #f3f3f3;
+}
 
- .fillSquare {
-    background-color: #1E88E5;
- }
+.paginators {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
 
- .paginators button {
-    border: none;
-    background-color: white;
-    cursor: pointer;
-    margin: 0 5px;
-    margin: 0;
-    /* color: #1E88E5; */
- }
+.paginators .pi-stop {
+  font-size: 10px;
+  transform: rotate(45deg);
+  color: #1e88e5;
+  border-radius: 4px;
+}
 
- .errMsg {
-    color: red;
-    font-size: 12px;
- }
+.fillSquare {
+  background-color: #1e88e5;
+}
 
-  @media screen and (max-width: 1175px) {
-    .row .inputfield {
-        width: 100%;
-    }
+.paginators button {
+  border: none;
+  background-color: white;
+  cursor: pointer;
+  margin: 0 5px;
+  margin: 0;
+  /* color: #1E88E5; */
+}
+.submitBtn {
+    margin-bottom: 0;
+}
+
+.submitBtn button {
+  background-color: #1e88e5;
+  color: white;
+  border-radius: 5px;
+  border: none;
+  padding: 10px;
+  font-size: 20px;
+  margin: 10px 0 0;
+  cursor: pointer;
+}
+
+.field span {
+  font-size: 12px;
+  color: red;
+}
+
+@media screen and (max-width: 1024px) {
+  .backgroundImage {
+    width: 1760px;
+        height: 1150px;
+        position: relative;
+        top: -140px;
+        left: -620px;
+  }
+  .logo-container {
+    text-align: center;
+    z-index: 10;
   }
 
- @media screen and (max-width: 1024px) and (max-height: 850px){
-     .backgroundImage {
-    width: 1800px;
-    height: 1100px;
-    /* height: 100vh; */
-    position: relative;
-    top: -150px;
-    left: -620px;
-}
-   .logo-container {
-        text-align: center;
-        z-index: 10;
-    }    
+  .logo-icon img {
+    width: 90px;
+    height: 90px;
+  }
 
-    .logo-icon img {
-        width: 90px;
-        height: 90px;
-    }
-
-    .logo-text {
+  .logo-text {
     top: 85px;
     left: 75px;
-}
+  }
 
-.travel {
+  .travel {
     font-size: 50px;
-}
+  }
 
-.trail {
+  .trail {
     font-size: 45px;
-}
+  }
 
-.tagline {
+  .tagline {
     font-size: 14px;
     left: 30px;
     top: 135px;
-}
-   .login-container {
-    width: 45%;
+  }
+  .login-container {
+    width: 50%;
     height: 97%;
     gap: 35px;
     top: 12px;
-   }
+    right: 30px;
+  }
 
-   .login-container h2 {
+  .login-container h2 {
     transform: translateY(15px);
-   }
-   .paginators {
+  }
+  .gender-container .field-radiobutton label{
+    padding: 10px 7px;
+  }
+  /* .paginators {
     transform: translateY(-15px);
-   }
-
-   .adminCheck {
-    transform: translateY(-2px);
-    padding: 3;
-   }
-
-.row {
-    flex-direction: column;
-    width: 100%;
-}
-.row .inputfield {
-    width: 80%;
-}
-
-::ng-deep .inputfield .p-dropdown {
-    width: 100% !important;
-}
+  } */
 }
 
 /* --- For mobile devices (max-width: 768px) --- */
 @media (max-width: 768px) {
-    body {
-        overflow: scroll;
-    }
-    .container {
-        width: 100vw;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 20px;
-    }
+  body {
+    overflow: scroll;
+  }
+  .container {
+    width: 100vw;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+  }
 
-    .backgroundimage {
-        /* display: none; Hide background image or replace with mobile-friendly bg */
-        position: static;
-        display: none;
-    }
+  .backgroundimage {
+    /* display: none; Hide background image or replace with mobile-friendly bg */
+    position: static;
+    display: none;
+  }
 
-    .logo-container {
-        text-align: center;
-        z-index: 10;
-    }    
+  .logo-container {
+    text-align: center;
+    z-index: 10;
+  }
 
-    .logo-icon img {
-        top: 40px;
-        width: 80px;
-        height: 80px;
-    }
+  form {
+    width: 90%;
+  }
 
-    .logo-text {
+  .logo-icon img {
+    top: 40px;
+    width: 80px;
+    height: 80px;
+  }
+
+  .logo-text {
     top: 40px;
     left: 55px;
-}
+  }
 
-.travel {
+  .travel {
     font-size: 40px;
-}
+  }
 
-.trail {
+  .trail {
     font-size: 35px;
-}
+  }
 
-.tagline {
+  .tagline {
     font-size: 12px;
     left: 15px;
     top: 83px;
-}
+  }
 
-    .login-container {
-        /* position: static; */
-        top: 150px;
-        left: 0px;
-        width: 100%;
-        padding: 20px;
-        border-radius: 15px;
-        gap: 40px;
-    }
+  .login-container {
+    /* position: static; */
+    top: 50px;
+    left: 0px;
+    width: 100%;
+    padding: 20px;
+    border-radius: 15px;
+    gap: 40px;
+  }
 
-    .login-container h2 {
-        font-size: 20px;
-    }
+  .login-container h2 {
+    font-size: 20px;
+  }
+  .gender-container {
+    justify-content: flex-start;
+    gap: 17px;
+  }
 
-    /* .page2 {
-        position: relative;
-        top: 80px;
-    } */
+  .gender-container .field-radiobutton label{
+    padding: 10px 25px;
+  }
 
-    .row .inputfield {
-    width: 90%;
-}
 
-    .inputfield {
-        width: 90%;
-    }
 
-    .inputfield input {
-        font-size: 16px;
-    }
+  /* .inputfield input {
+    font-size: 16px;
+  }
 
-    .submitBtn button {
-        width: 100%;
-        font-size: 18px;
-    }
+  .submitBtn button {
+    width: 100%;
+    font-size: 18px;
+  } */
 
-    .login-container p {
-        font-size: 14px;
-        transform: translateY(0px);
-    }
-    .paginators {
+  /* .login-container p {
+    font-size: 14px;
+    transform: translateY(0px);
+  } */
+  /* .paginators {
     padding-bottom: 20px;
-   }
-
+  } */
 }
 
 @media (max-width: 426px) {
-    
-    .logo-icon img {
-        top: 40px;
-        width: 50px;
-        height: 50px;
-    }
+  .logo-icon img {
+    top: 40px;
+    width: 50px;
+    height: 50px;
+  }
 
-    .logo-text {
+  .logo-text {
     top: 40px;
     left: 10px;
-}
+  }
 
-.travel {
+  .travel {
     font-size: 25px;
-}
+  }
 
-.trail {
+  .trail {
     font-size: 25px;
-}
+  }
 
-.tagline {
-     width: 300px;
+  .tagline {
+    width: 300px;
     font-size: 10px;
     left: 50px;
     top: 68px;
+  }
+  .login-container {
+    top: 125px;
+  }
+   .gender-container .field-radiobutton label{
+    padding: 10px 30px;
+  }
+  .field-checkbox {
+    margin-top: 5px;
+  }
 }
+@media (max-width: 376px) {
+     .gender-container .field-radiobutton label{
+    padding: 10px 25px;
+  }
 }
 @media (max-width: 320px) {
-    body {
-        width: 100vw;
-    }
-    .logo-icon img {
-        top: 40px;
-        width: 60px;
-        height: 60px;
-        left: 0px;
-    }
+  body {
+    width: 100vw;
+  }
+  .logo-icon img {
+    top: 40px;
+    width: 60px;
+    height: 60px;
+    left: 0px;
+  }
 
-    .logo-text {
+  .logo-text {
     top: 35px;
     left: -15px;
-}
+  }
 
-.travel {
+  .travel {
     font-size: 28px;
-}
+  }
 
-.trail {
-     font-size: 24px;
-}
+  .trail {
+    font-size: 24px;
+  }
 
-.tagline {
+  .tagline {
     font-size: 10px;
     left: 20px;
     top: 65px;
-}
-.login-container h2 {
+  }
+  .login-container {
+    top: 180px;
+  }
+  .login-container h2 {
     transform: translateY(-5px);
-}
-.page1 .profile-img {
+  }
+   .gender-container .field-radiobutton label{
+    padding: 10px 15px
+  }
+  .page1 .profile-img {
     transform: translateY(-10px);
-}
+  }
 }

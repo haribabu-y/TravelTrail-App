@@ -29,6 +29,250 @@
     </h2>
     <form [formGroup]="reactiveForm" (ngSubmit)="onSignupFormsubmit()">
       <div class="page1" *ngIf="paginationPageNo === 1">
+          <div class="formgrid grid">
+            <div class="field col-12 image-upload-container inputField">
+              <div class="profile-img">
+                <img
+                  [src]="profileImage"
+                  alt="ProfileImage"
+                  class="profile-img"
+                />
+                <i class="pi pi-pencil" (click)="triggerFileinput()"></i>
+              </div>
+              <input
+                type="file"
+                accept=".png, .jpg, .jpeg"
+                #fileInput
+                (change)="onFilechanges($event)"
+                hidden
+              />
+            </div>
+            <div class="field col-12 inputField">
+              <label for="username">Username*</label>
+              <input
+                type="text"
+                id="username"
+                class="text-base text-color p-2 border-solid border-round border-none outline-none focus:border-primary w-full"
+                formControlName="username"
+              />
+              <span *ngIf="isUV">Only alphanumric characters Allowed, Space is not Allowed </span>
+            </div>
+            <div class="field col-12 md:col-6 inputField">
+              <label for="firstname">First Name*</label>
+              <input
+                type="text"
+                id="firstname"
+                class="text-base text-color p-2 border-solid border-round border-none outline-none focus:border-primary w-full"
+                formControlName="firstName"
+              />
+              <span *ngIf="isFNLNV">Only alphanumric characters and space Allowed</span>
+            </div>
+            <div class="field col-12 md:col-6 inputField">
+              <label for="lastname">Last Name</label>
+              <input
+                type="text"
+                id="lastname"
+                class="text-base text-color border-none p-2 border-solid border-round outline-none focus:border-primary w-full"
+                formControlName="lastName"
+              />
+            </div>
+            <div class="field col-12 md:col-6 gender-container">
+              <div>Gender*</div>
+              <div class="formgroup-inline col-12">
+                <div class="field-radiobutton col-3.5">
+                  <input
+                    type="radio"
+                    name="gender"
+                    id="male"
+                    formControlName="gender"
+                    hidden
+                    (change)="changeGender('male')"
+                  />
+                  <label
+                    for="male"
+                    [class.selectedGender]="selectedGender === 'male'"
+                    >Male</label
+                  >
+                </div>
+                <div class="field-radiobutton col-3.5">
+                  <input
+                    type="radio"
+                    name="gender"
+                    id="female"
+                    formControlName="gender"
+                    hidden
+                    (change)="changeGender('female')"
+                  />
+                  <label
+                    for="female"
+                    [class.selectedGender]="selectedGender === 'female'"
+                    >Female</label
+                  >
+                </div>
+                <div class="field-radiobutton col-3.5">
+                  <input
+                    type="radio"
+                    name="gender"
+                    id="others"
+                    formControlName="gender"
+                    hidden
+                    (change)="changeGender('others')"
+                  />
+                  <label
+                    for="others"
+                    [class.selectedGender]="selectedGender === 'others'"
+                    >Others</label
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="field col-12 md:col-6 inputField">
+              <label for="date">Date*</label>
+              <input
+                type="date"
+                name="date"
+                id="date"
+                class="text-base text-color border-none p-2 border-solid border-round outline-none focus:border-primary w-full"
+                formControlName="dob"
+              />
+              <span *ngIf="isDOBV">Date of Birth must less the today!.</span>
+            </div>
+            <div class="field col-12 inputField">
+              <label for="email">Email*</label>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                class="text-base text-color border-none p-2 border-solid border-round outline-none focus:border-primary w-full"
+                formControlName="email"
+              />
+              <span *ngIf="isEV">Email is Invalid*</span>
+            </div>
+            <div class="field col-12 md:col-4 phone-code inputField">
+              <label for="phonecode">Phone Code</label>
+              <p-dropdown
+                [options]="phoneCodes"
+                (onChange)="onCountryCodeChandes($event)"
+                placeholder="Select a code"
+                title="Select a code"
+                class="w-full text-center"
+                formControlName="countryCode"
+              />
+              <span *ngIf="isPNCV">Choose the Mobile code *</span>
+            </div>
+            <div class="field col-12 md:col-8 phone-number inputField">
+              <label for="phone-number">Phone No.*</label>
+              <input
+                type="text"
+                id="phone-number"
+                class="text-base text-color border-none p-2 border-solid border-round outline-none focus:border-primary w-full"
+                formControlName="phone"
+              />
+              <span *ngIf="isPNV">Mobile number must be less than 10 digits*</span>
+            </div>
+          </div>
+        </div>
+        <div class="page2" *ngIf="paginationPageNo === 2">
+          <div class="formgrid grid">
+            <div class="field col-12 inputField">
+              <label for="address">Address*</label>
+              <textarea
+                name="address"
+                id="address"
+                type="text"
+                rows="4"
+                class="text-base text-color border-none p-2 border-solid border-round outline-none focus:border-primary w-full"
+                style="resize: none"
+                formControlName="address"
+              ></textarea>
+              <span *ngIf="isAV">Enter a valid Address *</span>
+            </div>
+            <div class="field col-12 md:col-6 inputField">
+              <label for="country">Country*</label>
+              <p-dropdown
+                [options]="countries"
+                placeholder="Select a Country"
+                optionLabel="name"
+                (onChange)="onCountryChanges($event.value)"
+                formControlName="country"
+              />
+               <span *ngIf="isCV">Select your country</span>
+            </div>
+            <div class="field col-12 md:col-6 inputField">
+              <label for="state">State</label>
+              <p-dropdown
+                [options]="filteredstates"
+                placeholder="Select a State"
+                optionLabel="name"
+                formControlName="state"
+              />
+            </div>
+            <div class="field col-12 md:col-6 inputField">
+              <label for="zip-code">Zip Code*</label>
+              <input
+                type="number"
+                id="zip-code"
+                class="text-base text-color border-none p-2 border-solid border-round outline-none focus:border-primary w-full"
+                formControlName="zipCode"
+              />
+              <span *ngIf="isZCV">Zipe Code is Invalid *</span>
+            </div>
+            <div class="field col-12 md:col-6 inputField">
+              <label for="time-zone">Time Zone*</label>
+              <p-dropdown
+                [options]="timezones"
+                placeholder="Select Time Zone"
+                formControlName="timeZone"
+              />
+              <span *ngIf="isTZV">select the Time Zone*</span>
+            </div>
+            <div class="field col-12 md:col-6 inputField">
+              <label for="locale">Locale</label>
+              <p-dropdown 
+                [options]="locales" 
+                placeholder="Select Locale"
+                formControlName="locale"
+              />
+            </div>
+            <div class="field col-12 md:col-6 inputField">
+              <div class="field-checkbox">
+                <input type="checkbox" name="isAdmin" id="isAdmin" [disabled]="true" />
+                <label for="isAdmin">Is Admin</label>
+              </div>
+            </div>
+            <div class="field col-12 inputField">
+              <label for="password">Password*</label>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                class="text-base text-color border-none p-2 border-solid border-round outline-none focus:border-primary w-full"
+                formControlName="password"
+              />
+              <span *ngIf="isPV">Password must required*</span>
+            </div>
+            <div class="field col-12 inputField">
+              <label for="confirm-password">Confirm Password</label>
+              <input
+                type="password"
+                name="confirm-password"
+                id="confirm-password"
+                class="text-base text-color border-none p-2 border-solid border-round outline-none focus:border-primary w-full"
+                formControlName="confirmPassword"
+              />
+              <span *ngIf="passMM">Password and Confirm password should same!.</span>
+            </div>
+            <div class="field col-12 submitBtn">
+              <button
+                type="submit"
+                class="w-full border-primary-500 px-3 py-2 text-base border-round cursor-pointer transition-all transition-duration-200"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      <!-- <div class="page1" *ngIf="paginationPageNo === 1">
         <div class="image-upload-container">
           <div class="profile-img">
             <img [src]="profileImage" alt="ProfileImage" class="profile-img" />
@@ -41,7 +285,6 @@
             (change)="onFilechanges($event)"
             hidden
           />
-          <!-- formControlName="profileImage" -->
         </div>
         <div class="inputfield">
           <label for="username">User Name*</label>
@@ -220,8 +463,7 @@
         <div class="submitBtn inputfield">
           <button type="submit">Sign Up</button>
         </div>
-        <!-- <p>Already have an account!?, <a routerLink="/login">LOGIN</a></p> -->
-      </div>
+      </div> -->
     </form>
     <div class="paginators">
       <button [disabled]="paginationPageNo === 1">

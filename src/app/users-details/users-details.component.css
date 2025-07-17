@@ -282,7 +282,7 @@ td i {
     flex-direction: row;
     align-items: center !important;
     gap: 15px;
-    padding: 10px 0;
+    padding: 0 0 10px 0;
     transform: translateY(10px);
     /* margin-top: 10px; */
 }
@@ -345,9 +345,9 @@ td i {
     color: white;
 }
 
-.inputfield ::ng-deep .p-dropdown-panel .p-dropdown-items {
+/* .inputfield ::ng-deep .p-dropdown-panel .p-dropdown-items {
   width: 170px !important;
-}
+} */
 
 
 /* Styling the delete confirm button*/

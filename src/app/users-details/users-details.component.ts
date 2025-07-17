@@ -534,7 +534,7 @@ exchangeRates: { [key: string]: number } = {
     })
   }
   closeDailog() {
-    console.log(this.addUserForm1);    
+    // console.log(this.addUserForm1);    
     this.showAddOrUpdateDailog = false;
     this.addUserForm1.reset();
     this.userToEditId = ''
@@ -567,13 +567,14 @@ exchangeRates: { [key: string]: number } = {
     this.http.get(`https://travektrail-app-default-rtdb.firebaseio.com/users/${userId}.json`).subscribe((user: User) => {
       this.userToEdit = user;
       // console.log(this.userToEdit);
-      this.selectedGender = user.gender;
+      this.selectedGender = user.gender.toLocaleLowerCase();
       this.filteredstates = this.states[user.country['code']] || [];
-      console.log(this.statesForEdit);
-      
+      console.log(this.statesForEdit);      
       this.profileImage = user.profileImage ? user.profileImage : `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName ? user.lastName : ''}&bold=true`;
       this.addUserForm1.patchValue(this.userToEdit);
+      console.log(this.addUserForm1);      
       this.addUserForm1.patchValue({profileImage: this.profileImage});
+      console.log(this.addUserForm1);      
       if(this.addUserForm1.controls['country']) {
         this.filteredstates = this.states[user.country['code']] || [];
       }
