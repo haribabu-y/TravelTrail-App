@@ -1,6 +1,10 @@
-::ng-deep .p-datatable-table {
-    padding: 0 15px;
+.users-detail-table {
+  padding: 0 20px;
 }
+
+/* ::ng-deep .p-datatable-table {
+    padding: 0 15px;
+} */
 .tableHead {
   display: flex;
   gap: 5px;
@@ -20,7 +24,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 15px !important;
+  padding: 1rem 0 !important;
   background-color: white !important;
 }
 
@@ -28,9 +32,22 @@
     border: none;
 }
 
+::ng-deep .p-datatable thead > tr > th:first-child {
+  border-top-left-radius: 8px;
+}
+
+::ng-deep .p-datatable thead > tr > th:last-child {
+  border-top-right-radius: 8px;
+}
+
 ::ng-deep .p-datatable-header p {
   display: flex;
   align-items: center;
+}
+
+.users-detail-table ::ng-deep .p-paginator {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
 
 .right-contents {
@@ -133,12 +150,18 @@
 }
 
 .numRowChanges ::ng-deep .p-listbox .p-listbox-list {
-  padding: 5px 0;
+  padding: 0;
 }
 
-.numRowChanges ::ng-deep .p-listbox .p-highlight {
+/* .numRowChanges ::ng-deep .p-listbox .p-highlight {
   background-color: #084880 !important;
   color: #ffffff !important;
+} */
+
+::ng-deep .p-listbox .p-listbox-list .p-listbox-item.p-highlight {
+    background-color: #084880 !important;
+    color: #ffffff !important;
+    border-radius: 5px;
 }
 
 td i {
@@ -284,7 +307,7 @@ td i {
     gap: 15px;
     padding: 0 0 10px 0;
     transform: translateY(10px);
-    /* margin-top: 10px; */
+    margin-top: 12px;
 }
 
 .profile-img {
@@ -509,6 +532,9 @@ input[type="number"]::-webkit-inner-spin-button {
     .currency-formate ::ng-deep .p-dropdown {
       width: 200px;
     }
+    .adminCheck {
+      margin: 0;
+    }
 }
 
 @media screen and (max-width: 426px) {
@@ -599,7 +625,7 @@ input[type="number"]::-webkit-inner-spin-button {
   background-color: #2a2a2a;
   color: #ccc;
   border-top: 1px solid #444;
-
+  border-bottom: none;
 }
 
 .dark-mode .numRows i, .dark-mode .numColumns i {

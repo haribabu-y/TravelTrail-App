@@ -14,6 +14,7 @@ import { states } from '../constants/countries';
 import { timezones } from '../constants/countries';
 import { locales } from '../constants/countries';
 import { phoneCodes } from '../constants/countries';
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-users-details',
@@ -29,6 +30,12 @@ export class UsersDetailsComponent implements OnInit {
   isDarkMode: boolean = false;
   currencyCode: string;
   oldCurrencyCode: string;
+
+    countries = countries;
+  states = states;
+  timeZones = timezones;
+  locales = locales;
+  phoneCode = phoneCodes;
 
   ngOnInit(): void {
     
@@ -69,12 +76,15 @@ export class UsersDetailsComponent implements OnInit {
       for(let user of users) {
         console.log(user);
         let userimage: string = user.profileImage ? user.profileImage : `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName ? user.lastName : ''}&bold=true`;
-        let username: string = user.firstName + ' ' + user.lastName;
+        let username: string = user.firstName + ' ' + (user.lastName ? user.lastName : '');
         let id: string = user.id;
         let age: number = new Date().getFullYear() - new Date(user.dob).getFullYear();
         console.log(user.country);        
-        let countryObj = user.country;
-        let country = Object.values(countryObj)[3];
+        let countryObj = this.countries.find((country) => {
+          return country.code === user.country;
+        });
+        console.log(countryObj);        
+        let country = Object.values(countryObj)[0];
         console.log(country);        
         let totalExpense: number = 0;
         if (user.trips) {
@@ -84,7 +94,7 @@ export class UsersDetailsComponent implements OnInit {
           });
         }
         let adminCurrencyCode = this.currencyCode;
-        let userCurrencyCode= user.country['currencyCode']; 
+        let userCurrencyCode= countryObj['currencyCode']; 
         console.log(adminCurrencyCode);
         console.log(userCurrencyCode); 
         
@@ -370,114 +380,21 @@ exchangeRates: { [key: string]: number } = {
     this.selectedGender = value;
   }
 
-  countries = countries;
-  states = states;
-  timeZones = timezones;
-  locales = locales;
-  phoneCode = phoneCodes;
-
   filteredstates: any[] = [];
   // @ViewChild('addUserForm') addUserForm: NgForm;
   authService: Authservice = inject(Authservice);
   messageService: MessageService = inject(MessageService)
   http: HttpClient = inject(HttpClient);
+  secretKey: string = 'TravelTrail';
 
   onCountryChanges(country: any) {
     this.filteredstates = this.states[country.code] || [];
   }
 
-  isUV: boolean = false;
-  isFNLNV: boolean = false;
-  isPNCV: boolean = false;
-  isPNV: boolean = false;
-  isDOBV: boolean = false;
-  isEV: boolean = false;
-  isAV: boolean = false;
-  isCV: boolean = false;
-  isZCV: boolean = false;
-  isTZV: boolean = false;
-  isPV: boolean = false;
-
   addOrUpdateUser(id?: string) {
     console.log(this.addUserForm1);  
-    
-    if(this.addUserForm1.controls['username'].invalid) {
-      let errMsg = 'For username! Only alphanumric characters Allowed, Space is not Allowed and Maximum lenght is 20 Characters';
-      // this.messageService.add({severity:'warn', summary:'Warn', detail: errMsg})
-      this.isUV = true;
-      return;
-    } else {
-      this.isUV = false;
-    }
-    if(this.addUserForm1.controls['firstName'].invalid || this.addUserForm1.controls['lastName'].invalid) {
-      let errMsg = 'For FirstName and LastName! Only alphanumric characters and space Allowed and Maximum lenght is 30 Characters';
-      // this.messageService.add({severity:'warn', summary:'Warn', detail: errMsg})
-      this.isFNLNV = true;
-      return;
-    } else {
-      this.isFNLNV = false;
-    }
-    if(this.addUserForm1.controls['email'].invalid) {
-      this.isEV = true;
-      return;
-    } else {
-      this.isEV = false;
-    }
-    if(this.addUserForm1.controls['countryCode'].invalid) {
-      this.isPNCV = true;
-      return;
-    } else {
-      this.isPNCV = false;
-    }
-    if(this.addUserForm1.controls['phone'].invalid) {
-      // this.messageService.add({severity:'warn', summary:'Warn', detail:'Enter Valid Mobile number atleast 10 digits!.'});
-      this.isPNV = true;
-      return;
-    } else {
-      this.isPNV = false;
-    }
-    if(new Date(this.addUserForm1.value.dob) > new Date() || this.addUserForm1.controls['dob'].invalid) {
-      // this.messageService.add({severity:'warn', summary:'Warn', detail:'Date of Birth must less the today!.'});
-      this.isDOBV = true;
-      return;
-    } else{
-      this.isDOBV = false;
-    }
-    if(this.addUserForm1.controls['address'].invalid) {
-      this.isAV = true;
-      return;
-    } else {
-      this.isAV = false;
-    }
-    if(this.addUserForm1.controls['country'].invalid) {
-      this.isCV = true;
-      return;
-    } else {
-      this.isCV = false;
-    }
-    if(this.addUserForm1.controls['zipCode'].invalid) {
-      this.isZCV = true;
-      return;
-    } else {
-      this.isZCV = false;
-    }
-    if(this.addUserForm1.controls['timeZone'].invalid) {
-      this.isTZV = true;
-      return;
-    } else {
-    this.isTZV = false;
-    }
-    if(this.addUserForm1.controls['password'].invalid) {
-      this.isPV = true;
-      return;
-    } else {
-      this.isPV = false;
-    }
 
     if(this.addUserForm1.invalid){
-      // // alert('Fill all manditory fields');
-      // this.messageService.add({severity:'error', summary:'Error', detail:'Fill all manditory fields'})
-      //   return;
       let formControls = this.addUserForm1.controls;
       let errorMessage = ''
       for(let formField in formControls) {
@@ -487,12 +404,23 @@ exchangeRates: { [key: string]: number } = {
         }      
       }    
       this.messageService.add({severity: 'error', summary:'Error', detail: errorMessage});
+      this.addUserForm1.markAllAsTouched();
       return;
     }
-    // console.log(this.addUserForm1);
-    let newUser: User = this.addUserForm1.value;
-    // console.log(newUser); 
     if(id) {
+      // let password = this.addUserForm1.value.password;
+      // let encryptedPassword = CryptoJS.AES.encrypt(password, this.secretKey).toString();
+      // console.log(encryptedPassword);
+      // this.addUserForm1.patchValue({password: encryptedPassword});
+      // console.log(this.addUserForm1);
+      let country = (this.addUserForm1.controls['country']).value.code;
+    console.log(country);
+    this.addUserForm1.patchValue({country: country});
+    console.log(this.addUserForm1.controls['state'] !== null);
+    if(this.addUserForm1.controls['state'].value !== null) {
+      let state = this.addUserForm1.controls['state'].value.code;
+      this.addUserForm1.patchValue({state: state});
+    }  
       let userToUpdate: User = this.addUserForm1.value;
       this.http.patch(`https://travektrail-app-default-rtdb.firebaseio.com/users/${id}.json`, userToUpdate).subscribe((res) => {
         // console.log(res);       
@@ -502,7 +430,24 @@ exchangeRates: { [key: string]: number } = {
         this.getAllUserDetails();
       });
       return;
-    }   
+    } 
+    // console.log(this.addUserForm1);
+    console.log(this.addUserForm1.value);
+    let password = this.addUserForm1.value.password;
+    let encryptedPassword = CryptoJS.AES.encrypt(password, this.secretKey).toString();
+    console.log(encryptedPassword);
+    this.addUserForm1.patchValue({password: encryptedPassword});
+    let country = (this.addUserForm1.controls['country']).value.code;
+    console.log(country);
+    this.addUserForm1.patchValue({country: country});
+    console.log(this.addUserForm1.controls['state'] !== null);
+    if(this.addUserForm1.controls['state'].value !== null) {
+      let state = this.addUserForm1.controls['state'].value.code;
+      this.addUserForm1.patchValue({state: state});
+    }
+    let newUser: User = this.addUserForm1.value;
+    // console.log(newUser);
+    // return;  
     this.sharedService.getAllUsers().subscribe({
       next: (users) => {
         let isUserExit = users.find((user) => {
@@ -540,18 +485,6 @@ exchangeRates: { [key: string]: number } = {
     this.userToEditId = ''
     this.profileImage = 'assets/users/defaultProfileImg.jpg';
 
-    this.isUV = false;
-    this.isFNLNV = false;
-    this.isDOBV = false;
-    this.isEV = false;
-    this.isPNCV = false;
-    this.isPNV = false;
-    this.isAV = false;
-    this.isCV = false;
-    this.isZCV = false;
-    this.isTZV = false;
-    this.isPV = false;
-
   }
   userToEdit: User;
   userToEditId: string;
@@ -568,16 +501,27 @@ exchangeRates: { [key: string]: number } = {
       this.userToEdit = user;
       // console.log(this.userToEdit);
       this.selectedGender = user.gender.toLocaleLowerCase();
-      this.filteredstates = this.states[user.country['code']] || [];
+      this.filteredstates = this.states[user.country] || [];
       console.log(this.statesForEdit);      
       this.profileImage = user.profileImage ? user.profileImage : `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName ? user.lastName : ''}&bold=true`;
       this.addUserForm1.patchValue(this.userToEdit);
       console.log(this.addUserForm1);      
       this.addUserForm1.patchValue({profileImage: this.profileImage});
-      console.log(this.addUserForm1);      
+      console.log(this.addUserForm1);
+      let countryObj = countries.find((country) => {
+        return country.code === this.userToEdit.country;
+      })
+      this.addUserForm1.patchValue({country: countryObj})
+      let encryptedPassword = user.password;
+      // console.log(encryptedPassword);          
+      let code = CryptoJS.AES.decrypt(encryptedPassword, this.secretKey);
+      let decryptedPassword = code.toString(CryptoJS.enc.Utf8);
+      this.addUserForm1.patchValue({password: decryptedPassword});
+      console.log(this.addUserForm1.controls['country']);      
       if(this.addUserForm1.controls['country']) {
-        this.filteredstates = this.states[user.country['code']] || [];
+        this.filteredstates = this.states[countryObj.code] || [];
       }
+      this.addUserForm1.patchValue({state: this.filteredstates.find((state) => state.code === this.userToEdit.state)})
       console.log(this.addUserForm1);
       
     })
@@ -606,6 +550,26 @@ exchangeRates: { [key: string]: number } = {
   closeDeleteUserDailog() {
     this.showDeleteUserdailog = false;
   }
+
+  validateDateOfBirth(date: Date) {
+    let dob = new Date(date);
+    let today = new Date();
+
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    const dayDiff = today.getDate() - dob.getDate();
+
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+    age--;
+    }
+
+    if(age < 18) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   goToPageNumber: number = null;
 
   onPageChange(event: any) {

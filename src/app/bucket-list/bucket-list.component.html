@@ -41,7 +41,7 @@
 >
     <ng-template pTemplate="content">
     <div class="inputFields">
-      <div class="field">
+      <div class="inputfield">
         <label for="pi">Place Image *</label>
         <div class="image-upload-container" (click)="triggerFileinput()" *ngIf="!placeImage">
             <i class="pi pi-upload"></i>
@@ -67,7 +67,7 @@
         </div>
         <span *ngIf="isPIV">{{placeImageErrormsg}}</span>
       </div>
-      <div class="field">
+      <div class="inputfield">
         <label for="pn">Place Name *</label>
         <input
           type="text"
@@ -80,36 +80,38 @@
         />
         <span *ngIf="isPNV">Place Name is Invalid*</span>
       </div>
-      <div class="field">
+      <div class="inputfield">
         <label for="pd">Place Description *</label>
         <input
           type="text"
           pInputText
           id="pd"
           [(ngModel)]="placeDescription"
-          (ngModelChange)="validatePlaceName()"
+          (ngModelChange)="validatePlaceDescription()"
           required
         />
         <span *ngIf="isPDV">Place Description is Invalid*</span>
       </div>
-      <div class="field">
+      <div class="inputfield">
         <label for="ed">Estimated Distance *</label>
         <input
           type="number"
           pInputText
           id="ed"
           [(ngModel)]="estimatedDistance"
+          (ngModelChange)="validateED()"
           required
         />
         <span *ngIf="isEDV">Estimated Distance is Invalid*</span>
       </div>
-      <div class="field">
+      <div class="inputfield">
         <label for="eb">Estimated Budget *</label>
         <input
           type="number"
           pInputText
           id="eb"
           [(ngModel)]="estimatedBudget"
+          (ngModelChange)="validateEB()"
           required
         />
         <span *ngIf="isEBV">Estimated Budget is Invalid*</span>

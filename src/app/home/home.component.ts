@@ -120,8 +120,9 @@ export class HomeComponent implements OnInit {
       console.log(this.userTrips);
       console.log(this.userExpenses);
     const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue('--text-color'); 
     const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
-    const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+    const surfaceBorder = documentStyle.getPropertyValue('--surface-border');  
     this.barGraphData = {
       labels: graphDatas[0],
       datasets: [
@@ -135,7 +136,7 @@ export class HomeComponent implements OnInit {
     this.barGraphOptions = {
       maintainAspectRatio: false,
       aspectRatio: 0.6,
-      layouts: {
+      layout: {
         padding: {
           top: 20,
           bottom: 20,
@@ -144,14 +145,21 @@ export class HomeComponent implements OnInit {
         }
       },
       plugins: {
-        legend: { display: false },
+        legend: { 
+          display: false,
+          labels: {
+            color: textColorSecondary  // Ensure legend uses readable color
+          }
+        },
         title: {
           display: true,
           text: 'Trip Vs Expense',
           position: 'top',
           align: 'start',
           font: {
-            size: 20
+            size: 20,
+            weight: 'bold',
+            color: textColor
           },
           padding: {
             top: 10,
@@ -170,14 +178,19 @@ export class HomeComponent implements OnInit {
             minRotation: 45
           },
           grid: {
-            color: surfaceBorder,
+            // color: surfaceBorder,
             drawBorder: false,
-            drawOnChartArea: false,    
-            display: false  
+            drawOnChartArea: true,
+            color: (context) => {
+              return context.index === 0 ? surfaceBorder : 'transparent';
+            },
+            // display: false,
+            
           },
           title: {
             display: true,
-            text: 'Trip'
+            text: 'Trip',
+            color: textColorSecondary
           }
         },
         y: {
@@ -185,9 +198,12 @@ export class HomeComponent implements OnInit {
             color: textColorSecondary
           },
           grid: {
-            color: surfaceBorder,
+            // color: surfaceBorder,
             drawBorder: false,
-            drawOnChartArea: false,
+            drawOnChartArea: true,
+            color: (context) => {
+              return context.tick.value === 0 ? surfaceBorder : 'transparent';
+            }
             // display: false
           },
           title: {
@@ -243,9 +259,12 @@ export class HomeComponent implements OnInit {
             minRotation: 45
           },
           grid: {
-            color: surfaceBorder,
+            // color: surfaceBorder,
             drawBorder: false,
-            drawOnChartArea: false,    
+            drawOnChartArea: true,
+            color: (context) => {
+              return context.index === 0 ? surfaceBorder : 'transparent';
+            },    
             // display: false  
           },
           title: {
@@ -261,9 +280,12 @@ export class HomeComponent implements OnInit {
             color: textColorSecondary
           },
           grid: {
-            color: surfaceBorder,
+            // color: surfaceBorder,
             drawBorder: false,
-            drawOnChartArea: false,
+            drawOnChartArea: true,
+            color: (context) => {
+              return context.tick.value === 0 ? surfaceBorder : 'transparent';
+            }
             // display: false
           },
           title: {

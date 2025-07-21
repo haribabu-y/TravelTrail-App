@@ -6,6 +6,7 @@ import { BucketListService } from '../Services/bucketList.service';
 import { BucketList } from '../Models/bucketList';
 import { MultiSelect } from 'primeng/multiselect';
 import { MessageService } from 'primeng/api';
+import { countries } from '../constants/countries';
 
 @Component({
   selector: 'app-user-trip',
@@ -27,6 +28,8 @@ export class UserTripComponent implements OnInit {
   currencySymbol: string = '';
   oldCurrencyCode: string;
 
+  countries  = countries;
+
   ngOnInit(): void {
     this.sharedService.isDarkMode.subscribe((res) => this.isDarkMode = res);
     localStorage.getItem('theme') === 'dark' ? this.isDarkMode = true : this.isDarkMode = false;
@@ -44,7 +47,12 @@ export class UserTripComponent implements OnInit {
         let gender: string = user.gender;
         let age: number = new Date().getFullYear() - new Date(user.dob).getFullYear();
         let id: string = user.id;
-        let country = user.country;
+        let countryObj = this.countries.find((country) => {
+          return country.code === user.country;
+        });
+        console.log(countryObj);        
+        let country = Object.values(countryObj)[0];
+        // let country = user.country;
         // console.log(country);        
         
         let totalDistance: number = 0;
@@ -58,7 +66,7 @@ export class UserTripComponent implements OnInit {
           });
         }
         let adminCurrencyCode = this.currencyCode;
-        let userCurrencyCode= country['currencyCode'];
+        let userCurrencyCode= countryObj['currencyCode'];
         // console.log(userCurrencyCode);
         let userTotalExpense: number;
 
@@ -194,7 +202,7 @@ export class UserTripComponent implements OnInit {
     const rateToINRUser = this.exchangeRates[usercurrencycode];
     const reteToINRAdmin = this.exchangeRates[adminCurrencyCode];
     if(!rateToINRUser || !reteToINRAdmin) {
-      alert("Invalid currency codes or missing exchange rates");
+      // alert("Invalid currency codes or missing exchange rates");
       return null;
     }
     //converting thr user amount to INR

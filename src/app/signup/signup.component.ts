@@ -12,6 +12,7 @@ import { timezones } from '../constants/countries';
 import { locales } from '../constants/countries';
 import { phoneCodes } from '../constants/countries';
 
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-signup',
@@ -137,131 +138,119 @@ onResize(event: any) {
 
   currentUser: User;
 
-  isUV: boolean = false;
-  isFNLNV: boolean = false;
-  isPNCV: boolean = false;
-  isPNV: boolean = false;
-  isDOBV: boolean = false;
-  isEV: boolean = false;
-  isAV: boolean = false;
-  isCV: boolean = false;
-  isZCV: boolean = false;
-  isTZV: boolean = false;
-  isPV: boolean = false;
+  // isUV: boolean = false;
+  // isFNLNV: boolean = false;
+  // isPNCV: boolean = false;
+  // isPNV: boolean = false;
+  // isDOBV: boolean = false;
+  // isEV: boolean = false;
+  // isAV: boolean = false;
+  // isCV: boolean = false;
+  // isZCV: boolean = false;
+  // isTZV: boolean = false;
+  // isPV: boolean = false;
   passMM: boolean = false;
+
+  secretKey: string = 'TravelTrail'; 
 
   onSignupFormsubmit() {
     // this.reactiveForm.patchValue({phone: `${this.phoneCode + ' ' + this.reactiveForm.value.phone}`})
-    console.log(this.reactiveForm.controls);
+    console.log(this.reactiveForm.controls);    
     
     if(this.reactiveForm.controls['username'].invalid) {
-      let errMsg = 'For username! Only alphanumric characters Allowed, Space is not Allowed and Maximum lenght is 20 Characters';
+      // let errMsg = 'For username! Only alphanumric characters Allowed, Space is not Allowed and Maximum lenght is 20 Characters';
       // this.messageService.add({severity:'warn', summary:'Warn', detail: errMsg})
-      this.isUV = true;
+      // this.isUV = true;
       this.paginationPageNo = 1;
       // return;
-    } else {
-      this.isUV = false;
-    }
+    } 
+    // else {
+    //   this.isUV = false;
+    // }
     if(this.reactiveForm.controls['firstName'].invalid || this.reactiveForm.controls['lastName'].invalid) {
-      let errMsg = 'For FirstName and LastName! Only alphanumric characters and space Allowed and Maximum lenght is 30 Characters';
+      // let errMsg = 'For FirstName and LastName! Only alphanumric characters and space Allowed and Maximum lenght is 30 Characters';
       // this.messageService.add({severity:'warn', summary:'Warn', detail: errMsg})
-      this.isFNLNV = true;
+      // this.isFNLNV = true;
       this.paginationPageNo = 1;
       // return;
-    } else {
-      this.isFNLNV = false;
-    }
+    } 
+    // else {
+    //   this.isFNLNV = false;
+    // }
     if(this.reactiveForm.controls['email'].invalid) {
-      console.log(this.reactiveForm.controls['email'].invalid);      
-      this.isEV = true;
+      // console.log(this.reactiveForm.controls['email'].invalid);      
+      // this.isEV = true;
       this.paginationPageNo = 1;
       // return;
-    } else {
-      this.isEV = false;
-    }
+    } 
+    // else {
+    //   this.isEV = false;
+    // }
     if(this.reactiveForm.controls['countryCode'].invalid) {
-      this.isPNCV = true;
+      // this.isPNCV = true;
       this.paginationPageNo = 1;
       // return;
-    } else {
-      this.isPNCV = false;
-    }
+    } 
+    // else {
+    //   this.isPNCV = false;
+    // }
     if(this.reactiveForm.controls['phone'].invalid) {
       // this.messageService.add({severity: 'warn', summary:'Warn', detail: 'Mobhile number should less than 10 digits'});
-      this.isPNV = true;
+      // this.isPNV = true;
       this.paginationPageNo = 1;
       // return;
-    } else {
-      this.isPNV = false;
-    }
-    // console.log(this.reactiveForm.value.dob);    
-    if(new Date(this.reactiveForm.value.dob) > new Date() || this.reactiveForm.controls['dob'].invalid) {
+    } 
+    // else {
+    //   this.isPNV = false;
+    // }
+
+    if(this.reactiveForm.controls['dob'].invalid) {
       // this.messageService.add({severity:'warn', summary:'Warn',detail:'Date of Birth must less the today!.'})
-      this.isDOBV = true;
+      // this.isDOBV = true;
       // return;
-    } else {
-      this.isDOBV = false;
-    }
-    if(this.reactiveForm.controls['address'].invalid) {
-      this.isAV = true;
-      // return;
-    } else {
-      this.isAV = false;
-    }
-    if(this.reactiveForm.controls['country'].invalid) {
-      this.isCV = true;
-      // return;
-    } else {
-      this.isCV = false;
-    }
-    if(this.reactiveForm.controls['zipCode'].invalid) {
-      this.isZCV = true;
-      // return;
-    } else {
-      this.isZCV = false;
-    }
-    if(this.reactiveForm.controls['timeZone'].invalid) {
-      this.isTZV = true;
-      // return;
-    } else {
-      this.isTZV = false;
-    }
-    if(this.reactiveForm.controls['password'].invalid) {
-      this.isPV = true;
-      // return;
-    } else {
-      this.isPV = false;
-    }
+      this.paginationPageNo = 1;
+    } 
+    // else {
+    //   this.isDOBV = false;
+    // }
     if(this.reactiveForm.invalid) {
-    //   console.log('Form is invalid. Checking controls:');
-    // Object.keys(this.reactiveForm.controls).forEach(key => {
-    //   const control = this.reactiveForm.get(key);
-    //   console.log(`${key} → valid: ${control?.valid}, value: ${control?.value}, errors: ${JSON.stringify(control?.errors)}`);
-    // });
-    // return;
-      console.log(this.reactiveForm.controls);
+      // console.log(this.reactiveForm.controls);
       let formControls = this.reactiveForm.controls;
       this.errorMessage = ''
       for(let formField in formControls) {
-        console.log(formField);  
+        // console.log(formField);  
         if(formControls[formField].status === "INVALID") {
           this.errorMessage = formField + " field is INVALID!.";
         }      
       }    
       this.messageService.add({severity: 'warn', summary:'Warn', detail: this.errorMessage});
+      this.reactiveForm.markAllAsTouched();
       return;
     }
-    console.log(this.reactiveForm.value);
-    this.currentUser = this.reactiveForm.value;
-    if(this.currentUser.password !== this.currentUser.confirmPassword || this.currentUser.password === null) {
+    if(this.reactiveForm.value.password !== this.reactiveForm.value.confirmPassword || this.reactiveForm.value.password === null) {
       this.messageService.add({severity: 'warn', summary:'Warn', detail: 'Password and Confirm password should same!.'});
       this.passMM = true;
       return;
     } else {
       this.passMM = false;
     }
-    console.log(this.currentUser);    
+
+    console.log(this.reactiveForm.value);
+    let password = this.reactiveForm.value.password;
+    let encryptedPassword = CryptoJS.AES.encrypt(password, this.secretKey).toString();
+    console.log(encryptedPassword);
+    this.reactiveForm.patchValue({password: encryptedPassword});
+    // this.reactiveForm.removeControl('confirmPassword');
+    let country = (this.reactiveForm.controls['country']).value.code;
+    console.log(country);
+    this.reactiveForm.patchValue({country: country});
+    console.log(this.reactiveForm.controls['state'] !== null);
+    if(this.reactiveForm.controls['state'].value !== null) {
+      let state = this.reactiveForm.controls['state'].value.code;
+      this.reactiveForm.patchValue({state: state});
+    } 
+    this.currentUser = this.reactiveForm.value; 
+    console.log(this.currentUser);
     this.sharedService.getAllUsers().subscribe({
       next: (users) => {
         this.allUsers = users;
@@ -291,6 +280,25 @@ onResize(event: any) {
         console.log(this.errorMessage);
       },
     });
+  }
+
+  validateDateOfBirth(date: Date) {
+    let dob = new Date(date);
+    let today = new Date();
+
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    const dayDiff = today.getDate() - dob.getDate();
+
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+    age--;
+    }
+
+    if(age < 18) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   goToPrevPage(value: number) {

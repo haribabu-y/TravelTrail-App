@@ -55,7 +55,8 @@
                 class="text-base text-color p-2 border-solid border-round border-none outline-none focus:border-primary w-full"
                 formControlName="username"
               />
-              <span *ngIf="isUV">Only alphanumric characters Allowed, Space is not Allowed </span>
+              <span *ngIf="(reactiveForm.controls['username'].touched && reactiveForm.controls['username'].invalid)">Only alphanumric characters Allowed, Space is not Allowed </span>
+              <!-- <span *ngIf="isUV">Username is Invalid</span> -->
             </div>
             <div class="field col-12 md:col-6 inputField">
               <label for="firstname">First Name*</label>
@@ -65,7 +66,7 @@
                 class="text-base text-color p-2 border-solid border-round border-none outline-none focus:border-primary w-full"
                 formControlName="firstName"
               />
-              <span *ngIf="isFNLNV">Only alphanumric characters and space Allowed</span>
+              <span *ngIf="reactiveForm.controls['firstName'].touched && reactiveForm.controls['firstName'].invalid">Only alphanumric characters and space Allowed</span>
             </div>
             <div class="field col-12 md:col-6 inputField">
               <label for="lastname">Last Name</label>
@@ -135,7 +136,7 @@
                 class="text-base text-color border-none p-2 border-solid border-round outline-none focus:border-primary w-full"
                 formControlName="dob"
               />
-              <span *ngIf="isDOBV">Date of Birth must less the today!.</span>
+              <span *ngIf="(reactiveForm.controls['dob'].touched && reactiveForm.controls['dob'].invalid) || validateDateOfBirth(reactiveForm.controls['dob'].value)">You must be at least 18 years old.</span>
             </div>
             <div class="field col-12 inputField">
               <label for="email">Email*</label>
@@ -146,10 +147,10 @@
                 class="text-base text-color border-none p-2 border-solid border-round outline-none focus:border-primary w-full"
                 formControlName="email"
               />
-              <span *ngIf="isEV">Email is Invalid*</span>
+              <span *ngIf="reactiveForm.controls['email'].touched && reactiveForm.controls['email'].invalid">Email is Invalid*</span>
             </div>
             <div class="field col-12 md:col-4 phone-code inputField">
-              <label for="phonecode">Phone Code</label>
+              <label for="phonecode">Phone Code*</label>
               <p-dropdown
                 [options]="phoneCodes"
                 (onChange)="onCountryCodeChandes($event)"
@@ -158,7 +159,7 @@
                 class="w-full text-center"
                 formControlName="countryCode"
               />
-              <span *ngIf="isPNCV">Choose the Mobile code *</span>
+              <span *ngIf="reactiveForm.controls['countryCode'].touched && reactiveForm.controls['countryCode'].invalid">Choose the Mobile code *</span>
             </div>
             <div class="field col-12 md:col-8 phone-number inputField">
               <label for="phone-number">Phone No.*</label>
@@ -168,7 +169,7 @@
                 class="text-base text-color border-none p-2 border-solid border-round outline-none focus:border-primary w-full"
                 formControlName="phone"
               />
-              <span *ngIf="isPNV">Mobile number must be less than 10 digits*</span>
+              <span *ngIf="reactiveForm.controls['phone'].touched && reactiveForm.controls['phone'].invalid">Mobile number must be less than 10 digits*</span>
             </div>
           </div>
         </div>
@@ -185,7 +186,7 @@
                 style="resize: none"
                 formControlName="address"
               ></textarea>
-              <span *ngIf="isAV">Enter a valid Address *</span>
+              <span *ngIf="reactiveForm.controls['address'].touched && reactiveForm.controls['address'].invalid">Enter a valid Address *</span>
             </div>
             <div class="field col-12 md:col-6 inputField">
               <label for="country">Country*</label>
@@ -196,7 +197,7 @@
                 (onChange)="onCountryChanges($event.value)"
                 formControlName="country"
               />
-               <span *ngIf="isCV">Select your country</span>
+               <span *ngIf="reactiveForm.controls['country'].touched && reactiveForm.controls['country'].invalid">Select your country</span>
             </div>
             <div class="field col-12 md:col-6 inputField">
               <label for="state">State</label>
@@ -215,7 +216,7 @@
                 class="text-base text-color border-none p-2 border-solid border-round outline-none focus:border-primary w-full"
                 formControlName="zipCode"
               />
-              <span *ngIf="isZCV">Zipe Code is Invalid *</span>
+              <span *ngIf="reactiveForm.controls['zipCode'].touched && reactiveForm.controls['zipCode'].invalid">Zipe Code is Invalid *</span>
             </div>
             <div class="field col-12 md:col-6 inputField">
               <label for="time-zone">Time Zone*</label>
@@ -224,7 +225,7 @@
                 placeholder="Select Time Zone"
                 formControlName="timeZone"
               />
-              <span *ngIf="isTZV">select the Time Zone*</span>
+              <span *ngIf="reactiveForm.controls['timeZone'].touched && reactiveForm.controls['timeZone'].invalid">select the Time Zone*</span>
             </div>
             <div class="field col-12 md:col-6 inputField">
               <label for="locale">Locale</label>
@@ -249,7 +250,7 @@
                 class="text-base text-color border-none p-2 border-solid border-round outline-none focus:border-primary w-full"
                 formControlName="password"
               />
-              <span *ngIf="isPV">Password must required*</span>
+              <span *ngIf="reactiveForm.controls['password'].touched && reactiveForm.controls['password'].invalid">Password must required*</span>
             </div>
             <div class="field col-12 inputField">
               <label for="confirm-password">Confirm Password</label>

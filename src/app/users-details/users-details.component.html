@@ -76,7 +76,7 @@
     </ng-template>
     <ng-template pTemplate="paginatorleft" let-state>
       <span class="p-paginator-pages">
-        {{ state.first + 1 }} to
+        {{ state.first < state.totalRecords ? state.first + 1 : state.first }} to
         {{
           state.first + state.rows > state.totalRecords
             ? state.totalRecords
@@ -145,7 +145,7 @@
               </div>
             </div>
           </th> -->
-        <th style="width: 12%">Bucket List</th>
+        <th style="width: 12%">Edit User</th>
         <th style="width: 5%">Delete</th>
       </tr>
     </ng-template>
@@ -179,7 +179,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="6">No Users Found!.</td>
+        <td colspan="6"><div class="flex justify-content-center align-items-center">No Trips Found!.</div></td>
       </tr>
     </ng-template>
   </p-table>
@@ -228,7 +228,7 @@
                 required
                 formControlName="username"
               />
-              <span *ngIf="isUV"
+              <span *ngIf="(addUserForm1.controls['username'].touched && addUserForm1.controls['username'].invalid)"
                 >Only alphanumric characters Allowed, Space is not Allowed
               </span>
             </div>
@@ -241,7 +241,7 @@
                   formControlName="firstName"
                   required
                 />
-                <span *ngIf="isFNLNV"
+                <span *ngIf="addUserForm1.controls['firstName'].touched && addUserForm1.controls['firstName'].invalid"
                   >Only alphanumric characters and space Allowed</span
                 >
               </div>
@@ -298,13 +298,13 @@
               <div class="inputfield">
                 <label for="dob">DOB*</label>
                 <input type="date" id="dob" formControlName="dob" required />
-                <span *ngIf="isDOBV">Date of Birth must less the today!.</span>
+                <span *ngIf="(addUserForm1.controls['dob'].touched && addUserForm1.controls['dob'].invalid) || validateDateOfBirth(addUserForm1.controls['dob'].value)">Age must be at least 18 years old.</span>
               </div>
             </div>
             <div class="inputfield">
               <label for="email">Email ID*</label>
               <input type="email" id="email" formControlName="email" required />
-              <span *ngIf="isEV">Email is Invalid*</span>
+              <span *ngIf="addUserForm1.controls['email'].touched && addUserForm1.controls['email'].invalid">Email is Invalid*</span>
             </div>
             <div class="phone-number row">
               <div class="inputfield country-code-field">
@@ -316,12 +316,12 @@
                   appendTo="body"
                   panelClass="dropdown-up"
                 />
-                <span *ngIf="isPNCV">Choose the Mobile code *</span>
+                <span *ngIf="addUserForm1.controls['countryCode'].touched && addUserForm1.controls['countryCode'].invalid">Choose the Mobile code *</span>
               </div>
               <div class="inputfield phoneNumberField">
                 <label for="mobile">Mobile Number*</label>
                 <input type="text" id="mobile" formControlName="phone" />
-                <span *ngIf="isPNV"
+                <span *ngIf="addUserForm1.controls['phone'].touched && addUserForm1.controls['phone'].invalid"
                   >Mobile number must be less than 10 digits*</span
                 >
               </div>
@@ -335,7 +335,7 @@
                 formControlName="address"
                 required
               ></textarea>
-              <span *ngIf="isAV">Enter a valid Address *</span>
+              <span *ngIf="addUserForm1.controls['address'].touched && addUserForm1.controls['address'].invalid">Enter a valid Address *</span>
             </div>
             <div class="row">
               <div class="inputfield">
@@ -347,7 +347,7 @@
                   formControlName="country"
                   (onChange)="onCountryChanges($event.value)"
                 />
-                <span *ngIf="isCV">Select your country</span>
+                <span *ngIf="addUserForm1.controls['country'].touched && addUserForm1.controls['country'].invalid">Select your country</span>
               </div>
               <div class="inputfield">
                 <label>State</label>
@@ -368,7 +368,7 @@
                   formControlName="zipCode"
                   required
                 />
-                <span *ngIf="isZCV">Zipe Code is Invalid *</span>
+                <span *ngIf="addUserForm1.controls['zipCode'].touched && addUserForm1.controls['zipCode'].invalid">Zipe Code is Invalid *</span>
               </div>
               <div class="inputfield">
                 <label>Time Zone*</label>
@@ -378,7 +378,7 @@
                   formControlName="timeZone"
                   panelClass="dropdown-up"
                 />
-                <span *ngIf="isTZV">select the Time Zone*</span>
+                <span *ngIf="addUserForm1.controls['timeZone'].touched && addUserForm1.controls['timeZone'].invalid">select the Time Zone*</span>
               </div>
             </div>
             <div class="row">
@@ -405,7 +405,7 @@
                 formControlName="password"
                 required
               />
-              <span *ngIf="isPV">Password must required*</span>
+              <span *ngIf="addUserForm1.controls['password'].touched && addUserForm1.controls['password'].invalid">Password must required*</span>
             </div>
           </div>
         </div>

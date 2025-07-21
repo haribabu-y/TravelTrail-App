@@ -86,36 +86,40 @@
     width: 35%;
 }
 
+.add-bucket-contsiner ::ng-deep .p-dialog .p-dialog-content {
+        padding: 0 1.5rem 1rem 1.5rem;
+}
+
 .inputFields {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
-.field {
+.inputfield {
     display: flex;
     gap: 5px;
     flex-direction: column;
 }
 
-.field label {
+.inputfield label {
     font-size: 14px;
     font-weight: 500;
 }
 
-.field input {
+.inputfield input {
     border: none;
     background-color: #F1F1F1;
     border-radius: 4px;
     padding: 10px;
 }
 
-.field span {
+.inputfield span {
     font-size: 12px;
     color: red;
     transform: translateY(-5px);
 }
 
-.field input:focus {
+.inputfield input:focus {
     outline: none;
 }
 
@@ -280,14 +284,14 @@ input[type="number"]::-webkit-inner-spin-button {
     background-color: lightgray;
 }
 
-.dark-mode .inputFields .field .pi-upload {
+.dark-mode .inputFields .inputfield .pi-upload {
     color: black;
 }
-.dark-mode .inputFields .field .image-upload-container {
+.dark-mode .inputFields .inputfield .image-upload-container {
     background-color: lightgray;
 }
 
-.dark-mode .inputFields .field .image-upload-container p {
+.dark-mode .inputFields .inputfield .image-upload-container p {
     color: black;
 }
 

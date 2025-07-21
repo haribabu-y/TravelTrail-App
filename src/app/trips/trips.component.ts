@@ -99,7 +99,30 @@ export class TripsComponent implements OnInit {
   validatePlaceName() {
     const pattern = /^[a-zA-Z\s]*$/;
     this.isSPV = !pattern.test(this.startPlace || '');
+  }
+  validatePlacedescription() {
+    const pattern = /^[a-zA-Z\s]*$/;
     this.isDV = !pattern.test(this.destination || '');
+  }
+  validateNumberFields() {
+    if(this.totalDistance === null || this.totalDistance === 0) {
+      this.isTDV = true;
+      // return;
+    } else {
+      this.isTDV = false;
+    } 
+    if(this.totalExpense === null || this.totalExpense === 0){
+      this.isTEV = true;
+      // return;
+    } else {
+      this.isTEV = false;
+    } 
+    if(this.totalMembers === null || this.totalMembers === 0){
+      this.isTMV = true;
+      // return;
+    } else {
+      this.isTMV = false
+    }
   }
   isSPV: boolean = false;
   isDV: boolean = false;
@@ -220,7 +243,7 @@ export class TripsComponent implements OnInit {
     this.columnMultiSelect.show();
     // this.shoeColumnsDisplay = !this.shoeColumnsDisplay;
   }
-  columnsChanged(event) {
+  columnsChanged(event: any) {
     console.log(event);    
     this.columnMultiSelect.show();
     event.originalEvent?.stopPropagation?.();
@@ -232,6 +255,18 @@ export class TripsComponent implements OnInit {
     console.log(event);
     this.goToPageNumber = event.page + 1;
     this.rows = event.rows;
+  }
+
+  showTripDetailDailog: boolean = false;
+
+  showTripDetail(trip: Trip) {
+    this.showTripDetailDailog = true;
+    console.log(trip);
+    this.startPlace = trip.startLocation;
+    this.destination = trip.destination;
+    this.totalDistance = trip.totalDistance;
+    this.totalExpense = trip.totalExpense;
+    this.totalMembers = trip.totalMembers;
   }
 
   goToPage(){

@@ -134,10 +134,29 @@ export class BucketListComponent implements OnInit{
     });
     this.closeDailog();
   }
+
   validatePlaceName() {
     const pattern = /^[a-zA-Z\s]*$/;
     this.isPNV = !pattern.test(this.placeName || '');
+    // this.isPDV = !pattern.test(this.placeDescription || '');
+  }
+  validatePlaceDescription() {
+    const pattern = /^[a-zA-Z\s]*$/;
     this.isPDV = !pattern.test(this.placeDescription || '');
+  }
+  validateED() {
+    if(this.estimatedDistance === 0 || this.estimatedDistance === null) {      
+      this.isEDV = true;
+    } else{
+      this.isEDV = false;
+    }
+  }
+  validateEB() {
+    if(this.estimatedBudget === 0 || this.estimatedBudget === null) {
+      this.isEBV = true;
+    } else {
+      this.isEBV = false;
+    }
   }
   isPIV: boolean = false;
   isPNV: boolean = false;

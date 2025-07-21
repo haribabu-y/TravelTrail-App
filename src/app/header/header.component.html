@@ -117,12 +117,12 @@
                 <p><strong>Phone Number:</strong> {{ userDetail?.phone }}</p>
                 <p><strong>Address:</strong> {{ userDetail?.address }}</p>
                 <p>
-                  <strong>Country:</strong> {{ userDetail?.country["name"] }}
+                  <strong>Country:</strong> {{ country }}
                 </p>
                 <p>
                   <strong>State:</strong>
                   {{
-                  userDetail?.state["name"] ? userDetail.state["name"] : "-"
+                  state ? state : "-"
                   }}
                 </p>
                 <p><strong>Zip Code:</strong> {{ userDetail?.zipCode }}</p>

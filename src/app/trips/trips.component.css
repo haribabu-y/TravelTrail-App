@@ -1,10 +1,10 @@
-/* .trip-table {
-    height: 500px;
-} */
-
-::ng-deep .p-datatable-table {
-    padding: 0 15px;
+.trip-table {
+    padding: 0 20px;
 }
+
+/* ::ng-deep .p-datatable-table {
+    padding: 0 15px;
+} */
 .tableHead {
     display: flex;
     gap: 5px;
@@ -34,7 +34,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 15px !important;
+    padding: 1rem 0 !important;
     background-color: white !important;
 }
 
@@ -44,6 +44,11 @@
 ::ng-deep .p-datatable-header p {
     display: flex;
     align-items: center;
+}
+
+.trip-table ::ng-deep .p-paginator {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
 
 .trip-table ::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
@@ -110,12 +115,17 @@
 }
 
 ::ng-deep .p-listbox .p-listbox-list {
-    padding: 5px 0;
+    padding: 0;
 }
 
  .add-trip-container ::ng-deep .p-dialog {
     width: 35%;
  }
+
+ .add-trip-container ::ng-deep .p-dialog .p-dialog-content {
+        padding: 0 1.5rem 1rem 1.5rem;
+}
+
 .right-captions .pi-plus {
     background-color: #084880;
     padding: 5px;
@@ -129,30 +139,30 @@
     flex-direction: column;
     gap: 10px;
 }
-.field {
+.inputfield {
     display: flex;
     gap: 5px;
     flex-direction: column;
 }
 
-.field label {
+.inputfield label {
     font-size: 14px;
     font-weight: 500;
 }
 
-.field input {
+.inputfield input {
     border: none;
     background-color: #F1F1F1;
     border-radius: 4px;
     padding: 10px;
 }
 
-.field span {
+.inputfield span {
     font-size: 12px;
     color: red;
 }
 
-.field input:focus {
+.inputfield input:focus {
     outline: none;
 }
 
@@ -187,9 +197,15 @@
     z-index: 100;
 }
 
-::ng-deep .p-listbox .p-highlight {
+/* ::ng-deep .p-listbox .p-highlight {
     background-color: #084880 !important;
     color: #ffffff !important;
+} */
+
+::ng-deep .p-listbox .p-listbox-list .p-listbox-item.p-highlight {
+    background-color: #084880 !important;
+    color: #ffffff !important;
+    border-radius: 5px;
 }
 
 /* Styling the change number of columns in the table */
@@ -212,6 +228,10 @@
 }
 .selectingColumnDiv ::ng-deep .p-multiselect .p-multiselect-trigger-icon {
     display: none;
+}
+
+.selectingColumnDiv ::ng-deep .p-multiselect-panel .p-multiselect-items {
+  padding: 0;
 }
 
 /* Stying the pagination jumping input field */
@@ -271,12 +291,39 @@ input[type="number"]::-webkit-inner-spin-button {
     min-width: 2rem;
     height: 2rem
 }
+/* 
+::ng-deep .p-datatable .p-datatable-emptymessage > tr > td {
+    text-align: center !important;
+  vertical-align: middle;
+} */
+
+/* ::ng-deep .p-datatable .p-datatable-emptymessage > td {
+    text-align: center;
+} */
+
+/* .emptyMessage > tr {
+    text-align: center;
+} */
+.trip-detail-container ::ng-deep .p-dialog {
+    width: 35%;
+}
+.trip-detail-container .trip-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 
 
 /* making the page responsive for all the screen sizes */
 @media screen and (max-width: 768px) {
     ::ng-deep .tableHead {
         width: 150px !important;
+    }
+    .add-trip-container ::ng-deep .p-dialog {
+        width: 50%;
+    }
+    .trip-detail-container ::ng-deep .p-dialog {
+        width: 50%;
     }
 }
 @media screen and (max-width: 426px) {
@@ -302,6 +349,9 @@ input[type="number"]::-webkit-inner-spin-button {
     .add-trip-container ::ng-deep .p-dialog {
         width: 80%;
     }
+    .trip-detail-container ::ng-deep .p-dialog {
+        width: 80%;
+    }
 
 }
 
@@ -325,6 +375,9 @@ input[type="number"]::-webkit-inner-spin-button {
     }
 
     .add-trip-container ::ng-deep .p-dialog {
+        width: 90%;
+    }
+    .trip-detail-container ::ng-deep .p-dialog {
         width: 90%;
     }
 }
@@ -365,7 +418,7 @@ input[type="number"]::-webkit-inner-spin-button {
   background-color: #2a2a2a;
   color: #ccc;
   border-top: 1px solid #444;
-
+  border-bottom: none;
 }
 
 .dark-mode .numRows i, .dark-mode .numColumns i {
@@ -396,7 +449,7 @@ input[type="number"]::-webkit-inner-spin-button {
     color: white !important;
 }
 
-.dark-mode .field input {
+.dark-mode .inputfield input {
     background-color: lightgray;
 }
 

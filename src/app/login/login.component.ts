@@ -34,9 +34,7 @@ export class LoginComponent implements OnInit {
           console.log(user);          
           this.errorMessage = 'Login Successful!..';
           this.messageService.add({severity: 'success', summary: 'Success', detail: this.errorMessage})
-          if(user.username === 'admin') {
-            this.router.navigate(['/admin/UsersTrips']);
-          } else if(user.isAdmin) {
+          if(user.isAdmin) {
             this.router.navigate(['/admin/UsersTrips']);
           }
           else {

@@ -5,6 +5,8 @@ import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
 import { LoginUser } from '../Models/loginUser';
 import { Router } from '@angular/router';
 import { SharedService } from './shared.service';
+import { countries } from '../constants/countries';
+import * as CryptoJS from 'crypto-js';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +18,8 @@ export class Authservice {
   user: LoginUser;
   router: Router = inject(Router);
   sharedservice: SharedService = inject(SharedService)
+  secretKey: string = 'TravelTrail';
+  countries = countries;
 
   signup(data: User) {
     console.log(data);
@@ -29,30 +33,37 @@ export class Authservice {
   }
 
   login(email: string, password: string): Observable<LoginUser | User | null> {
-    if (email === 'Admin' && password === 'Admin') {
-      let username = 'admin';
-      let loginTime = new Date().getTime();
-      let expiryTime = loginTime + 10 * 60 * 1000;
-      let isAdmin = true;
-      let country = { name: 'India', code: 'IN', currencyCode: 'INR', currencySymbol: '₹', phoneCode: '+91' };
-      let user: LoginUser = { username: username, id: '', loginTime: loginTime, isAdmin, country};
-      localStorage.setItem('user', JSON.stringify(user));
-      this.router.navigate(['/admin/UsersTrips']);
-      return of(user);
-    }
+    // if (email === 'Admin' && password === 'Admin') {
+    //   let username = 'admin';
+    //   let loginTime = new Date().getTime();
+    //   let expiryTime = loginTime + 10 * 60 * 1000;
+    //   let isAdmin = true;
+    //   let country = { name: 'India', code: 'IN', currencyCode: 'INR', currencySymbol: '₹', phoneCode: '+91' };
+    //   let user: LoginUser = { username: username, id: '', loginTime: loginTime, isAdmin, country};
+    //   localStorage.setItem('user', JSON.stringify(user));
+    //   this.router.navigate(['/admin/UsersTrips']);
+    //   return of(user);
+    // }
     return this.sharedservice.getAllUsers().pipe(
       map((allUsers: User[]) => {
         // console.log(allUsers);
         const foundUser = allUsers.find((user) => {
           // console.log(user);
-          return user.email === email && user.password === password;
+          let encryptedPassword = user.password;
+          // console.log(encryptedPassword);          
+          let code = CryptoJS.AES.decrypt(encryptedPassword, this.secretKey);
+          let decryptedPassword = code.toString(CryptoJS.enc.Utf8);
+          // console.log(decryptedPassword);          
+          return (user.email === email || user.username === email) && decryptedPassword === password;
         });
         console.log(foundUser);
         if (foundUser) {
           const loginTime = new Date().getTime();
           const expiryTime = loginTime + 10 * 60 * 1000;
           let isAdmin = foundUser.isAdmin;
-          let country = foundUser.country;
+          let country = this.countries.find((country) => {
+            return country.code === foundUser.country;
+          });
           console.log(foundUser.country);       
           let user: LoginUser = { username: foundUser.username, id: foundUser.id, loginTime: loginTime, isAdmin, country };
           localStorage.setItem('user', JSON.stringify(user));

@@ -5,6 +5,8 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { User } from '../Models/user';
 import { SharedService } from '../Services/shared.service';
 import { filter, Subscription, take } from 'rxjs';
+import { countries } from '../constants/countries';
+import { states } from '../constants/countries';
 
 @Component({
   selector: 'app-header',
@@ -24,6 +26,8 @@ export class HeaderComponent implements OnInit,OnDestroy {
   userExpense: number;
   userExpenseSubscription: Subscription;
   userDetail: User;
+  country: string;
+  state: string;
 
   currentPage: string = this.router.url.split('/')[2];
   ngDoCheck() {
@@ -31,7 +35,6 @@ export class HeaderComponent implements OnInit,OnDestroy {
   }
 
   navigateToHome() {
-    console.log("home button is clicked");
     console.log(this.isAdmin);
 
     if (!this.isAdmin) {
@@ -64,7 +67,6 @@ export class HeaderComponent implements OnInit,OnDestroy {
   currencyCode: string = '';
   ngOnInit(): void {
     let theme: string = localStorage.getItem('theme');
-    let currentUrl = this.router.url;
     const body = document.body;
     if (theme === 'dark') {
       body.classList.add('dark-mode');
@@ -82,14 +84,11 @@ export class HeaderComponent implements OnInit,OnDestroy {
 
     let localuser = JSON.parse(localStorage.getItem('user'));
     console.log(localuser);
-    if (localuser.username === 'admin' || localuser.isAdmin) {
+    if (localuser.isAdmin) {
       this.usertype === 'admin';
       this.isAdmin = true;
-      this.userDetail = new User('-','Admin','-','-','-',new Date(),'-','-','-','-','-','-','-','-',true,'-','-','-','-','-');
-      console.log(currentUrl);
       // this.router.navigate(['/admin/UsersTrips']);
-      if (localuser.isAdmin && localuser.username != 'admin') {
-        this.sharedService.getAllUsers().subscribe({
+      this.sharedService.getAllUsers().subscribe({
           next: (allUsers) => {
             this.currentUser = allUsers.find((user) => {
               return user.username === localuser.username;
@@ -98,7 +97,14 @@ export class HeaderComponent implements OnInit,OnDestroy {
             if (this.currentUser) {
               this.userDetail = this.currentUser;
               this.username = this.currentUser.username;
-              this.currencyCode = this.currentUser.country['currencyCode'];
+              let countryObj = countries.find((country) => {
+                return country.code === this.currentUser.country;
+              });
+              console.log(countryObj);        
+              this.country = Object.values(countryObj)[0];
+              let filteredState = states[countryObj.code] || [];
+              this.state = filteredState.find((state) => state.code === this.currentUser.state).name;
+              this.currencyCode = countryObj['currencyCode'];
               if (this.currentUser.profileImage) {
                 this.profileImage = this.currentUser.profileImage;
               } else {
@@ -109,9 +115,6 @@ export class HeaderComponent implements OnInit,OnDestroy {
             }
           }
         });
-      } else {
-        this.profileImage = `https://ui-avatars.com/api/?name=Admin&bold=true`;
-      }
       this.username = localuser.username;
       return;
     } else {
@@ -124,7 +127,14 @@ export class HeaderComponent implements OnInit,OnDestroy {
           return user.username === localuser.username;
         })
         this.username = this.currentUser.username;
-        this.currencyCode = this.currentUser.country['currencyCode'];
+        let countryObj = countries.find((country) => {
+          return country.code === this.currentUser.country;
+        });
+        console.log(countryObj);        
+        this.country = Object.values(countryObj)[0];
+        let filteredState = states[countryObj.code] || [];
+        this.state = filteredState.find((state) => state.code === this.currentUser.state).name;
+        this.currencyCode = countryObj['currencyCode'];
         this.userDetail = this.currentUser;
         if (this.currentUser.profileImage) {
           this.profileImage = this.currentUser.profileImage;

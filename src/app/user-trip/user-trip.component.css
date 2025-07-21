@@ -1,6 +1,11 @@
-::ng-deep .p-datatable-table {
-    padding: 0 15px;
+
+.user-trip-table {
+    padding: 0 20px;
 }
+
+/* ::ng-deep .p-datatable-table {
+    padding: 0 15px;
+} */
 .tableHead {
     display: flex;
     gap: 5px;
@@ -20,8 +25,16 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 15px !important;
+    padding: 1rem 0 !important;
     background-color: white !important;
+}
+
+::ng-deep .p-datatable thead > tr > th:first-child {
+  border-top-left-radius: 8px;
+}
+
+::ng-deep .p-datatable thead > tr > th:last-child {
+  border-top-right-radius: 8px;
 }
 
 ::ng-deep .p-datatable .p-datatable-header {
@@ -34,6 +47,11 @@
 
 .user-trip-table ::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
     background-color: #CEE8FF;
+}
+
+.user-trip-table ::ng-deep .p-paginator {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
 
 .right-contents {
@@ -124,12 +142,18 @@
 }
 
 .numRowChanges ::ng-deep .p-listbox .p-listbox-list {
-  padding: 5px 0;
+  padding: 0;
 }
 
-::ng-deep .p-listbox .p-highlight {
+/* ::ng-deep .p-listbox .p-highlight {
     background-color: #084880 !important;
     color: #ffffff !important;
+} */
+
+::ng-deep .p-listbox .p-listbox-list .p-listbox-item.p-highlight {
+    background-color: #084880 !important;
+    color: #ffffff !important;
+    border-radius: 5px;
 }
 
 /* Styling the change number of columns in the table */
@@ -246,31 +270,31 @@
     flex-direction: column;
     gap: 10px;
 }
-.field {
+.inputfield {
     display: flex;
     gap: 5px;
     flex-direction: column;
 }
 
-.field label {
+.inputfield label {
     font-size: 14px;
     font-weight: 500;
 }
 
-.field input {
+.inputfield input {
     border: none;
     background-color: #F1F1F1;
     border-radius: 4px;
     padding: 10px;
 }
 
-.field span {
+.inputfield span {
     font-size: 12px;
     color: red;
     transform: translateY(-5px);
 }
 
-.field input:focus {
+.inputfield input:focus {
     outline: none;
 }
 
@@ -551,7 +575,7 @@ input[type="number"]::-webkit-inner-spin-button {
   background-color: #2a2a2a;
   color: #ccc;
   border-top: 1px solid #444;
-
+  border-bottom: none;
 }
 
 .dark-mode .numRows i, .dark-mode .numColumns i {
@@ -608,7 +632,7 @@ input[type="number"]::-webkit-inner-spin-button {
     color: white !important;
 }
 
-.dark-mode .field input {
+.dark-mode .inputfield input {
     background-color: lightgray;
 }
 
@@ -616,14 +640,14 @@ input[type="number"]::-webkit-inner-spin-button {
     background-color: lightgray;
 }
 
-.dark-mode .inputFields .field .pi-upload {
+.dark-mode .inputFields .inputfield .pi-upload {
     color: black;
 }
-.dark-mode .inputFields .field .image-upload-container {
+.dark-mode .inputFields .inputfield .image-upload-container {
     background-color: lightgray;
 }
 
-.dark-mode .inputFields .field .image-upload-container p {
+.dark-mode .inputFields .inputfield .image-upload-container p {
     color: black;
 }
 
