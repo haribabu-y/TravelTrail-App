@@ -89,6 +89,9 @@
 .add-bucket-contsiner ::ng-deep .p-dialog .p-dialog-content {
         padding: 0 1.5rem 1rem 1.5rem;
 }
+.add-bucket-contsiner ::ng-deep .p-dialog .p-dialog-header .p-dialog-header-icon:enabled:hover {
+    background: none;
+}
 
 .inputFields {
     display: flex;
@@ -169,6 +172,7 @@ input[type="number"]::-webkit-inner-spin-button {
 .buttons button {
     padding: 10px;
     border-radius: 8px;
+    cursor: pointer;
 }
 
 .cancelbtn {

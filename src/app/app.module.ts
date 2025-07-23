@@ -46,6 +46,8 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
+import { TooltipModule } from 'primeng/tooltip';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -82,7 +84,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     PaginatorModule,
     ToastModule,
     OverlayPanelModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    TooltipModule
   ],
   providers: [MessageService],
   bootstrap: [AppComponent]

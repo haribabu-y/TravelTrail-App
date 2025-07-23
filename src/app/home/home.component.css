@@ -34,6 +34,41 @@
     margin-left: 30px;
     margin-right: 50px;
 }
+#d3-barGraph, #d3-lineChart {
+    position: relative;
+}
+
+.tooltip {
+    position: absolute; 
+    background-color: #000;
+    color: #fff; 
+    padding: 5px 10px; 
+    border: none; 
+    border-radius: 4px; 
+    pointer-events: none; 
+    opacity: 0;
+    transition: opacity 0.3s;
+    text-align: center;
+}
+
+.tooltip::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -8px; 
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent rgba(0, 0, 0, 0.8) transparent transparent; 
+}
+
+@media screen and (max-width: 768px) {
+    .barGraph, .lineBar, .pieChart {
+        margin-left: 20px;
+        margin-right: 20px;
+        overflow-x: scroll;
+    }
+}
 
 @media screen and (max-width: 426px) {
     /* .graphtype {
@@ -42,8 +77,9 @@
 
     .barGraph, .lineBar, .pieChart {
         width: 90%;
-        height: 450px;
+        height: 550px;
         margin-left: 20px;
+        overflow-x: scroll;
     }
 }
 @media screen and (max-width: 320px) {
@@ -53,7 +89,7 @@
 
     .barGraph, .lineBar, .pieChart {
         width: 90%;
-        height: 450px;
+        height: 550px;
         margin-left: 10px;
     }
 }
@@ -75,8 +111,24 @@
 .dark-mode .graphTypeRadio .radioChecked {
     color: white;
 }
+.dark-mode .graph-title h2 {
+    color: white;
+}
+.dark-mode ::ng-deep g.x-axis,.dark-mode ::ng-deep g.y-axis {
+    color: white;
+}
+/* .dark-mode ::ng-deep g.x-axis text {
+    color: white;
+} */
+.dark-mode ::ng-deep text.x-axis-label, .dark-mode ::ng-deep text.y-axis-label {
+    fill: white;
+}
 
-.daark {
+.dark-mode .tooltip {
+    background-color: #ccc;
+    color: #000 !important;
+}
+.dark {
     background-color: #dfe7ef;
     background-color: #495057;
     background-color: #6c757d

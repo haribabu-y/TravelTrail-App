@@ -128,29 +128,12 @@ onResize(event: any) {
       this.reactiveForm.patchValue({ profileImage: reader.result as string});    
     };
     reader.readAsDataURL(file);
-
-    // this.reactiveForm.patchValue({ profileImage: this.profileImage });
-    // this.reactiveForm.get('profileImage')?.updateValueAndValidity();
   }
 
   authService: Authservice = inject(Authservice);
   router: Router = inject(Router);
-
   currentUser: User;
-
-  // isUV: boolean = false;
-  // isFNLNV: boolean = false;
-  // isPNCV: boolean = false;
-  // isPNV: boolean = false;
-  // isDOBV: boolean = false;
-  // isEV: boolean = false;
-  // isAV: boolean = false;
-  // isCV: boolean = false;
-  // isZCV: boolean = false;
-  // isTZV: boolean = false;
-  // isPV: boolean = false;
   passMM: boolean = false;
-
   secretKey: string = 'TravelTrail'; 
 
   onSignupFormsubmit() {
@@ -158,61 +141,24 @@ onResize(event: any) {
     console.log(this.reactiveForm.controls);    
     
     if(this.reactiveForm.controls['username'].invalid) {
-      // let errMsg = 'For username! Only alphanumric characters Allowed, Space is not Allowed and Maximum lenght is 20 Characters';
-      // this.messageService.add({severity:'warn', summary:'Warn', detail: errMsg})
-      // this.isUV = true;
       this.paginationPageNo = 1;
-      // return;
     } 
-    // else {
-    //   this.isUV = false;
-    // }
     if(this.reactiveForm.controls['firstName'].invalid || this.reactiveForm.controls['lastName'].invalid) {
-      // let errMsg = 'For FirstName and LastName! Only alphanumric characters and space Allowed and Maximum lenght is 30 Characters';
-      // this.messageService.add({severity:'warn', summary:'Warn', detail: errMsg})
-      // this.isFNLNV = true;
       this.paginationPageNo = 1;
-      // return;
     } 
-    // else {
-    //   this.isFNLNV = false;
-    // }
     if(this.reactiveForm.controls['email'].invalid) {
-      // console.log(this.reactiveForm.controls['email'].invalid);      
-      // this.isEV = true;
       this.paginationPageNo = 1;
-      // return;
     } 
-    // else {
-    //   this.isEV = false;
-    // }
     if(this.reactiveForm.controls['countryCode'].invalid) {
-      // this.isPNCV = true;
       this.paginationPageNo = 1;
-      // return;
     } 
-    // else {
-    //   this.isPNCV = false;
-    // }
     if(this.reactiveForm.controls['phone'].invalid) {
-      // this.messageService.add({severity: 'warn', summary:'Warn', detail: 'Mobhile number should less than 10 digits'});
-      // this.isPNV = true;
       this.paginationPageNo = 1;
-      // return;
     } 
-    // else {
-    //   this.isPNV = false;
-    // }
 
     if(this.reactiveForm.controls['dob'].invalid) {
-      // this.messageService.add({severity:'warn', summary:'Warn',detail:'Date of Birth must less the today!.'})
-      // this.isDOBV = true;
-      // return;
       this.paginationPageNo = 1;
     } 
-    // else {
-    //   this.isDOBV = false;
-    // }
     if(this.reactiveForm.invalid) {
       // console.log(this.reactiveForm.controls);
       let formControls = this.reactiveForm.controls;
@@ -228,7 +174,7 @@ onResize(event: any) {
       return;
     }
     if(this.reactiveForm.value.password !== this.reactiveForm.value.confirmPassword || this.reactiveForm.value.password === null) {
-      this.messageService.add({severity: 'warn', summary:'Warn', detail: 'Password and Confirm password should same!.'});
+      // this.messageService.add({severity: 'warn', summary:'Warn', detail: 'Password and Confirm password should same!.'});
       this.passMM = true;
       return;
     } else {

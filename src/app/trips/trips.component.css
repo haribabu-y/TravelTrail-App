@@ -125,6 +125,9 @@
  .add-trip-container ::ng-deep .p-dialog .p-dialog-content {
         padding: 0 1.5rem 1rem 1.5rem;
 }
+.add-trip-container ::ng-deep .p-dialog .p-dialog-header .p-dialog-header-icon:enabled:hover {
+    background: none;
+}
 
 .right-captions .pi-plus {
     background-color: #084880;
@@ -175,6 +178,7 @@
 .buttons button {
     padding: 10px;
     border-radius: 8px;
+    cursor: pointer;
 }
 
 .cancelbtn {
@@ -433,6 +437,14 @@ input[type="number"]::-webkit-inner-spin-button {
 .dark-mode .right-captions .pi-plus {
     background-color: white;
     color: black;
+}
+
+.dark-mode ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page,
+.dark-mode ::ng-deep .p-paginator .p-paginator-first,
+.dark-mode ::ng-deep .p-paginator .p-paginator-prev,
+.dark-mode ::ng-deep .p-paginator .p-paginator-next,
+.dark-mode ::ng-deep .p-paginator .p-paginator-last {
+    color: white;
 }
 
 

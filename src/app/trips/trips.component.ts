@@ -83,9 +83,9 @@ export class TripsComponent implements OnInit {
     this.showDailog = true;
     this.startPlace = '';
     this.destination = '';
-    this.totalDistance = 0;
-    this.totalExpense = 0;
-    this.totalMembers = 0;
+    this.totalDistance = null;
+    this.totalExpense = null;
+    this.totalMembers = null;
   }
 
   closeDailog() {
@@ -104,20 +104,20 @@ export class TripsComponent implements OnInit {
     const pattern = /^[a-zA-Z\s]*$/;
     this.isDV = !pattern.test(this.destination || '');
   }
-  validateNumberFields() {
-    if(this.totalDistance === null || this.totalDistance === 0) {
+  validateNumberFields(field: string) {
+    if(field === 'td' && this.totalDistance === null || this.totalDistance === 0) {
       this.isTDV = true;
       // return;
     } else {
       this.isTDV = false;
     } 
-    if(this.totalExpense === null || this.totalExpense === 0){
+    if(field === 'te' && this.totalExpense === null || this.totalExpense === 0){
       this.isTEV = true;
       // return;
     } else {
       this.isTEV = false;
     } 
-    if(this.totalMembers === null || this.totalMembers === 0){
+    if(field === 'tm' && this.totalMembers === null || this.totalMembers === 0){
       this.isTMV = true;
       // return;
     } else {
@@ -161,7 +161,7 @@ export class TripsComponent implements OnInit {
     } else {
       this.isTMV = false
     }
-    if(this.startPlace === '' || this.destination === '' || this.totalDistance === 0 || this.totalExpense === 0 || this.totalMembers === 0){
+    if(this.startPlace === '' || this.destination === '' || (this.totalDistance === 0 || this.totalDistance === null) || (this.totalExpense === 0 || this.totalExpense === null) || (this.totalMembers === 0 || this.totalMembers === null)){
       // this.messageService.add({severity: 'error', summary:'Error', detail:'Please fill all the fields!.'});
       return;
     }

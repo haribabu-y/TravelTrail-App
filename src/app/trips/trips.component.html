@@ -170,7 +170,7 @@
           pInputText
           id="td"
           [(ngModel)]="totalDistance"
-          (ngModelChange)="validateNumberFields()"
+          (ngModelChange)="validateNumberFields('td')"
           required
         />
         <span *ngIf="isTDV">Total Distance is Invalid*</span>
@@ -182,7 +182,7 @@
           pInputText
           id="te"
           [(ngModel)]="totalExpense"
-          (ngModelChange)="validateNumberFields()"
+          (ngModelChange)="validateNumberFields('te')"
           required
         />
         <span *ngIf="isTEV">Total Expanse is Invalid*</span>
@@ -194,7 +194,7 @@
           pInputText
           id="tm"
           [(ngModel)]="totalMembers"
-          (ngModelChange)="validateNumberFields()"
+          (ngModelChange)="validateNumberFields('tm')"
           required
         />
         <span *ngIf="isTMV">Total Members is Invalid*</span>
