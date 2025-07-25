@@ -88,8 +88,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
       setTimeout(() => {
         this.createD3BarGraphSvg();
         this.drawD3Bars();
-        this.created3LineChart();
-        this.drawD3Lines(this.d3GraphData);
+        this.createD3LineChartSvg();
+        this.drawD3Lines();
+        this.createD3PieChartSvg();
+        this.drawD3Pie();
       }, 0);
   }
 
@@ -134,6 +136,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
       setTimeout(() => {
         this.createD3BarGraphSvg();
         this.drawD3Bars();
+        this.createD3LineChartSvg();
+        this.drawD3Lines();
+        this.createD3PieChartSvg()
+        this.drawD3Pie();
         console.log(this.d3GraphData);
       },0)      
 
@@ -382,10 +388,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   private lineBarSvg: any;
   private lineBarG: any;
   private pieChartSvg: any;
-  private pieChartG: any;
 
-  private xAxisGroup: any;
-  private yAxisGroup: any;
+  screenSize: number = 0;
 
   width = 1000;
   height = Math.min(this.width, 420);
@@ -408,15 +412,33 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.updateDimentions();
     this.createD3BarGraphSvg();
     this.drawD3Bars();
+    this.createD3LineChartSvg();
+    this.drawD3Lines();
+
+    console.log(event.target.innerWidth);
+    this.screenSize = event.target.innerWidth;
+    // if(event.target.innerWidth <= 425) {
+    //   this.pieRadius = 150;
+    //   this.createD3PieChartSvg();
+    //   this.drawD3Pie();
+    // }
+    
   }
 
   updateDimentions() {
-    const constiner =this.elementRef.nativeElement.querySelector("#d3-barGraph");
-    if(constiner) {
-      this.chartWidth = constiner.clientWidth - this.marginLeft - this.marginRight;
+    let container: any;
+    if(this.selectedRadio === 'barGraph') {
+      container =this.elementRef.nativeElement.querySelector("#d3-barGraph");
+    }
+    if(this.selectedRadio === 'lineGraph') {
+      container =this.elementRef.nativeElement.querySelector("#d3-lineChart");
+    }
+    // const constiner =this.elementRef.nativeElement.querySelector("#d3-barGraph");
+    if(container) {
+      this.chartWidth = container.clientWidth - this.marginLeft - this.marginRight;
       // this.chartHeight = constiner.clientHeight - this.marginTop - this.marginBottom;
 
-      if(this.chartWidth < 475) this.chartWidth = 500;
+      if(this.chartWidth <= 475) this.chartWidth = 500;
       // if(this.chartHeight < 0) this.chartHeight = 0;
     }
   }
@@ -434,9 +456,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.barGraphG = this.barGraphSvg.append("g")
       .attr("transform", `translate(${this.marginLeft}, ${this.marginTop})`);
 
-    this.xAxisGroup = this.barGraphG.append('g').attr("class", "x-axis");
-    this.yAxisGroup = this.barGraphG.append('g').attr("class", "y-axis");
-
     this.barGraphSvg.append("text")
       .attr("class", "x-axis-label")
       .attr("x", this.chartWidth / 2 + 20)
@@ -447,7 +466,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.barGraphSvg.append("text")
       .attr("class", "y-axis-label")
       .attr("x", -this.chartHeight / 2)
-      .attr("y", this.marginLeft - 50) // Adjust so it sits left of the y axis
+      .attr("y", this.marginLeft - 50) 
       .attr("transform", "rotate(-90)")
       .attr("text-anchor", "middle")
       .text("Total Expense");
@@ -478,7 +497,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
                 .domain([0, d3.max(this.d3GraphData, d => d.value)!])
                 .range([this.chartHeight, 0]);
 
-    this.xAxisGroup
+    this.barGraphG.append('g').attr("class", "x-axis")
       .attr("transform", `translate(0, ${this.chartHeight})`)
       .call(d3.axisBottom(x).tickFormat(i => this.d3GraphData[+i].name))
       .selectAll("text")
@@ -491,7 +510,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     //   xAxisLabel = this.barGraphG.append("taxt")
     //     .attr("class", "x-axis-label")
     // }
-    console.log(xAxisLabel);
+    // console.log(xAxisLabel);
     if(xAxisLabel) {
       xAxisLabel
       .attr("x", this.chartWidth / 2 + 20)
@@ -501,7 +520,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }    
     
 
-    this.yAxisGroup
+    // this.yAxisGroup
+    this.barGraphG.append('g').attr("class", "y-axis")
       .call(d3.axisLeft(y));
 
     // this.barGraphSvg.append("text")
@@ -549,102 +569,188 @@ export class HomeComponent implements OnInit, AfterViewInit {
       .attr("height", d => this.chartHeight - y(d.value));
   }
 
-  created3LineChart() {
-    this.lineBarSvg = d3.select("#d3-lineChart")
-    .append('svg')
-    .attr("width", this.width)
-    .attr("height", this.height + 50)
-    .append("g")
-    .attr("transform", `translate(${this.marginLeft}, ${this.marginTop})`);
-  }
+  // For line bar Chart
 
-  drawD3Lines(data: any[]) {
-    console.log(data);
+  private linePath: any;
+
+  createD3LineChartSvg() {
+
+    this.updateDimentions();
+
+    const container = d3.select(this.elementRef.nativeElement).select("#d3-lineChart");
+
+    container.select("svg").remove();
+
+    this.lineBarSvg = container.append("svg")
+                        .attr("width", this.chartWidth + this.marginLeft + this.marginRight)
+                        .attr("height", this.chartHeight + this.marginTop + this.marginBottom + 50);
     
-    const chartWidth = this.width - this.marginLeft - this.marginRight;
-    const chartHeight = this.height - this.marginTop - this.marginBottom;
+    this.lineBarG = this.lineBarSvg.append("g")
+                      .attr("transform", `translate(${this.marginLeft}, ${this.marginTop})`);
 
-    this.lineBarSvg.selectAll("*").remove();
-
-    const x = d3.scaleBand()
-    .range([0, chartWidth])
-    .domain(data.map((_,i) => i.toString()))
-    .padding(0.2);
-
-    const y = d3.scaleLinear()
-    .domain([0, d3.max(data, d => d.value)!])
-    .range([chartHeight, 0]);
-
-    this.lineBarSvg.append("g")
-    .attr("class", "x-axis")
-    .attr("transform", `translate(0, ${chartHeight})`)
-    .call(d3.axisBottom(x)
-      .tickFormat(i => data[+i].name)
-    )
-    .selectAll("text")
-    .attr("transform", "rotate(-45)")
-    .style("text-anchor", "end");
+    this.linePath  = this.lineBarG.append("path")
+                      .attr("class", "line-path")
+                      .style("fill", "none")
+                      .style("stroke", "#87C296") // Default line color
+                      .style("stroke-width", 2)
+    
+    this.lineBarSvg.append("text")
+      .attr("class", "x-axis-label")
+      .attr("x", this.chartWidth / 2 + 20)
+      .attr("y", this.chartHeight + 80)
+      .attr("text-anchor", "middle")
+      .text("Trips")
 
     this.lineBarSvg.append("text")
-    .attr("class", "x-axis-label")
-    .attr("x", chartWidth / 2)
-    .attr("y", chartHeight + 70)
-    .attr("text-anchor", "middle")
-    .text("Trips");
+      .attr("class", "y-axis-label")
+      .attr("x", -this.chartHeight / 2)
+      .attr("y", this.marginLeft - 50) 
+      .attr("transform", "rotate(-90)")
+      .attr("text-anchor", "middle")
+      .text("Total Expense");
 
-    this.lineBarSvg.append("g")
-    .attr("class", "y-axis")
-    .call(d3.axisLeft(y));
+    // this.lineBarSvg = d3.select("#d3-lineChart")
+    // .append('svg')
+    // .attr("width", this.width)
+    // .attr("height", this.height + 50)
+    // .append("g")
+    // .attr("transform", `translate(${this.marginLeft}, ${this.marginTop})`);
+  }
 
-      // Add Y axis label
-  this.lineBarSvg.append("text")
-    .attr("class", "y-axis-label")
-    .attr("x", -chartHeight / 2)
-    .attr("y", -this.marginLeft + 20) // Adjust so it sits left of the y axis
-    .attr("transform", "rotate(-90)")
-    .attr("text-anchor", "middle")
-    .text("Total Expense");
+  drawD3Lines() {
+    console.log(this.d3GraphData);
+    if(!this.d3GraphData || this.d3GraphData.length === 0) {
+      this.lineBarG.selectAll('*').remove();
+      return;
+    }
 
-    // Line generator uses index for x position
-  const line = d3.line<{ name: string; value: number }>()
-    .x((_, i) => x(i.toString())!)
-    .y(d => y(d.value));
+    this.updateDimentions();
 
-    // Draw the line path
-  this.lineBarSvg.append("path")
-    .datum(data)
-    .attr("fill", "none")
-    .attr("stroke", "#87C296")
-    .attr("stroke-width", 2)
-    .attr("d", line);
+    const x = d3.scalePoint()
+              .range([0,this.chartWidth])
+              .domain(this.d3GraphData.map((_,i) => i.toString()))
+              .padding(0.2);
+
+    const y = d3.scaleLinear()
+                .domain([0, d3.max(this.d3GraphData, d => d.value)!])
+                .range([this.chartHeight, 0]);
+    
+    this.lineBarG.append("g")
+      .attr("class", 'x-axis')
+      .attr("transform", `translate(0, ${this.chartHeight})`)
+      .call(d3.axisBottom(x).tickFormat(i => this.d3GraphData[+i].name))
+      .selectAll("text")
+      .attr("transform", "rotate(-45)")
+      .style("text-anchor", "end");
+    
+    let xAxisLabel = this.lineBarSvg.select(".x-axis-label");
+    if(xAxisLabel) {
+      xAxisLabel
+        .attr("x", this.chartWidth / 2 + 20)
+        .attr("y", this.chartHeight + 80)
+        .attr("text-anchor", "middle")
+        .text("Trips");
+    }
+
+    this.lineBarG.append("g").attr("class", "y-axis")
+      .call(d3.axisLeft(y));
+
+    const line = d3.line<{name: string; value: number}>()
+      .x((_,i) => x(i.toString())!)
+      .y(d => y(d.value));
+    
+    this.linePath
+      .datum(this.d3GraphData) // Bind the entire data array to the single path element
+      .transition()
+      .duration(750) // Smooth transition for line updates
+      .attr("d", line);
 
     const tooltip = d3.select("#d3-lineChart").select(".tooltip");
 
-    // Draw points
-  this.lineBarSvg.selectAll("circle")
-    .data(data)
-    .join("circle")
-    .attr("cx", (_, i) => x(i.toString())!)
-    .attr("cy", d => y(d.value))
-    .attr("r", 4)
-    .attr("fill", "#87C296")
-    .on("mouseover", (event, d) => {
-      const circle = event.target as SVGCircleElement;
-      const circleBBox = circle.getBoundingClientRect();
-      const containerBBox = (document.querySelector('#d3-lineChart') as HTMLElement).getBoundingClientRect();
+    this.lineBarG.selectAll("circle")
+      .data(this.d3GraphData)
+      .join("circle")
+      .attr("cx", (_, i) => x(i.toString())!)
+      .attr("cy", d => y(d.value))
+      .attr("r", 5)
+      .attr("fill", "#87c296")
+      .on("mouseover", (event, d) => {
+        const circle = event.target as SVGCircleElement;
+        const circleBBox = circle.getBoundingClientRect();
+        const containerBBox = (document.querySelector('#d3-lineChart') as HTMLElement).getBoundingClientRect();
 
-      tooltip.style("opacity",.8)
-      .style("left", `${circleBBox.x - containerBBox.x + circleBBox.width / 2 + 7}px`)
-      .style("top", `${circleBBox.y - containerBBox.y - 20}px`);
-
-      d3.select(".tooltip")
-        .select('#name').text(d.name);
-      d3.select(".tooltip")
-        .select('#value').text(d.value);
-    })
-    .on("mouseout", () => {
-      tooltip.style("opacity", 0);
-    })
+        tooltip.style("opacity", 0.8)
+          .style("left", `${circleBBox.x - containerBBox.x + circleBBox.width / 2 + 7}px`)
+          .style("top", `${circleBBox.y - containerBBox.y - 20}px`);
+        
+        d3.select(".tooltip")
+          .select("#name").text(d.name);
+        d3.select(".tooltip")
+          .select("#value").text(d.value);
+      })
+      .on("mouseout", () => {
+        tooltip.style("opacity", 0);
+      })
   }
 
+  pieWidth = 450;
+  pieHeight = 450;
+  pieMargin = 40;
+  pieRadius = Math.min(this.pieWidth, this.pieHeight) / 2 - 10;
+
+  createD3PieChartSvg() {
+    this.pieChartSvg = d3.select("#d3-pieChart")
+                        .append("svg")
+                        .attr("width", this.pieWidth + this.pieMargin + this.pieMargin)
+                        .attr("height", this.pieHeight + this.pieMargin + this.pieMargin)
+                        .append("g")
+                        .attr("transform", `translate(${(this.pieWidth + this.pieMargin + this.pieMargin) / 2}, ${(this.pieHeight + this.pieMargin + this.pieMargin) / 2})`);
+  }
+
+  drawD3Pie() {
+    const pie = d3.pie<any>().value((d) => d.value);
+    const data_ready = pie(this.d3GraphData);
+
+    const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    const arc = d3.arc<d3.PieArcDatum<any>>().innerRadius(0).outerRadius(this.pieRadius);
+
+    const tooltip = d3.select("#d3-pieChart").select(".pTooltip");
+    
+    this.pieChartSvg.selectAll('path')
+                    .data(data_ready)
+                    .enter()
+                    .append('path')
+                    .attr("d", arc)
+                    .attr("fill", (d, i) => color(i.toString()))
+                    .attr("stroke", "white")
+                    .style("stroke-width", "2px")
+                    .on("mouseover", (event, d) => {
+                      const [x,y] = arc.centroid(d);
+                      const svgRect = d3.select("#d3-pieChart svg").node().getBoundingClientRect()
+
+                      // console.log(x + this.pieWidth);
+                      // console.log(svgRect.left);
+                      
+                      console.log(y);
+                      console.log(svgRect.top);
+
+                      tooltip.style("opacity", 1)
+                             .style('left', `${this.screenSize === 425 ? 100 + x + this.pieWidth / 2 - 35 : this.screenSize === 320 ? 30 + x + this.pieWidth / 2 - 25 : svgRect.left + x + this.pieWidth / 2 - 45}px`)
+                             .style('top', `${svgRect.top + y - 40}px`);
+
+                      // console.log(d.data.name);                      
+                      d3.select(".pTooltip")
+                        .select("#pname").text(d.data.name);
+                      d3.select(".pTooltip")
+                        .select("#pvalue").text(d.data.value);
+                        
+                    })
+                    .on('mouseout', function () {
+                      tooltip.style('opacity', 0);
+                    })
+                    .append("title").text(d => `${d.data.name}: ${d.data.value}`);
+        
+    
+  }
 }

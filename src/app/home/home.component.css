@@ -34,11 +34,11 @@
     margin-left: 30px;
     margin-right: 50px;
 }
-#d3-barGraph, #d3-lineChart {
+#d3-barGraph, #d3-lineChart, #d3-pieChart {
     position: relative;
 }
 
-.tooltip {
+.tooltip, .pTooltip {
     position: absolute; 
     background-color: #000;
     color: #fff; 
@@ -62,6 +62,23 @@
   border-color: transparent rgba(0, 0, 0, 0.8) transparent transparent; 
 }
 
+/* Tooltip arrow for a top-positioned tooltip (arrow pointing down) */
+.pTooltip::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%; /* Position at the bottom edge of the tooltip */
+  margin-left: -8px; /* Half of border-width to center */
+  border-width: 8px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.7) transparent transparent transparent; /* Arrow points down */
+}
+
+#d3-pieChart {
+    display: grid;
+    place-items: center;
+}
+
 @media screen and (max-width: 768px) {
     .barGraph, .lineBar, .pieChart {
         margin-left: 20px;
@@ -81,13 +98,18 @@
         margin-left: 20px;
         overflow-x: scroll;
     }
+
+    #d3-barGraph, #d3-lineChart, #d3-pieChart {
+        overflow-x: auto;
+        width: 670px;   
+    }
 }
 @media screen and (max-width: 320px) {
     /* .graphtype {
         width: 550px;
     } */
 
-    .barGraph, .lineBar, .pieChart {
+    .barGraph, .lineBar, .pieChart, #d3-pieChart {
         width: 90%;
         height: 550px;
         margin-left: 10px;
@@ -124,9 +146,19 @@
     fill: white;
 }
 
-.dark-mode .tooltip {
+.dark-mode .tooltip, .dark-mode .pTooltip {
     background-color: #ccc;
-    color: #000 !important;
+}
+
+.dark-mode .tooltip strong, .dark-mode .pTooltip strong {
+    color: black;
+}
+
+.dark-mode .tooltip::after {
+    border-color: transparent #ccc transparent transparent;
+}
+.dark-mode .pTooltip::after {
+    border-color: #ccc transparent transparent transparent;
 }
 .dark {
     background-color: #dfe7ef;

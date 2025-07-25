@@ -125,7 +125,8 @@
  .add-trip-container ::ng-deep .p-dialog .p-dialog-content {
         padding: 0 1.5rem 1rem 1.5rem;
 }
-.add-trip-container ::ng-deep .p-dialog .p-dialog-header .p-dialog-header-icon:enabled:hover {
+.add-trip-container ::ng-deep .p-dialog .p-dialog-header .p-dialog-header-icon:enabled:hover,
+.trip-detail-container ::ng-deep .p-dialog .p-dialog-header .p-dialog-header-icon:enabled:hover {
     background: none;
 }
 
@@ -308,6 +309,7 @@ input[type="number"]::-webkit-inner-spin-button {
 /* .emptyMessage > tr {
     text-align: center;
 } */
+ 
 .trip-detail-container ::ng-deep .p-dialog {
     width: 35%;
 }
@@ -332,20 +334,25 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 @media screen and (max-width: 426px) {
     
-    ::ng-deep .p-datatable-header {
+    .trip-table ::ng-deep .p-datatable-header {
         display: flex;
         flex-direction: column;
         gap: 10px;
     }
 
-    ::ng-deep .p-datatable-header .right-captions {
+    .trip-table ::ng-deep .p-datatable-header .right-captions {
         justify-content: flex-end;
     }
 
-    ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page, .p-paginator .p-paginator-first, .p-paginator .p-paginator-prev, .p-paginator .p-paginator-next, .p-paginator .p-paginator-last {
+    .trip-table ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page, .p-paginator .p-paginator-first, .p-paginator .p-paginator-prev, .p-paginator .p-paginator-next, .p-paginator .p-paginator-last {
         margin: 0;
         min-width: 1.5rem;
     }
+
+    .trip-table ::ng-deep .p-paginator-left-content {
+        margin: 5px 100px !important;
+    }
+
      .jumpingPage {
         margin-top: 5px;
      }
@@ -360,9 +367,9 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 @media screen and (max-width: 320px) {
-    ::ng-deep .p-paginator-left-content {
-        margin-right: 70px !important;
-        margin-left: 65px;
+    .trip-table ::ng-deep .p-paginator-left-content {
+        margin-right: 36px !important;
+        margin-left: 40px;
         margin-top: 5px;
         margin-bottom: 5px;
     }

@@ -338,6 +338,7 @@
 .buttons button {
     padding: 10px;
     border-radius: 8px;
+    cursor: pointer;
 }
 
 .cancelbtn {
@@ -349,6 +350,12 @@
     background-color: #084880;
     color: white;
     border: none;
+}
+
+.editBucketItem ::ng-deep .p-dialog .p-dialog-header .p-dialog-header-icon:enabled:hover,
+.bucketDailog ::ng-deep .p-dialog .p-dialog-header .p-dialog-header-icon:enabled:hover,
+.delete-dailog ::ng-deep .p-dialog .p-dialog-header .p-dialog-header-icon:enabled:hover {
+    background: none;
 }
 
 /* Styling the delete confirm button*/
@@ -383,6 +390,7 @@
     border: 1px solid #084880;
     padding: 8px;
     border-radius: 8px;
+    cursor: pointer;
 }
 
 .delbtn {
@@ -448,6 +456,10 @@ input[type="number"]::-webkit-inner-spin-button {
     height: 2rem
 }
 
+::ng-deep .p-datatable thead > tr > th:last-child {
+  width: 150px !important;
+}
+
 /* making the page responsive for all the screen sizes */
 @media screen and (max-width: 769px) {
     ::ng-deep .tableHead {
@@ -497,17 +509,18 @@ input[type="number"]::-webkit-inner-spin-button {
         margin: 0;
         min-width: 1.5rem;
     }
-     .jumpingPage {
-        margin-top: 5px;
-     }
+
+    .user-trip-table ::ng-deep .p-paginator-left-content {
+        margin: 5px 100px !important;
+    }
 }
 
 @media screen and (max-width: 320px) {
-    ::ng-deep .p-paginator-left-content {
-        margin-right: 70px !important;
-        margin-left: 65px;
-        margin-top: 5px;
-        margin-bottom: 5px;
+    .user-trip-table ::ng-deep .p-paginator-left-content {
+        margin-right: 36px !important;
+        margin-left: 40px !important;
+        margin-top: 5px !important;
+        margin-bottom: 5px !important;
     }
 
     .currency-formate ::ng-deep .p-dropdown, .distance-formate ::ng-deep .p-dropdown {
@@ -536,6 +549,10 @@ input[type="number"]::-webkit-inner-spin-button {
 
     .editBucketItem ::ng-deep .p-dialog {
         width: 90%;
+    }
+
+    .jumpingPage {
+        margin-top: 5px;
     }
 }
 
@@ -614,6 +631,14 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .dark-mode .bucket-list-item .content p {
     color: black;
+}
+
+.dark-mode ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page,
+.dark-mode ::ng-deep .p-paginator .p-paginator-first,
+.dark-mode ::ng-deep .p-paginator .p-paginator-prev,
+.dark-mode ::ng-deep .p-paginator .p-paginator-next,
+.dark-mode ::ng-deep .p-paginator .p-paginator-last {
+    color: white;
 }
 
 

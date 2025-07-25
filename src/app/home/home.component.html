@@ -63,12 +63,14 @@
       </div>
     </div>
     <div class="pieChart" *ngIf="selectedRadio === 'pieChart'">
-      <p-chart
-        type="pie"
-        [data]="pieChartData"
-        [options]="pieChartOptions"
-        height="500px"
-      />
+      <!-- <p-chart type="pie" [data]="pieChartData" [options]="pieChartOptions" height="500px"/> -->
+      <div class="graph-title"><h2>Trip Vs Expense</h2></div>
+      <div id="d3-pieChart">
+        <div class="pTooltip">
+          <p><strong id="pname"></strong></p>
+          <p><strong id="pvalue"></strong></p>
+        </div>
+      </div>
     </div>
   </div>
 </ng-container>

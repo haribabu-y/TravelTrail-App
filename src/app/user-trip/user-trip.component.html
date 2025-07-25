@@ -177,7 +177,7 @@
               </div>
             </div>
           </th> -->
-          <th style="width: 12%">Bucket List</th>
+          <th>Bucket List</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-userTrip>
@@ -306,6 +306,7 @@
             pInputText
             id="pn"
             [(ngModel)]="placeName"
+            (ngModelChange)="validatePlaceName()"
             required
           />
           <span *ngIf="isPNV">Place Name is Invalid*</span>
@@ -317,6 +318,7 @@
             pInputText
             id="pd"
             [(ngModel)]="placeDescription"
+            (ngModelChange)="validatePlaceDescription()"
             required
           />
           <span *ngIf="isPDV">Place Description is Invalid*</span>
@@ -328,6 +330,7 @@
             pInputText
             id="ed"
             [(ngModel)]="estimatedDistance"
+            (ngModelChange)="validateED()"
             required
           />
           <span *ngIf="isEDV">Estimated Distance is Invalid*</span>
@@ -339,6 +342,7 @@
             pInputText
             id="eb"
             [(ngModel)]="estimatedBudget"
+            (ngModelChange)="validateEB()"
             required
           />
           <span *ngIf="isEBV">Estimated Budget is Invalid*</span>

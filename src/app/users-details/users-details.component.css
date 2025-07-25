@@ -220,6 +220,13 @@ td i {
  .add-Update-user ::ng-deep .p-dialog .p-dialog-content {
   padding: 10px 20px !important;
 }
+
+.add-Update-user ::ng-deep .p-dialog .p-dialog-header .p-dialog-header-icon:enabled:hover,
+.delete-dailog ::ng-deep .p-dialog .p-dialog-header .p-dialog-header-icon:enabled:hover {
+  background: none;
+}
+
+
 .form-fields {
   display: flex;
   gap: 20px;
@@ -309,6 +316,9 @@ td i {
     transform: translateY(10px);
     margin-top: 12px;
 }
+.adminCheck input, .adminCheck label {
+  cursor: pointer;
+}
 
 .profile-img {
   width: 100px;
@@ -361,6 +371,7 @@ td i {
     font-size: 14px;
     border-radius: 8px; 
     width: 100px;
+    cursor: pointer;
 }
 
 .submitBtn {
@@ -417,6 +428,7 @@ td i {
     border: 1px solid #084880;
     padding: 8px;
     border-radius: 8px;
+    cursor: pointer;
 }
 
 .delbtn {
@@ -478,6 +490,10 @@ input[type="number"]::-webkit-inner-spin-button {
     min-width: 2rem;
     height: 2rem
 }
+
+/* ::ng-deep .tableHead:last-child {
+  width: 150px !important;
+} */
 
 /* making the page responsive for all the screen sizes */
 
@@ -573,6 +589,10 @@ input[type="number"]::-webkit-inner-spin-button {
     .inputfield, .row {
       width: 100%;
     }
+
+    .users-detail-table ::ng-deep .p-paginator-left-content {
+        margin: 5px 100px !important;
+    }
 }
 
 @media screen and (max-width: 320px) {
@@ -586,6 +606,17 @@ input[type="number"]::-webkit-inner-spin-button {
 
     ::ng-deep .p-dialog {
       width: 90%;
+    }
+
+    .users-detail-table ::ng-deep .p-paginator-left-content {
+        margin-right: 36px !important;
+        margin-left: 40px !important;
+        margin-top: 5px !important;
+        margin-bottom: 5px !important;
+    }
+
+    .jumpingPage {
+      margin-top: 5px;
     }
 }
 
@@ -640,6 +671,14 @@ input[type="number"]::-webkit-inner-spin-button {
 .dark-mode .right-captions .pi-plus {
     background-color: white;
     color: black;
+}
+
+.dark-mode ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page,
+.dark-mode ::ng-deep .p-paginator .p-paginator-first,
+.dark-mode ::ng-deep .p-paginator .p-paginator-prev,
+.dark-mode ::ng-deep .p-paginator .p-paginator-next,
+.dark-mode ::ng-deep .p-paginator .p-paginator-last {
+    color: white;
 }
 
 

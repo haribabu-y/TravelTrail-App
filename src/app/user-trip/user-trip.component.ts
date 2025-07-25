@@ -43,7 +43,7 @@ export class UserTripComponent implements OnInit {
     this.sharedService.getAllUsers().subscribe((users) => {
       for (let user of users) {
         // console.log(user);
-        let username: string = user.firstName + ' ' + user.lastName;
+        let username: string = user.firstName + ' ' + (user.lastName ? user.lastName : '');
         let gender: string = user.gender;
         let age: number = new Date().getFullYear() - new Date(user.dob).getFullYear();
         let id: string = user.id;
@@ -107,7 +107,7 @@ export class UserTripComponent implements OnInit {
       { name: '$ Dollar', code: 'SRD', symbol: '$' },
       { name: '$U Peso', code: 'UYU', symbol: '$U' },
       { name: 'Bs.S. Bolívar', code: 'VES', symbol: 'Bs.S.' },
-      { name: '¥ Yen', code: 'JPY', symbol: '¥' }, // For comparison only
+      { name: '¥ Yen', code: 'JPY', symbol: '¥' }
   ];
 
   exchangeRates: { [key: string]: number } = {
@@ -408,6 +408,31 @@ export class UserTripComponent implements OnInit {
     this.isEDV = false;
     this.isEBV = false;
   }
+
+  validatePlaceName() {
+    const pattern = /^[a-zA-Z\s]*$/;
+    this.isPNV = !pattern.test(this.placeName || '');
+    // this.isPDV = !pattern.test(this.placeDescription || '');
+  }
+  validatePlaceDescription() {
+    const pattern = /^[a-zA-Z\s]*$/;
+    this.isPDV = !pattern.test(this.placeDescription || '');
+  }
+  validateED() {
+    if(this.estimatedDistance === 0 || this.estimatedDistance === null) {      
+      this.isEDV = true;
+    } else{
+      this.isEDV = false;
+    }
+  }
+  validateEB() {
+    if(this.estimatedBudget === 0 || this.estimatedBudget === null) {
+      this.isEBV = true;
+    } else {
+      this.isEBV = false;
+    }
+  }
+
   isPIV: boolean = false;
   isPNV: boolean = false;
   isPDV: boolean = false;

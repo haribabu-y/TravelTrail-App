@@ -103,7 +103,9 @@ export class HeaderComponent implements OnInit,OnDestroy {
               console.log(countryObj);        
               this.country = Object.values(countryObj)[0];
               let filteredState = states[countryObj.code] || [];
-              this.state = filteredState.find((state) => state.code === this.currentUser.state).name;
+              if(this.currentUser.state) {
+                this.state = filteredState.find((state) => state.code === this.currentUser.state).name;
+              }              
               this.currencyCode = countryObj['currencyCode'];
               if (this.currentUser.profileImage) {
                 this.profileImage = this.currentUser.profileImage;
@@ -133,7 +135,9 @@ export class HeaderComponent implements OnInit,OnDestroy {
         console.log(countryObj);        
         this.country = Object.values(countryObj)[0];
         let filteredState = states[countryObj.code] || [];
-        this.state = filteredState.find((state) => state.code === this.currentUser.state).name;
+        if(this.currentUser.state) {
+          this.state = filteredState.find((state) => state.code === this.currentUser.state).name;
+        }        
         this.currencyCode = countryObj['currencyCode'];
         this.userDetail = this.currentUser;
         if (this.currentUser.profileImage) {
