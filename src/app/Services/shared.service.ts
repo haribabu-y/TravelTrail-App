@@ -10,6 +10,7 @@ export class SharedService {
 
     http: HttpClient = inject(HttpClient);
     isDarkMode = new Subject<boolean>();
+    userExpense = new Subject<number>;
 
     public getAllUsers(): Observable<User[]> {
         return this.http
@@ -25,7 +26,7 @@ export class SharedService {
                   users.push({ ...response[key], id: key });
                 }
               }
-              console.log(users);
+              // console.log(users);
               return users;
             }),
             catchError((err) => {
@@ -35,14 +36,12 @@ export class SharedService {
       }
 
     //   userTrips: Trip[];
-    userExpense = new Subject<number>;
-
     getUserExpense(expense: number) {
         this.userExpense.next(expense);
     }
 
     emitThemevalue(value: boolean) {
       this.isDarkMode.next(value);
-      console.log(value);
+      // console.log(value);
     }
 }

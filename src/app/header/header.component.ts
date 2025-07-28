@@ -1,10 +1,9 @@
-import { AfterViewChecked, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MenuItem } from 'primeng/api';
+import { Component, ElementRef, HostListener, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Authservice } from '../Services/auth.service';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../Models/user';
 import { SharedService } from '../Services/shared.service';
-import { filter, Subscription, take } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { countries } from '../constants/countries';
 import { states } from '../constants/countries';
 
@@ -13,7 +12,7 @@ import { states } from '../constants/countries';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit,OnDestroy {
+export class HeaderComponent implements OnInit, OnDestroy {
 
   darkMode: boolean = false;
   isDarkMode: boolean = false;
@@ -35,8 +34,7 @@ export class HeaderComponent implements OnInit,OnDestroy {
   }
 
   navigateToHome() {
-    console.log(this.isAdmin);
-
+    // console.log(this.isAdmin);
     if (!this.isAdmin) {
       this.router.navigate(['/user/Home'])
     } else {
@@ -78,12 +76,15 @@ export class HeaderComponent implements OnInit,OnDestroy {
     }
 
     this.userExpenseSubscription = this.sharedService.userExpense.subscribe((res) => {
-      console.log(res);
+      // console.log(res);
       this.userExpense = res;
     })
 
     let localuser = JSON.parse(localStorage.getItem('user'));
-    console.log(localuser);
+    // console.log(localuser);
+    if(!localuser) {
+      return;
+    }
     if (localuser.isAdmin) {
       this.usertype === 'admin';
       this.isAdmin = true;
@@ -151,8 +152,6 @@ export class HeaderComponent implements OnInit,OnDestroy {
     });
   };
 
-  isMobileView: boolean = false;
-  screenWidth: number = window.innerWidth;
   showProfileInfo: boolean = false;
 
   @ViewChild('menuBar') menubar: ElementRef;

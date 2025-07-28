@@ -20,7 +20,7 @@
   font-size: 8px;
 }
 
-::ng-deep .p-datatable-header {
+.users-detail-table ::ng-deep .p-datatable-header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -556,7 +556,7 @@ input[type="number"]::-webkit-inner-spin-button {
 @media screen and (max-width: 426px) {
 
   ::ng-deep .tableHead {
-        width: 100px !important;
+        width: 130px !important;
     }
 
   .currency-formate ::ng-deep .p-dropdown {

@@ -19,12 +19,12 @@ export class BucketListService {
                     bucketLists.push({...response[key], id: key})
                 }
             }
-            console.log(bucketLists);
+            // console.log(bucketLists);
             return bucketLists;            
         }))
         }
         this.currentUser = JSON.parse(localStorage.getItem('user'));
-        console.log(this.currentUser);
+        // console.log(this.currentUser);
         return this.http.get(`https://travektrail-app-default-rtdb.firebaseio.com/users/${this.currentUser.id}/bucketLists.json`).pipe(map((response) => {
             let bucketLists = [];
             for(let key in response) {
@@ -32,7 +32,7 @@ export class BucketListService {
                     bucketLists.push({...response[key], id: key})
                 }
             }
-            console.log(bucketLists);
+            // console.log(bucketLists);
             return bucketLists;            
         }))
     }

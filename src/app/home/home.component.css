@@ -74,6 +74,10 @@
   border-color: rgba(0, 0, 0, 0.7) transparent transparent transparent; /* Arrow points down */
 }
 
+.tooltip {
+    z-index: 1000;;
+}
+
 #d3-pieChart {
     display: grid;
     place-items: center;

@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { SharedService } from '../Services/shared.service';
 import { UserDetail } from '../Models/userDetail';
@@ -15,23 +15,25 @@ import { timezones } from '../constants/countries';
 import { locales } from '../constants/countries';
 import { phoneCodes } from '../constants/countries';
 import * as CryptoJS from 'crypto-js';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-users-details',
   templateUrl: './users-details.component.html',
   styleUrls: ['./users-details.component.css']
 })
-export class UsersDetailsComponent implements OnInit {
+export class UsersDetailsComponent implements OnInit, OnDestroy {
   
   @ViewChild('usersDetailTable') usersDetailTable: Table;
   sharedService: SharedService = inject(SharedService);
   bucketListService: BucketListService = inject(BucketListService)
   users: UserDetail[] = [];
   isDarkMode: boolean = false;
+  darkThemeSubscription: Subscription;
   currencyCode: string;
   oldCurrencyCode: string;
 
-    countries = countries;
+  countries = countries;
   states = states;
   timeZones = timezones;
   locales = locales;
@@ -62,7 +64,7 @@ export class UsersDetailsComponent implements OnInit {
         password: new FormControl(null, [Validators.required, Validators.maxLength(50)]),
     })
 
-    this.sharedService.isDarkMode.subscribe((res) => this.isDarkMode = res);
+    this.darkThemeSubscription = this.sharedService.isDarkMode.subscribe((res) => this.isDarkMode = res);
     localStorage.getItem('theme') === 'dark' ? this.isDarkMode = true : this.isDarkMode = false;
 
     this.currencyCode = JSON.parse(localStorage.getItem('user')).country['currencyCode'];
@@ -74,18 +76,18 @@ export class UsersDetailsComponent implements OnInit {
     let allUsers: UserDetail[] = [];
     this.sharedService.getAllUsers().subscribe((users) => {
       for(let user of users) {
-        console.log(user);
+        // console.log(user);
         let userimage: string = user.profileImage ? user.profileImage : `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName ? user.lastName : ''}&bold=true`;
         let username: string = user.firstName + ' ' + (user.lastName ? user.lastName : '');
         let id: string = user.id;
         let age: number = new Date().getFullYear() - new Date(user.dob).getFullYear();
-        console.log(user.country);        
+        // console.log(user.country);        
         let countryObj = this.countries.find((country) => {
           return country.code === user.country;
         });
-        console.log(countryObj);        
+        // console.log(countryObj);        
         let country = Object.values(countryObj)[0];
-        console.log(country);        
+        // console.log(country);        
         let totalExpense: number = 0;
         if (user.trips) {
           Object.keys(user.trips).forEach((key) => {
@@ -95,18 +97,16 @@ export class UsersDetailsComponent implements OnInit {
         }
         let adminCurrencyCode = this.currencyCode;
         let userCurrencyCode= countryObj['currencyCode']; 
-        console.log(adminCurrencyCode);
-        console.log(userCurrencyCode); 
+        // console.log(adminCurrencyCode);
+        // console.log(userCurrencyCode); 
         
         let userTotalExpense: number = this.convertExpenseToAdminCurrency(totalExpense,adminCurrencyCode,userCurrencyCode)
-        console.log(userTotalExpense);        
+        // console.log(userTotalExpense);        
         let userDetail = new UserDetail(id,username, userimage, age, country, userTotalExpense);
         allUsers.push(userDetail);   
       }
-      console.log(this.users);
-      
+      // console.log(this.users);
       this.users = allUsers;
-      
       this.isLoading = false;
     });
 
@@ -221,8 +221,7 @@ exchangeRates: { [key: string]: number } = {
       const rate = this.exchangeRates[this.selectedCurrency.code];
       // console.log(rate);
       // console.log(baseAmount);
-      console.log(this.convertExpenseToselectedCurrency(baseAmount,this.oldCurrencyCode,this.selectedCurrency.code));
-      
+      // console.log(this.convertExpenseToselectedCurrency(baseAmount,this.oldCurrencyCode,this.selectedCurrency.code));      
       // return baseAmount * rate;
       return this.convertExpenseToselectedCurrency(baseAmount,this.oldCurrencyCode,this.selectedCurrency.code);
     }
@@ -230,8 +229,8 @@ exchangeRates: { [key: string]: number } = {
   }
 
     convertExpenseToAdminCurrency(amount: number, adminCurrencyCode: string, usercurrencycode: string): number | null {
-      console.log(adminCurrencyCode);
-      console.log(usercurrencycode);      
+      // console.log(adminCurrencyCode);
+      // console.log(usercurrencycode);      
     const rateToINRUser = this.exchangeRates[usercurrencycode];
     const reteToINRAdmin = this.exchangeRates[adminCurrencyCode];
     if(!rateToINRUser || !reteToINRAdmin) {
@@ -273,7 +272,7 @@ exchangeRates: { [key: string]: number } = {
     }
   }
 
-   @ViewChild('rowSelect') rowSelect;
+  @ViewChild('rowSelect') rowSelect;
   numOfRows: number = 10;
   showRowsChange: boolean = false;
   rowOptions = [
@@ -317,7 +316,7 @@ exchangeRates: { [key: string]: number } = {
     // this.shoeColumnsDisplay = !this.shoeColumnsDisplay
   }
   columnsChanged(event: any) {
-    console.log(event);    
+    // console.log(event);    
     this.columnMultiSelect.show();
     event.originalEvent?.stopPropagation?.();
     // console.log(this.selectedColumns);
@@ -368,7 +367,7 @@ exchangeRates: { [key: string]: number } = {
     const reader = new FileReader();
     reader.onload = () => {
       this.profileImage = reader.result as string;
-      console.log(reader.result as string);  
+      // console.log(reader.result as string);  
       this.addUserForm1.patchValue({ profileImage: reader.result as string});    
     };
     reader.readAsDataURL(file);
@@ -392,7 +391,7 @@ exchangeRates: { [key: string]: number } = {
   }
 
   addOrUpdateUser(id?: string) {
-    console.log(this.addUserForm1);  
+    // console.log(this.addUserForm1);  
 
     if(this.addUserForm1.invalid){
       let formControls = this.addUserForm1.controls;
@@ -414,9 +413,9 @@ exchangeRates: { [key: string]: number } = {
       // this.addUserForm1.patchValue({password: encryptedPassword});
       // console.log(this.addUserForm1);
       let country = (this.addUserForm1.controls['country']).value.code;
-    console.log(country);
+    // console.log(country);
     this.addUserForm1.patchValue({country: country});
-    console.log(this.addUserForm1.controls['state'] !== null);
+    // console.log(this.addUserForm1.controls['state'] !== null);
     if(this.addUserForm1.controls['state'].value !== null) {
       let state = this.addUserForm1.controls['state'].value.code;
       this.addUserForm1.patchValue({state: state});
@@ -432,15 +431,15 @@ exchangeRates: { [key: string]: number } = {
       return;
     } 
     // console.log(this.addUserForm1);
-    console.log(this.addUserForm1.value);
+    // console.log(this.addUserForm1.value);
     let password = this.addUserForm1.value.password;
     let encryptedPassword = CryptoJS.AES.encrypt(password, this.secretKey).toString();
-    console.log(encryptedPassword);
+    // console.log(encryptedPassword);
     this.addUserForm1.patchValue({password: encryptedPassword});
     let country = (this.addUserForm1.controls['country']).value.code;
-    console.log(country);
+    // console.log(country);
     this.addUserForm1.patchValue({country: country});
-    console.log(this.addUserForm1.controls['state'] !== null);
+    // console.log(this.addUserForm1.controls['state'] !== null);
     if(this.addUserForm1.controls['state'].value !== null) {
       let state = this.addUserForm1.controls['state'].value.code;
       this.addUserForm1.patchValue({state: state});
@@ -502,12 +501,12 @@ exchangeRates: { [key: string]: number } = {
       // console.log(this.userToEdit);
       this.selectedGender = user.gender.toLocaleLowerCase();
       this.filteredstates = this.states[user.country] || [];
-      console.log(this.statesForEdit);      
+      // console.log(this.statesForEdit);      
       this.profileImage = user.profileImage ? user.profileImage : `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName ? user.lastName : ''}&bold=true`;
       this.addUserForm1.patchValue(this.userToEdit);
-      console.log(this.addUserForm1);      
+      // console.log(this.addUserForm1);      
       this.addUserForm1.patchValue({profileImage: this.profileImage});
-      console.log(this.addUserForm1);
+      // console.log(this.addUserForm1);
       let countryObj = countries.find((country) => {
         return country.code === this.userToEdit.country;
       })
@@ -517,12 +516,12 @@ exchangeRates: { [key: string]: number } = {
       let code = CryptoJS.AES.decrypt(encryptedPassword, this.secretKey);
       let decryptedPassword = code.toString(CryptoJS.enc.Utf8);
       this.addUserForm1.patchValue({password: decryptedPassword});
-      console.log(this.addUserForm1.controls['country']);      
+      // console.log(this.addUserForm1.controls['country']);      
       if(this.addUserForm1.controls['country']) {
         this.filteredstates = this.states[countryObj.code] || [];
       }
       this.addUserForm1.patchValue({state: this.filteredstates.find((state) => state.code === this.userToEdit.state)})
-      console.log(this.addUserForm1);
+      // console.log(this.addUserForm1);
       
     })
   }
@@ -591,4 +590,11 @@ exchangeRates: { [key: string]: number } = {
       }
     }
   }
+
+  ngOnDestroy(): void {
+    if(this.darkThemeSubscription) {
+      this.darkThemeSubscription.unsubscribe();
+    }
+  }
+  
 }

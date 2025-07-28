@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit {
   messageService: MessageService = inject(MessageService);
 
   ngOnInit(): void {
+    localStorage.clear();
     const body = document.body;
     body.classList.remove('dark-mode');
   }

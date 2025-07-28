@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Authservice } from '../Services/auth.service';
 import { TripService } from '../Services/trip.service';
 import { Trip } from '../Models/trip';
@@ -6,13 +6,14 @@ import { SharedService } from '../Services/shared.service';
 import { Table } from 'primeng/table';
 import { MultiSelect } from 'primeng/multiselect';
 import { MessageService } from 'primeng/api';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-trips',
   templateUrl: './trips.component.html',
   styleUrls: ['./trips.component.css']
 })
-export class TripsComponent implements OnInit {
+export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
     
   // collecting the refercnce of the table 
   @ViewChild('tripTable') table: Table;
@@ -23,10 +24,12 @@ export class TripsComponent implements OnInit {
   sharedService: SharedService = inject(SharedService);
   isLoading: boolean = false;
   isDarkMode: boolean = false;
+  darkThemeSubscription: Subscription;
   currencyCode: string = '';
 
   @ViewChild('coloumnSelect') columnSelect: ElementRef;
   @ViewChild('rowSelect') rowSelect: ElementRef;
+  @ViewChild('searchText') searchField: ElementRef;
 
   messageService: MessageService = inject(MessageService);
 
@@ -38,7 +41,7 @@ export class TripsComponent implements OnInit {
       this.isDarkMode = false;
     }
 
-    this.sharedService.isDarkMode.subscribe((res) => {
+    this.darkThemeSubscription = this.sharedService.isDarkMode.subscribe((res) => {
       this.isDarkMode = res;
     })
 
@@ -47,27 +50,36 @@ export class TripsComponent implements OnInit {
 
     let user = JSON.parse(localStorage.getItem('user'));
     console.log(user.country);
-    
     if(user) {
       this.currencyCode = user.country.currencyCode;
     }
-    console.log(this.currencyCode);    
+    console.log(this.currencyCode);
+    if(localStorage.getItem('tripsRows')) {
+      this.rows = JSON.parse(localStorage.getItem('tripsRows'))
+    }
+    if(localStorage.getItem('tripsSelectedColumns')) {
+      this.selectedColumns = JSON.parse(localStorage.getItem('tripsSelectedColumns'));
+    }    
+  }
+
+  ngAfterViewInit(): void {
+    // console.log(this.searchField);    
   }
 
   loadTripsInTable() {
     this.isLoading = true;
     this.tripService.getAllTrips().subscribe((res: Trip[]) => {
-      console.log(res);  
+      // console.log(res);  
       this.userTrips = res;
       this.isLoading = false;
-      console.log(this.userTrips);  
+      // console.log(this.userTrips);  
       let totalExpense: number = 0;
       for(let key of res) {
         totalExpense += key.totalExpense;
       }    
       this.sharedService.getUserExpense(totalExpense);
     });
-    console.log(this.userTrips);
+    // console.log(this.userTrips);
   }
 
   showDailog: boolean = false;
@@ -77,7 +89,6 @@ export class TripsComponent implements OnInit {
   totalDistance: number = 0;
   totalExpense: number = 0;
   totalMembers: number = 0;
-
 
   openNew() {
     this.showDailog = true;
@@ -123,12 +134,14 @@ export class TripsComponent implements OnInit {
     } else {
       this.isTMV = false
     }
-  }
+  };
+
   isSPV: boolean = false;
   isDV: boolean = false;
   isTDV: boolean = false;
   isTEV: boolean = false;
   isTMV: boolean = false;
+
   onNewTripSubmit() {
     console.log(this.startPlace);    
     if(this.startPlace === '') {
@@ -180,21 +193,21 @@ export class TripsComponent implements OnInit {
   };
 
   // Method to filter trips based on a search term
-  filterGlobal(text: string) {
+  filterTableGlobal(text: string) {
+    // console.log(typeof text);    
     // const input: HTMLInputElement = event.target as HTMLInputElement;
     return this.table.filterGlobal(text, 'contains');
   }
 
   reloadAll(text: string) {
     if(text === '') {
-      this.filterGlobal(text);
+      this.filterTableGlobal(text);
     }
   }
 
   // For selcting the number of rows to display
   rows: number = 10;
   showRowsChange: boolean = false;
-  numOfRows: number = 10;
 
   rowOptions = [
     { label: 'Show 10', value: 10},
@@ -202,13 +215,12 @@ export class TripsComponent implements OnInit {
     { label: 'Show 20', value: 20},
   ]  
 
-  changeRows() {
+  showChangeRowsList() {
     this.showRowsChange = !this.showRowsChange;
   }
 
   closeListbox() {
     this.showRowsChange = false;
-    this.numOfRows = this.rows;
   }
 
   @HostListener('document:click', ['$event'])
@@ -226,9 +238,8 @@ export class TripsComponent implements OnInit {
   }
 
   //For showing the selected columns to the table using the multiple select primeNG component
-
   @ViewChild('columnMultiSelect') columnMultiSelect: MultiSelect;
-  shoeColumnsDisplay: boolean = false;
+  showColumnsDisplay: boolean = false;
   selectedColumns: any[] = [];
 
   columnOptions = [
@@ -281,6 +292,21 @@ export class TripsComponent implements OnInit {
         // this.goToPageNumber = Math.floor(this.table.first / this.rows) + 1;
       }
     }
+  }
+
+  ngOnDestroy(): void {
+    if(this.darkThemeSubscription) {
+      this.darkThemeSubscription.unsubscribe();
+    }
+    
+    // console.log(this.rows);
+    // console.log(this.selectedColumns);
+    // console.log(this.goToPageNumber);
+    // console.log(this.searchField.nativeElement.value);   
+    localStorage.setItem("tripsRows", JSON.stringify(this.rows));
+    localStorage.setItem("tripsSelectedColumns", JSON.stringify(this.selectedColumns));
+    // localStorage.setItem("tripsTablePage", JSON.stringify(this.goToPageNumber));
+    // localStorage.setItem("tripsSearchText", JSON.stringify(this.searchField.nativeElement.value));
   }
   
 }

@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { UserTrips } from '../Models/usertrips';
 import { SharedService } from '../Services/shared.service';
@@ -7,13 +7,14 @@ import { BucketList } from '../Models/bucketList';
 import { MultiSelect } from 'primeng/multiselect';
 import { MessageService } from 'primeng/api';
 import { countries } from '../constants/countries';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-user-trip',
   templateUrl: './user-trip.component.html',
   styleUrls: ['./user-trip.component.css'],
 })
-export class UserTripComponent implements OnInit {
+export class UserTripComponent implements OnInit, OnDestroy {
 
   @ViewChild('userTripTable') userTripTable: Table;
 
@@ -24,6 +25,7 @@ export class UserTripComponent implements OnInit {
   userId: string = ''
   isLoading: boolean = false;
   isDarkMode: boolean = false;
+  darkThemeSubscription: Subscription;
   currencyCode: string = '';
   currencySymbol: string = '';
   oldCurrencyCode: string;
@@ -31,7 +33,7 @@ export class UserTripComponent implements OnInit {
   countries  = countries;
 
   ngOnInit(): void {
-    this.sharedService.isDarkMode.subscribe((res) => this.isDarkMode = res);
+    this.darkThemeSubscription = this.sharedService.isDarkMode.subscribe((res) => this.isDarkMode = res);
     localStorage.getItem('theme') === 'dark' ? this.isDarkMode = true : this.isDarkMode = false;
 
     this.currencyCode = JSON.parse(localStorage.getItem('user')).country.currencyCode;
@@ -50,7 +52,7 @@ export class UserTripComponent implements OnInit {
         let countryObj = this.countries.find((country) => {
           return country.code === user.country;
         });
-        console.log(countryObj);        
+        // console.log(countryObj);        
         let country = Object.values(countryObj)[0];
         // let country = user.country;
         // console.log(country);        
@@ -188,10 +190,10 @@ export class UserTripComponent implements OnInit {
     if (this.selectedCurrency && this.exchangeRates[this.selectedCurrency.code]) {
       // let amountInINR = baseAmount * this.exchangeRatesToINR[this.oldCurrencyCode]
       // console.log(amountInINR);      
-      const rate = this.exchangeRates[this.selectedCurrency.code];   
+      // const rate = this.exchangeRates[this.selectedCurrency.code];   
       // let amount: number = this.convertCurrency(baseAmount,this.oldCurrencyCode,this.selectedCurrency.code);
       // console.log(amount);   
-      console.log(this.convertExpenseToselectedCurrency(baseAmount,this.oldCurrencyCode,this.selectedCurrency.code));
+      // console.log(this.convertExpenseToselectedCurrency(baseAmount,this.oldCurrencyCode,this.selectedCurrency.code));
       // return baseAmount * rate;
       return this.convertExpenseToselectedCurrency(baseAmount,this.oldCurrencyCode,this.selectedCurrency.code);
     }
@@ -247,9 +249,6 @@ export class UserTripComponent implements OnInit {
       return Math.floor(baseDistanceKm * this.kmToMilesFactor) + this.distanceUnit;
     }
     return baseDistanceKm.toString() + this.distanceUnit;
-  }
-  getDistanceUnitLabel(): string {
-    return this.distanceLabel;
   }
 
   filterGlobal(text: string) {
@@ -319,12 +318,12 @@ export class UserTripComponent implements OnInit {
   haveBucketLists: boolean = false;
 
   openUserBucketList(userid: string) {
-    console.log(userid);
+    // console.log(userid);
     this.userId = userid;
     this.bucketListDailog = true;
     this.isbucketListloading = true;
     this.bucketListService.getAllBucketLists(userid).subscribe((res) => {
-      console.log(res);   
+      // console.log(res);   
       this.bucketListItems = res;
       this.isbucketListloading = false;
       if(this.bucketListItems.length === 0) {
@@ -390,7 +389,7 @@ export class UserTripComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = () => {
       this.placeImage = reader.result as string;
-      console.log(reader.result as string);      
+      // console.log(reader.result as string);      
     }
     reader.readAsDataURL(file);
     
@@ -525,6 +524,12 @@ export class UserTripComponent implements OnInit {
         this.messageService.add({severity:'warn', summary:"Warn", detail:'Inavlid page numbmer entered.'});
         // alert("Inavlid page numbmer entered.");
       }
+    }
+  }
+  
+  ngOnDestroy(): void {
+    if(this.darkThemeSubscription) {
+      this.darkThemeSubscription.unsubscribe();
     }
   }
 }

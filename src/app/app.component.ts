@@ -14,10 +14,9 @@ export class AppComponent implements AfterContentChecked, OnInit {
   logoutService: LogoutService = inject(LogoutService)
   
   ngOnInit() {
-    console.log("appcomponent is initialized");
-    console.log(this.router);
-    console.log(this.logoutService);
-    
+    // console.log("appcomponent is initialized");
+    // console.log(this.router);
+    // console.log(this.logoutService);
   }
 
   isInAuthPages: boolean = true;

@@ -4,7 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouteModule } from './route.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
-import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
 import { TripsComponent } from './trips/trips.component';
 import { BucketListComponent } from './bucket-list/bucket-list.component';
@@ -14,7 +13,6 @@ import { SignupComponent } from './signup/signup.component';
 import { UsersDetailsComponent } from './users-details/users-details.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AuthComponent } from './auth/auth.component';
 
 import { ToggleButtonModule } from 'primeng/togglebutton'
 import { ButtonModule } from 'primeng/button';
@@ -52,14 +50,12 @@ import { TooltipModule } from 'primeng/tooltip';
   declarations: [
     AppComponent,
     HeaderComponent,
-    FooterComponent,
     HomeComponent,
     TripsComponent,
     BucketListComponent,
     UserTripComponent,
     LoginComponent,
     SignupComponent,
-    AuthComponent,
     UsersDetailsComponent,
     LoaderComponent,
     NotFoundComponent

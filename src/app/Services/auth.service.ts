@@ -44,6 +44,7 @@ export class Authservice {
     //   this.router.navigate(['/admin/UsersTrips']);
     //   return of(user);
     // }
+    localStorage.clear();
     return this.sharedservice.getAllUsers().pipe(
       map((allUsers: User[]) => {
         // console.log(allUsers);
@@ -99,15 +100,9 @@ export class Authservice {
     let user = localStorage.getItem('user');
     if (user) {
       // localStorage.removeItem('user');
-      localStorage.clear()
+      localStorage.clear();
+      localStorage.removeItem("preloadGraph");
     }
     this.router.navigate(['/login']);
-  }
-
-  autoLogin() {}
-  autoLogout(expiryTime: number) {
-    setTimeout(() => {
-      this.logout();
-    }, expiryTime);
   }
 }

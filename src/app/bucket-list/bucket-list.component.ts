@@ -1,15 +1,16 @@
-import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BucketList } from '../Models/bucketList';
 import { BucketListService } from '../Services/bucketList.service';
 import { MessageService } from 'primeng/api';
 import { SharedService } from '../Services/shared.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-bucket-list',
   templateUrl: './bucket-list.component.html',
   styleUrls: ['./bucket-list.component.css']
 })
-export class BucketListComponent implements OnInit{
+export class BucketListComponent implements OnInit, OnDestroy {
   showAddBucketDailog: boolean = false;
   isLoading: boolean = false;
   isAdmin: boolean = false;
@@ -19,13 +20,13 @@ export class BucketListComponent implements OnInit{
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   userBucketLists: BucketList[];
-  //Getting the instance of the bucketList service
   bucketListService: BucketListService = inject(BucketListService);
   sharedService: SharedService = inject(SharedService);
   messageService: MessageService = inject(MessageService);
+  darkThemeSubscription: Subscription;
 
   ngOnInit(): void {
-    this.sharedService.isDarkMode.subscribe((res) => this.isDarkMode = res)
+    this.darkThemeSubscription = this.sharedService.isDarkMode.subscribe((res) => this.isDarkMode = res)
     localStorage.getItem('theme') === 'dark' ? this.isDarkMode = true : this.isDarkMode = false;
     this.getbucketlists();
     this.currencyCode = JSON.parse(localStorage.getItem('user')).country.currencyCode;
@@ -56,7 +57,6 @@ export class BucketListComponent implements OnInit{
 
   onFilechanges(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
-
     if(!file) return;
 
     const maxInputSize = 2;
@@ -109,10 +109,6 @@ export class BucketListComponent implements OnInit{
 
   deleteSelectedPlaceImage() {
     this.placeImage = '';
-    // this.placeName = '';
-    // this.placeDescription = '';
-    // this.estimatedDistance = 0;
-    // this.estimatedBudget = 0;
   }
 
   bucketId: string;
@@ -138,7 +134,6 @@ export class BucketListComponent implements OnInit{
   validatePlaceName() {
     const pattern = /^[a-zA-Z\s]*$/;
     this.isPNV = !pattern.test(this.placeName || '');
-    // this.isPDV = !pattern.test(this.placeDescription || '');
   }
   validatePlaceDescription() {
     const pattern = /^[a-zA-Z\s]*$/;
@@ -158,11 +153,13 @@ export class BucketListComponent implements OnInit{
       this.isEBV = false;
     }
   }
+
   isPIV: boolean = false;
   isPNV: boolean = false;
   isPDV: boolean = false;
   isEDV: boolean = false;
   isEBV: boolean = false;
+
   addRecord(id?: string) {
     console.log(typeof this.estimatedDistance);    
     if(this.placeImage === '') {
@@ -217,12 +214,17 @@ export class BucketListComponent implements OnInit{
       return;
     }
 
-
     console.log(newBucketItem);    
     this.bucketListService.addNewBucketListitem(newBucketItem).subscribe((res) => {
       this.getbucketlists();
       this.messageService.add({severity:'success', summary:'Success', detail:'BucketList Successfully Added!.'})
     });
     this.closeDailog();
+  }
+
+  ngOnDestroy(): void {
+    if(this.darkThemeSubscription) {
+      this.darkThemeSubscription.unsubscribe();
+    }
   }
 }

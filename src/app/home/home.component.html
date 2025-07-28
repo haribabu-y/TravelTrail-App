@@ -8,37 +8,39 @@
         name="graphtype"
         id="barGraph"
         value="barGraph"
-        checked
+        [checked]="selectedRadio === 'barGraph'"
         (change)="onRadioChange('barGraph')"
         hidden
       />
-      <label for="barGraph" [class.radioChecked]="selectedRadio === 'barGraph'"
-        >Bar</label
-      >
+      <label for="barGraph" [class.radioChecked]="selectedRadio === 'barGraph'">
+        Bar
+      </label>
       <input
         type="radio"
         name="graphtype"
         id="lineGraph"
         value="lineGraph"
+        [checked]="selectedRadio === 'lineGraph'"
         (change)="onRadioChange('lineGraph')"
         hidden
       />
       <label
         for="lineGraph"
-        [class.radioChecked]="selectedRadio === 'lineGraph'"
-        >Line</label
-      >
+        [class.radioChecked]="selectedRadio === 'lineGraph'">
+        Line
+      </label>
       <input
         type="radio"
         name="graphtype"
         id="pieChart"
         value="pieChart"
+        [checked]="selectedRadio === 'pieChart'"
         (change)="onRadioChange('pieChart')"
         hidden
       />
-      <label for="pieChart" [class.radioChecked]="selectedRadio === 'pieChart'"
-        >Pie</label
-      >
+      <label for="pieChart" [class.radioChecked]="selectedRadio === 'pieChart'">
+        Pie
+      </label>
     </div>
   </div>
   <div [ngClass]="isDarkMode ? 'dark-mode' : ''">

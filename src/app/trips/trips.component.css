@@ -30,7 +30,7 @@
   border-top-right-radius: 8px;
 }
 
-::ng-deep .p-datatable-header {
+.trip-table ::ng-deep .p-datatable-header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -322,9 +322,10 @@ input[type="number"]::-webkit-inner-spin-button {
 
 /* making the page responsive for all the screen sizes */
 @media screen and (max-width: 768px) {
-    ::ng-deep .tableHead {
+    .trip-table ::ng-deep .tableHead {
         width: 150px !important;
     }
+
     .add-trip-container ::ng-deep .p-dialog {
         width: 50%;
     }

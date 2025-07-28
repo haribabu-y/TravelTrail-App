@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { AfterViewChecked, Component, ElementRef, HostListener, inject, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { User } from '../Models/user';
@@ -6,6 +6,7 @@ import { Authservice } from '../Services/auth.service';
 import { SharedService } from '../Services/shared.service';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
+
 import { countries } from '../constants/countries';
 import { states } from '../constants/countries';
 import { timezones } from '../constants/countries';
@@ -32,12 +33,12 @@ export class SignupComponent implements OnInit, AfterViewChecked {
   timezones = timezones;
   locales = locales;
   phoneCodes = phoneCodes;
-
+  filteredstates: any[] = [];
   phoneCode: string;
+
   onCountryCodeChandes(code: any) {
     this.phoneCode = code;
-  }
-  filteredstates: any[] = [];
+  } 
 
   onCountryChanges(country: any) {
     this.filteredstates = this.states[country.code] || [];
@@ -66,7 +67,8 @@ export class SignupComponent implements OnInit, AfterViewChecked {
       password: new FormControl(null, [Validators.required, Validators.maxLength(50)]),
       confirmPassword: new FormControl(null, [Validators.required, Validators.maxLength(50)]),
     });
-  }
+  };
+
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('logoContainer') logoContainer: ElementRef<HTMLDivElement>;;
 
@@ -83,8 +85,7 @@ export class SignupComponent implements OnInit, AfterViewChecked {
 @HostListener('window:resize', ['$event'])
 onResize(event: any) {
   this.screenWidth = event.target.innerWidth;
-  console.log(this.screenWidth);
-  
+  // console.log(this.screenWidth);
 }
 
   ngAfterViewChecked(): void {
@@ -110,13 +111,15 @@ onResize(event: any) {
     const allowedTypes = ['image/png', 'image/jpg', 'image/jpeg'];
 
     if (!allowedTypes.includes(file.type)) {
-      alert('Only JPG and PNG formats are allowed.');
+      // alert('Only JPG and PNG formats are allowed.');
+      this.messageService.add({severity: 'error', summary: 'Error', detail: 'Only JPG and PNG formats are allowed!.'});
       input.value = '';
       return;
     }
 
     if (file.size > maxInputSize * 1024 * 1024) {
-      alert('File size must be 2MB.');
+      // alert('File size must be 2MB.');
+      this.messageService.add({severity: 'error', summary: 'Error', detail: 'File size must be 2MB!.'});
       input.value = '';
       return;
     }
@@ -124,7 +127,7 @@ onResize(event: any) {
     const reader = new FileReader();
     reader.onload = () => {
       this.profileImage = reader.result as string;
-      console.log(reader.result as string);  
+      // console.log(reader.result as string);  
       this.reactiveForm.patchValue({ profileImage: reader.result as string});    
     };
     reader.readAsDataURL(file);
@@ -184,23 +187,23 @@ onResize(event: any) {
     console.log(this.reactiveForm.value);
     let password = this.reactiveForm.value.password;
     let encryptedPassword = CryptoJS.AES.encrypt(password, this.secretKey).toString();
-    console.log(encryptedPassword);
+    // console.log(encryptedPassword);
     this.reactiveForm.patchValue({password: encryptedPassword});
     // this.reactiveForm.removeControl('confirmPassword');
     let country = (this.reactiveForm.controls['country']).value.code;
-    console.log(country);
+    // console.log(country);
     this.reactiveForm.patchValue({country: country});
-    console.log(this.reactiveForm.controls['state'] !== null);
+    // console.log(this.reactiveForm.controls['state'] !== null);
     if(this.reactiveForm.controls['state'].value !== null) {
       let state = this.reactiveForm.controls['state'].value.code;
       this.reactiveForm.patchValue({state: state});
     } 
     this.currentUser = this.reactiveForm.value; 
-    console.log(this.currentUser);
+    // console.log(this.currentUser);
     this.sharedService.getAllUsers().subscribe({
       next: (users) => {
         this.allUsers = users;
-        console.log(this.allUsers);
+        // console.log(this.allUsers);
         let isUserExits = this.allUsers.find((user) => {
           return (user.username === this.currentUser.username || user.email === this.currentUser.email);
         });
@@ -213,7 +216,7 @@ onResize(event: any) {
           // this.router.navigate(['/login']);
           return;
         }
-        console.log(this.currentUser);        
+        // console.log(this.currentUser);        
         this.authService.signup(this.currentUser);
         this.reactiveForm.reset();
         this.profileImage = 'assets/users/defaultProfileImg.jpg';
@@ -223,7 +226,7 @@ onResize(event: any) {
       error: (err) => {
         this.errorMessage = err.message;
         this.messageService.add({severity: 'error', summary:'Error', detail:'An Unknowen Error occered!.'});
-        console.log(this.errorMessage);
+        // console.log(this.errorMessage);
       },
     });
   }

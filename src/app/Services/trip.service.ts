@@ -23,12 +23,12 @@ export class TripService {
               trips.push({ ...response[key], id: key });
             }
           }
-          console.log(trips);
+          // console.log(trips);
           return trips;
         }))
         }
         this.currentUser = JSON.parse(localStorage.getItem('user'));
-        console.log(this.currentUser);
+        // console.log(this.currentUser);
         return this.http.get(`https://travektrail-app-default-rtdb.firebaseio.com/users/${this.currentUser.id}/trips.json`).pipe(map((response) => {
         //   console.log(response);
           let trips = [];
@@ -37,7 +37,7 @@ export class TripService {
               trips.push({ ...response[key], id: key });
             }
           }
-          console.log(trips);
+          // console.log(trips);
           return trips;
         }))       
     }
@@ -48,10 +48,10 @@ export class TripService {
 
     getCurrentUser(): User {
         this.authService.loggedInUser.subscribe((user: User) => {
-            console.log(user);
+            // console.log(user);
             this.currentUser = user;
         });
-        console.log(this.currentUser); 
+        // console.log(this.currentUser); 
         return this.currentUser;       
     }
 }

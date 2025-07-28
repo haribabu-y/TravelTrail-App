@@ -1,8 +1,7 @@
-import { AfterViewInit, Component, ElementRef, HostListener, inject, OnInit } from '@angular/core';
-import { Colors, layouts, Legend, scales } from 'chart.js';
+import { AfterViewInit, Component, ElementRef, HostListener, inject, OnDestroy, OnInit } from '@angular/core';
 import { SharedService } from '../Services/shared.service';
 import { TripService } from '../Services/trip.service';
-import { map } from 'rxjs';
+import { map, Subscription } from 'rxjs';
 import * as d3 from 'd3';
 
 @Component({
@@ -10,7 +9,7 @@ import * as d3 from 'd3';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   barGraphData: any;
   barGraphOptions: any;
   lineGraphData: any;
@@ -25,60 +24,60 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   sharedService: SharedService = inject(SharedService);
   tripService: TripService = inject(TripService);
+  darkThemeSubscription: Subscription;
 
-
-  predefinedColors: string[] = [
-  "#FF6384", // Red
-  "#36A2EB", // Blue
-  "#FFCE56", // Yellow
-  "#4BC0C0", // Teal
-  "#9966FF", // Purple
-  "#FF9F40", // Orange
-  "#A9A9A9", // Dark Gray
-  "#2ECC71", // Emerald Green
-  "#E74C3C", // Alizarin Red
-  "#9B59B6", // Amethyst
-  "#34495E", // Wet Asphalt
-  "#F1C40F", // Sunflower
-  "#1ABC9C", // Turquoise
-  "#D35400", // Pumpkin
-  "#7F8C8D", // Asbestos
-  "#C0392B", // Pomegranate
-  "#2C3E50", // Midnight Blue
-  "#F39C12", // Orange (Vibrant)
-  "#2980B9", // Belize Hole (Blue)
-  "#8E44AD", // Wisteria
-  "#27AE60", // Nephritis (Green)
-  "#16A085", // Green Sea
-  "#E67E22", // Carrot
-  "#BDC3C7", // Silver
-  "#7B7D7D", // Gray
-  "#F5B041", // Saffron
-  "#5DADE2", // Dodger Blue
-  "#AF7AC5", // Lavender
-  "#52BE80", // Light Green
-  "#EC7063", // Salmon
-  "#A569BD", // Plum
-  "#5B2C6F", // Deep Purple
-  "#28B463", // Forest Green
-  "#1F618D", // Dark Blue
-  "#BA4A00", // Dark Orange
-  "#F4D03F", // Goldenrod
-  "#58D68D", // Medium Aquamarine
-  "#DC7633", // Rust
-  "#4A235A", // Dark Violet
-  "#9A7D0A", // Olive
-  "#6C3483", // Dark Orchid
-  "#148F77", // Dark Cyan
-  "#B7950B", // Dark Goldenrod
-  "#CB4335", // Crimson
-  "#1F618D", // Steel Blue (reused, but distinct enough from others)
-  "#C39BD3", // Light Purple
-  "#5499C7", // Sky Blue
-  "#76448A", // Medium Purple
-  "#AAB7B8", // Cadet Gray
-  "#229954"  // Dark Sea Green
-];
+//   predefinedColors: string[] = [
+//   "#FF6384", // Red
+//   "#36A2EB", // Blue
+//   "#FFCE56", // Yellow
+//   "#4BC0C0", // Teal
+//   "#9966FF", // Purple
+//   "#FF9F40", // Orange
+//   "#A9A9A9", // Dark Gray
+//   "#2ECC71", // Emerald Green
+//   "#E74C3C", // Alizarin Red
+//   "#9B59B6", // Amethyst
+//   "#34495E", // Wet Asphalt
+//   "#F1C40F", // Sunflower
+//   "#1ABC9C", // Turquoise
+//   "#D35400", // Pumpkin
+//   "#7F8C8D", // Asbestos
+//   "#C0392B", // Pomegranate
+//   "#2C3E50", // Midnight Blue
+//   "#F39C12", // Orange (Vibrant)
+//   "#2980B9", // Belize Hole (Blue)
+//   "#8E44AD", // Wisteria
+//   "#27AE60", // Nephritis (Green)
+//   "#16A085", // Green Sea
+//   "#E67E22", // Carrot
+//   "#BDC3C7", // Silver
+//   "#7B7D7D", // Gray
+//   "#F5B041", // Saffron
+//   "#5DADE2", // Dodger Blue
+//   "#AF7AC5", // Lavender
+//   "#52BE80", // Light Green
+//   "#EC7063", // Salmon
+//   "#A569BD", // Plum
+//   "#5B2C6F", // Deep Purple
+//   "#28B463", // Forest Green
+//   "#1F618D", // Dark Blue
+//   "#BA4A00", // Dark Orange
+//   "#F4D03F", // Goldenrod
+//   "#58D68D", // Medium Aquamarine
+//   "#DC7633", // Rust
+//   "#4A235A", // Dark Violet
+//   "#9A7D0A", // Olive
+//   "#6C3483", // Dark Orchid
+//   "#148F77", // Dark Cyan
+//   "#B7950B", // Dark Goldenrod
+//   "#CB4335", // Crimson
+//   "#1F618D", // Steel Blue (reused, but distinct enough from others)
+//   "#C39BD3", // Light Purple
+//   "#5499C7", // Sky Blue
+//   "#76448A", // Medium Purple
+//   "#AAB7B8", // Cadet Gray
+//   "#229954"  // Dark Sea Green
+// ];
 
   selectedRadio = 'barGraph';
 
@@ -96,13 +95,19 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+
+    let preloadGraphType = localStorage.getItem('preloadGraph')
+    if(preloadGraphType) {
+      this.selectedRadio = preloadGraphType
+    }
+
     this.isLoading = true;
     let graphDatas = [];
     this.tripService.getAllTrips().pipe(map((response) => {
       let trips = [];
       let expenses = [];
       let totalExpense = 0;
-      console.log(response);
+      // console.log(response);
       for(let key of response) {
         // console.log(key);
         let trip: string = (key.startLocation).substring(0, 3) + ' - ' + (key.destination).substring(0,3);
@@ -117,21 +122,21 @@ export class HomeComponent implements OnInit, AfterViewInit {
       // console.log(expenses);      
       this.userTrips = trips; 
       this.userExpenses = expenses;  
-      console.log(totalExpense);      
+      // console.log(totalExpense);      
       this.sharedService.getUserExpense(totalExpense); 
       // console.log(this.userTrips);
       // console.log(this.userExpenses); 
       graphDatas.push(trips);
       graphDatas.push(expenses)
-      console.log(graphDatas);
-      console.log(this.d3GraphData);            
+      // console.log(graphDatas);
+      // console.log(this.d3GraphData);            
       return graphDatas;
     })).subscribe((res) => {
-      console.log(res);
-      // this.userTrips = res[0];
-      // this.userExpenses = res[1];
-      console.log(this.userTrips);
-      console.log(this.userExpenses);
+      // console.log(res);
+      // // this.userTrips = res[0];
+      // // this.userExpenses = res[1];
+      // console.log(this.userTrips);
+      // console.log(this.userExpenses);
 
       setTimeout(() => {
         this.createD3BarGraphSvg();
@@ -140,229 +145,229 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.drawD3Lines();
         this.createD3PieChartSvg()
         this.drawD3Pie();
-        console.log(this.d3GraphData);
+        // console.log(this.d3GraphData);
       },0)      
 
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--text-color'); 
-    const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
-    const surfaceBorder = documentStyle.getPropertyValue('--surface-border');  
-    this.barGraphData = {
-      labels: graphDatas[0],
-      datasets: [
-        {
-          backgroundColor: documentStyle.getPropertyValue('--green-300'),
-          borderColor: documentStyle.getPropertyValue('--green-400'),
-          data: graphDatas[1]
-        }
-      ]
-    };
-    this.barGraphOptions = {
-      maintainAspectRatio: false,
-      aspectRatio: 0.6,
-      layout: {
-        padding: {
-          top: 20,
-          bottom: 20,
-          left: 20,
-          right: 50
-        }
-      },
-      plugins: {
-        legend: { 
-          display: false,
-          labels: {
-            color: textColorSecondary  // Ensure legend uses readable color
-          }
-        },
-        title: {
-          display: true,
-          text: 'Trip Vs Expense',
-          position: 'top',
-          align: 'start',
-          font: {
-            size: 20,
-            weight: 'bold',
-            color: textColor
-          },
-          padding: {
-            top: 10,
-            bottom: 20 
-          },
-        },
-      },
-      scales: {
-        x: {
-          ticks: {
-            color: textColorSecondary,
-            font: {
-              weight: 500
-            },
-            maxRotation: 45,
-            minRotation: 45
-          },
-          grid: {
-            // color: surfaceBorder,
-            drawBorder: false,
-            drawOnChartArea: true,
-            color: (context) => {
-              return context.index === 0 ? surfaceBorder : 'transparent';
-            },
-            // display: false,
+    // const documentStyle = getComputedStyle(document.documentElement);
+    // const textColor = documentStyle.getPropertyValue('--text-color'); 
+    // const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
+    // const surfaceBorder = documentStyle.getPropertyValue('--surface-border');  
+    // this.barGraphData = {
+    //   labels: graphDatas[0],
+    //   datasets: [
+    //     {
+    //       backgroundColor: documentStyle.getPropertyValue('--green-300'),
+    //       borderColor: documentStyle.getPropertyValue('--green-400'),
+    //       data: graphDatas[1]
+    //     }
+    //   ]
+    // };
+    // this.barGraphOptions = {
+    //   maintainAspectRatio: false,
+    //   aspectRatio: 0.6,
+    //   layout: {
+    //     padding: {
+    //       top: 20,
+    //       bottom: 20,
+    //       left: 20,
+    //       right: 50
+    //     }
+    //   },
+    //   plugins: {
+    //     legend: { 
+    //       display: false,
+    //       labels: {
+    //         color: textColorSecondary  // Ensure legend uses readable color
+    //       }
+    //     },
+    //     title: {
+    //       display: true,
+    //       text: 'Trip Vs Expense',
+    //       position: 'top',
+    //       align: 'start',
+    //       font: {
+    //         size: 20,
+    //         weight: 'bold',
+    //         color: textColor
+    //       },
+    //       padding: {
+    //         top: 10,
+    //         bottom: 20 
+    //       },
+    //     },
+    //   },
+    //   scales: {
+    //     x: {
+    //       ticks: {
+    //         color: textColorSecondary,
+    //         font: {
+    //           weight: 500
+    //         },
+    //         maxRotation: 45,
+    //         minRotation: 45
+    //       },
+    //       grid: {
+    //         // color: surfaceBorder,
+    //         drawBorder: false,
+    //         drawOnChartArea: true,
+    //         color: (context) => {
+    //           return context.index === 0 ? surfaceBorder : 'transparent';
+    //         },
+    //         // display: false,
             
-          },
-          title: {
-            display: true,
-            text: 'Trip',
-            color: textColorSecondary
-          }
-        },
-        y: {
-          ticks: {
-            color: textColorSecondary
-          },
-          grid: {
-            // color: surfaceBorder,
-            drawBorder: false,
-            drawOnChartArea: true,
-            color: (context) => {
-              return context.tick.value === 0 ? surfaceBorder : 'transparent';
-            }
-            // display: false
-          },
-          title: {
-            display: true,
-            text: 'Expense',
-            rotation: 0,
-            padding: { top: 0, bottom: 0, left: 20, right: 20 }
-          }
-        }
-      }
-    };
-    this.lineGraphData = {
-      labels: graphDatas[0],
-      datasets: [
-        {
-          backgroundColor: documentStyle.getPropertyValue('--green-300'),
-          borderColor: documentStyle.getPropertyValue('--green-400'),
-          data: graphDatas[1],
-          fill: false,
-          tension: 0.4
+    //       },
+    //       title: {
+    //         display: true,
+    //         text: 'Trip',
+    //         color: textColorSecondary
+    //       }
+    //     },
+    //     y: {
+    //       ticks: {
+    //         color: textColorSecondary
+    //       },
+    //       grid: {
+    //         // color: surfaceBorder,
+    //         drawBorder: false,
+    //         drawOnChartArea: true,
+    //         color: (context) => {
+    //           return context.tick.value === 0 ? surfaceBorder : 'transparent';
+    //         }
+    //         // display: false
+    //       },
+    //       title: {
+    //         display: true,
+    //         text: 'Expense',
+    //         rotation: 0,
+    //         padding: { top: 0, bottom: 0, left: 20, right: 20 }
+    //       }
+    //     }
+    //   }
+    // };
+    // this.lineGraphData = {
+    //   labels: graphDatas[0],
+    //   datasets: [
+    //     {
+    //       backgroundColor: documentStyle.getPropertyValue('--green-300'),
+    //       borderColor: documentStyle.getPropertyValue('--green-400'),
+    //       data: graphDatas[1],
+    //       fill: false,
+    //       tension: 0.4
 
-        }
-      ]
-    };
-    this.lineGraphOptions = {
-      stacked: false,
-      maintainAspectRatio: false,
-      aspectRatio: 0.6,
-      plugins: {
-        legend: { display: false },
-        title: {
-          display: true,
-          text: 'Trip Vs Expense',
-          position: 'top',
-          align: 'start',
-          font: {
-            size: 20
-          },
-          padding: {
-            top: 10,
-            bottom: 20 
-          },
-        },
-      },
-      scales: {
-        x: {
-          ticks: {
-            color: textColorSecondary,
-            font: {
-              weight: 500
-            },
-            maxRotation: 45,
-            minRotation: 45
-          },
-          grid: {
-            // color: surfaceBorder,
-            drawBorder: false,
-            drawOnChartArea: true,
-            color: (context) => {
-              return context.index === 0 ? surfaceBorder : 'transparent';
-            },    
-            // display: false  
-          },
-          title: {
-            display: true,
-            text: 'Trip'
-          }
-        },
-        y: {
-          type: 'linear',
-          display: true,
-          position: 'left',
-          ticks: {
-            color: textColorSecondary
-          },
-          grid: {
-            // color: surfaceBorder,
-            drawBorder: false,
-            drawOnChartArea: true,
-            color: (context) => {
-              return context.tick.value === 0 ? surfaceBorder : 'transparent';
-            }
-            // display: false
-          },
-          title: {
-            display: true,
-            text: 'Expense',
-            rotation: 0,
-            padding: { top: 0, bottom: 0, left: 20, right: 20 }
-          }
-        }
-      }
-    }
-    this.pieChartData = {
-      labels: graphDatas[0],
-      aspectRatio: 0.2,
-      datasets: [
-        {
-          // backgroundColor: documentStyle.getPropertyValue('--green-300'),
-          backgroundColor: this.predefinedColors,
-          // borderColor: documentStyle.getPropertyValue('--white-400'),
-          data: graphDatas[1],
-        }
-      ]
-    };
-    this.pieChartOptions = {
-      maintainAspectRatio: false,
-      responsive: false,
-      plugins: {
-        legend: { 
-          labels : {
-            // color: this.isDarkMode ? '#fff' : '#000'
-          }
-         },
-        title: {
-          display: true,
-          text: 'Trip Vs Expense',
-          // color: this.isDarkMode ? 'white' : 'black',
-          position: 'top',
-          align: 'start',
-          font: {
-            size: 20
-          },
-          padding: {
-            top: 10,
-            bottom: 20 
-          },
-        },
-      }
-    }
+    //     }
+    //   ]
+    // };
+    // this.lineGraphOptions = {
+    //   stacked: false,
+    //   maintainAspectRatio: false,
+    //   aspectRatio: 0.6,
+    //   plugins: {
+    //     legend: { display: false },
+    //     title: {
+    //       display: true,
+    //       text: 'Trip Vs Expense',
+    //       position: 'top',
+    //       align: 'start',
+    //       font: {
+    //         size: 20
+    //       },
+    //       padding: {
+    //         top: 10,
+    //         bottom: 20 
+    //       },
+    //     },
+    //   },
+    //   scales: {
+    //     x: {
+    //       ticks: {
+    //         color: textColorSecondary,
+    //         font: {
+    //           weight: 500
+    //         },
+    //         maxRotation: 45,
+    //         minRotation: 45
+    //       },
+    //       grid: {
+    //         // color: surfaceBorder,
+    //         drawBorder: false,
+    //         drawOnChartArea: true,
+    //         color: (context) => {
+    //           return context.index === 0 ? surfaceBorder : 'transparent';
+    //         },    
+    //         // display: false  
+    //       },
+    //       title: {
+    //         display: true,
+    //         text: 'Trip'
+    //       }
+    //     },
+    //     y: {
+    //       type: 'linear',
+    //       display: true,
+    //       position: 'left',
+    //       ticks: {
+    //         color: textColorSecondary
+    //       },
+    //       grid: {
+    //         // color: surfaceBorder,
+    //         drawBorder: false,
+    //         drawOnChartArea: true,
+    //         color: (context) => {
+    //           return context.tick.value === 0 ? surfaceBorder : 'transparent';
+    //         }
+    //         // display: false
+    //       },
+    //       title: {
+    //         display: true,
+    //         text: 'Expense',
+    //         rotation: 0,
+    //         padding: { top: 0, bottom: 0, left: 20, right: 20 }
+    //       }
+    //     }
+    //   }
+    // };
+    // this.pieChartData = {
+    //   labels: graphDatas[0],
+    //   aspectRatio: 0.2,
+    //   datasets: [
+    //     {
+    //       // backgroundColor: documentStyle.getPropertyValue('--green-300'),
+    //       backgroundColor: this.predefinedColors,
+    //       // borderColor: documentStyle.getPropertyValue('--white-400'),
+    //       data: graphDatas[1],
+    //     }
+    //   ]
+    // };
+    // this.pieChartOptions = {
+    //   maintainAspectRatio: false,
+    //   responsive: false,
+    //   plugins: {
+    //     legend: { 
+    //       labels : {
+    //         // color: this.isDarkMode ? '#fff' : '#000'
+    //       }
+    //      },
+    //     title: {
+    //       display: true,
+    //       text: 'Trip Vs Expense',
+    //       // color: this.isDarkMode ? 'white' : 'black',
+    //       position: 'top',
+    //       align: 'start',
+    //       font: {
+    //         size: 20
+    //       },
+    //       padding: {
+    //         top: 10,
+    //         bottom: 20 
+    //       },
+    //     },
+    //   }
+    // }
     this.isLoading = false;    
     })    
 
-    this.sharedService.isDarkMode.subscribe((res) => {
-      console.log(res);
+    this.darkThemeSubscription = this.sharedService.isDarkMode.subscribe((res) => {
+      // console.log(res);
       this.isDarkMode = res;      
     })
     let theme = localStorage.getItem('theme');
@@ -399,12 +404,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
   marginLeft = 70;
 
   //Dymanic width and height based on srceen size
-
   private chartWidth = 0;
-  private chartHeight = 400;
+  private chartHeight = 380;
 
   //getting the reference of the ElementRef
-
   elementRef: ElementRef = inject(ElementRef);
 
   @HostListener('window: resize', ['$event'])
@@ -415,7 +418,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.createD3LineChartSvg();
     this.drawD3Lines();
 
-    console.log(event.target.innerWidth);
+    // console.log(event.target.innerWidth);
     this.screenSize = event.target.innerWidth;
     // if(event.target.innerWidth <= 425) {
     //   this.pieRadius = 150;
@@ -437,7 +440,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     if(container) {
       this.chartWidth = container.clientWidth - this.marginLeft - this.marginRight;
       // this.chartHeight = constiner.clientHeight - this.marginTop - this.marginBottom;
-
       if(this.chartWidth <= 475) this.chartWidth = 500;
       // if(this.chartHeight < 0) this.chartHeight = 0;
     }
@@ -445,16 +447,30 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   createD3BarGraphSvg() {
     this.updateDimentions();
-
     const container = d3.select(this.elementRef.nativeElement).select("#d3-barGraph");
-
     container.select("svg").remove();
-
     this.barGraphSvg = container.append('svg')
                         .attr("width", this.chartWidth + this.marginLeft + this.marginRight)
                         .attr("height", this.chartHeight + this.marginTop + this.marginBottom + 50);
     this.barGraphG = this.barGraphSvg.append("g")
       .attr("transform", `translate(${this.marginLeft}, ${this.marginTop})`);
+    
+    // if(this.d3GraphData.length === 0 || !this.d3GraphData) {
+    //   console.log("There is no any data for the graph!");
+    //   this.barGraphSvg.select("*").remove();
+
+    // Displaying the message when there is no data
+    //   this.barGraphSvg
+    //     .append('text')
+    //     .attr('text-anchor', 'middle')
+    //     .attr('x', 0)
+    //     .attr('y', 0)
+    //     .text('No data available for the Bar Chart')
+    //     .style('font-size', '16px')
+    //     .style('fill', '#999')
+    //     .style("transform", `translate(${this.chartWidth / 2 + 50}px, ${this.chartHeight / 2}px)`);
+    //   return;
+    // }
 
     this.barGraphSvg.append("text")
       .attr("class", "x-axis-label")
@@ -470,6 +486,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
       .attr("transform", "rotate(-90)")
       .attr("text-anchor", "middle")
       .text("Total Expense");
+
+    if(this.d3GraphData.length <= 0) {
+      d3.select(".x-axis-label").attr("y", this.chartHeight);
+      d3.select(".y-axis-label").attr("y", this.marginLeft - 30);
+    }
     
     // this.barGraphSvg = d3.select("#d3-barGraph")
     //   .append('svg')
@@ -480,12 +501,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   drawD3Bars() {
-      console.log(this.d3GraphData);  
-    if(!this.d3GraphData || this.d3GraphData.length === 0) {
-      this.barGraphG.selectAll('*').remove();
-      return;
-    }    
-
+    // console.log(this.d3GraphData);  
     this.updateDimentions();
 
     const x = d3.scaleBand()
@@ -494,7 +510,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
               .padding(0.2);
 
     const y = d3.scaleLinear()
-                .domain([0, d3.max(this.d3GraphData, d => d.value)!])
+                .domain(this.d3GraphData.length > 0 ? [0, d3.max(this.d3GraphData, d => d.value)!] : [0, 1])
                 .range([this.chartHeight, 0]);
 
     this.barGraphG.append('g').attr("class", "x-axis")
@@ -518,8 +534,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
       .attr("text-anchor", "middle")
       .text("Trips");
     }    
-    
 
+    if(this.d3GraphData.length <= 0 ) {
+      xAxisLabel.attr("y", this.chartHeight + 50)
+    }
+    
     // this.yAxisGroup
     this.barGraphG.append('g').attr("class", "y-axis")
       .call(d3.axisLeft(y));
@@ -553,7 +572,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
         
         tooltip.style("opacity", 1)
           .style("left", `${bbox.x -containerBBox.x + bbox.width / 2 + 5}px`)
-          .style("top", `${bbox.y - containerBBox.y - 25}px`);
+          .style("top", `${bbox.y - containerBBox.y - 25}px`)
+          .style("z-index", "1000");
           d3.select(".tooltip")
             .select("#name").text(d.name);
           d3.select(".tooltip")
@@ -563,24 +583,19 @@ export class HomeComponent implements OnInit, AfterViewInit {
         d3.select(event.currentTarget as SVGElement).attr("fill", "#87C296");
         tooltip.style("opacity", 0);
       })
-      .transition()
-      .duration(500)
+      // .transition()
+      // .duration(500)
       .attr("y", d => y(d.value))
       .attr("height", d => this.chartHeight - y(d.value));
   }
 
   // For line bar Chart
-
   private linePath: any;
 
   createD3LineChartSvg() {
-
     this.updateDimentions();
-
     const container = d3.select(this.elementRef.nativeElement).select("#d3-lineChart");
-
     container.select("svg").remove();
-
     this.lineBarSvg = container.append("svg")
                         .attr("width", this.chartWidth + this.marginLeft + this.marginRight)
                         .attr("height", this.chartHeight + this.marginTop + this.marginBottom + 50);
@@ -593,6 +608,22 @@ export class HomeComponent implements OnInit, AfterViewInit {
                       .style("fill", "none")
                       .style("stroke", "#87C296") // Default line color
                       .style("stroke-width", 2)
+              
+    // if(this.d3GraphData.length === 0 || !this.d3GraphData) {
+    //   console.log("There is no any data for the graph!");
+    //   this.lineBarSvg.select("*").remove();
+    // Displaying the message when there is no data
+    //   this.lineBarSvg
+    //     .append('text')
+    //     .attr('text-anchor', 'middle')
+    //     .attr('x', 0)
+    //     .attr('y', 0)
+    //     .text('No data available for the Line Chart')
+    //     .style('font-size', '16px')
+    //     .style('fill', '#999')
+    //     .style("transform", `translate(${this.chartWidth / 2 + 50}px, ${this.chartHeight / 2}px)`);
+    //   return;
+    // }
     
     this.lineBarSvg.append("text")
       .attr("class", "x-axis-label")
@@ -609,6 +640,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
       .attr("text-anchor", "middle")
       .text("Total Expense");
 
+    if(this.d3GraphData.length <= 0) {
+        // d3.select(".x-axis-label").attr("y", this.chartHeight);
+        d3.select(".y-axis-label").attr("y", this.marginLeft - 30);
+      }
+
     // this.lineBarSvg = d3.select("#d3-lineChart")
     // .append('svg')
     // .attr("width", this.width)
@@ -618,21 +654,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   drawD3Lines() {
-    console.log(this.d3GraphData);
-    if(!this.d3GraphData || this.d3GraphData.length === 0) {
-      this.lineBarG.selectAll('*').remove();
-      return;
-    }
-
+    // console.log(this.d3GraphData);
     this.updateDimentions();
-
     const x = d3.scalePoint()
               .range([0,this.chartWidth])
               .domain(this.d3GraphData.map((_,i) => i.toString()))
               .padding(0.2);
 
     const y = d3.scaleLinear()
-                .domain([0, d3.max(this.d3GraphData, d => d.value)!])
+                .domain(this.d3GraphData.length > 0 ? [0, d3.max(this.d3GraphData, d => d.value)!] : [0,1])
                 .range([this.chartHeight, 0]);
     
     this.lineBarG.append("g")
@@ -650,6 +680,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
         .attr("y", this.chartHeight + 80)
         .attr("text-anchor", "middle")
         .text("Trips");
+    }
+
+    if(this.d3GraphData.length <= 0 ) {
+      xAxisLabel.attr("y", this.chartHeight + 50)
     }
 
     this.lineBarG.append("g").attr("class", "y-axis")
@@ -694,7 +728,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   pieWidth = 450;
-  pieHeight = 450;
+  pieHeight = 400;
   pieMargin = 40;
   pieRadius = Math.min(this.pieWidth, this.pieHeight) / 2 - 10;
 
@@ -705,16 +739,29 @@ export class HomeComponent implements OnInit, AfterViewInit {
                         .attr("height", this.pieHeight + this.pieMargin + this.pieMargin)
                         .append("g")
                         .attr("transform", `translate(${(this.pieWidth + this.pieMargin + this.pieMargin) / 2}, ${(this.pieHeight + this.pieMargin + this.pieMargin) / 2})`);
+
+    if(this.d3GraphData.length === 0 || !this.d3GraphData) {
+      // console.log("There is no any data for the graph!");
+      this.pieChartSvg.select("*").remove();
+      this.pieChartSvg
+        .append('text')
+        .attr('text-anchor', 'middle')
+        .attr('x', 0)
+        .attr('y', 0)
+        .text('No data available for the Pie Chart')
+        .style('font-size', '16px')
+        .style('fill', '#999')
+        .style("transform", `translate(10px, -50px)`);
+      return;
+    }
+
   }
 
   drawD3Pie() {
     const pie = d3.pie<any>().value((d) => d.value);
     const data_ready = pie(this.d3GraphData);
-
     const color = d3.scaleOrdinal(d3.schemeCategory10);
-
     const arc = d3.arc<d3.PieArcDatum<any>>().innerRadius(0).outerRadius(this.pieRadius);
-
     const tooltip = d3.select("#d3-pieChart").select(".pTooltip");
     
     this.pieChartSvg.selectAll('path')
@@ -728,16 +775,14 @@ export class HomeComponent implements OnInit, AfterViewInit {
                     .on("mouseover", (event, d) => {
                       const [x,y] = arc.centroid(d);
                       const svgRect = d3.select("#d3-pieChart svg").node().getBoundingClientRect()
-
                       // console.log(x + this.pieWidth);
                       // console.log(svgRect.left);
-                      
-                      console.log(y);
-                      console.log(svgRect.top);
+                      // console.log(y);
+                      // console.log(svgRect.top);
 
                       tooltip.style("opacity", 1)
                              .style('left', `${this.screenSize === 425 ? 100 + x + this.pieWidth / 2 - 35 : this.screenSize === 320 ? 30 + x + this.pieWidth / 2 - 25 : svgRect.left + x + this.pieWidth / 2 - 45}px`)
-                             .style('top', `${svgRect.top + y - 40}px`);
+                             .style('top', `${svgRect.top + y - 60}px`);
 
                       // console.log(d.data.name);                      
                       d3.select(".pTooltip")
@@ -750,7 +795,14 @@ export class HomeComponent implements OnInit, AfterViewInit {
                       tooltip.style('opacity', 0);
                     })
                     .append("title").text(d => `${d.data.name}: ${d.data.value}`);
-        
-    
+  }
+
+  ngOnDestroy(): void {
+    // console.log(this.selectedRadio);
+    localStorage.setItem('preloadGraph', this.selectedRadio);
+       
+    if(this.darkThemeSubscription) {
+      this.darkThemeSubscription.unsubscribe();
+    }
   }
 }

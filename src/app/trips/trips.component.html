@@ -28,14 +28,14 @@
             #searchText
             pInputText
             type="text"
-            (keydown.enter)="filterGlobal(searchText.value)"
+            (keydown.enter)="filterTableGlobal(searchText.value)"
             (input)="reloadAll(searchText.value)"
           />
-          <i class="pi pi-search" (click)="filterGlobal(searchText.value)"></i>
+          <i class="pi pi-search" (click)="filterTableGlobal(searchText.value)"></i>
         </div>
-        <div class="numRows" (click)="changeRows()" #rowSelect>
+        <div class="numRows" (click)="showChangeRowsList()" #rowSelect>
             <i class="pi pi-bars"></i>
-            <span>{{numOfRows}}</span>
+            <span>{{rows}}</span>
         </div>
         <div *ngIf="showRowsChange" class="numRowChanges" >
             <p-listbox

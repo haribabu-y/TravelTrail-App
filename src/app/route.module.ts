@@ -14,19 +14,19 @@ const routes: Routes = [
   
   {path: 'login', component: LoginComponent},
   {path: 'signup', component: SignupComponent},
-  {path: 'user', canActivate: [canActivateRouteGuard], children: [
+  {path: 'user', canActivateChild: [canActivateRouteGuard], children: [
     {path: 'Home', component: HomeComponent},
     {path: 'Trips', component: TripsComponent},
     {path: 'BucketLists', component: BucketListComponent},
   ]},
-  {path: 'admin', canActivate: [canActivateRouteGuard], children: [
+  {path: 'admin', canActivateChild: [canActivateRouteGuard], children: [
     { path: '', redirectTo: 'UsersTrips', pathMatch: 'full' },
     {path: 'UsersTrips', component: UserTripComponent},    
     {path: 'Users', component: UsersDetailsComponent},
 
   ]},
   {path: '', redirectTo: 'login', pathMatch: 'full'},
-  {path: '**', component: NotFoundComponent}
+  {path: '**', component: LoginComponent}
 ];
 
 @NgModule({
