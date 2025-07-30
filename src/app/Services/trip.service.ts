@@ -9,9 +9,9 @@ import { map, Subject } from "rxjs";
     providedIn: 'root'
 })
 export class TripService {
-    authService: Authservice = inject(Authservice);
     currentUser: User;
-    http: HttpClient = inject(HttpClient);
+
+    constructor(private http: HttpClient) {}
     
     getAllTrips(id?: string) {
         if(id) {
@@ -44,14 +44,5 @@ export class TripService {
 
     addNewtrip(trip: Trip) {
         return this.http.post(`https://travektrail-app-default-rtdb.firebaseio.com/users/${this.currentUser.id}/trips.json`, trip)
-    }
-
-    getCurrentUser(): User {
-        this.authService.loggedInUser.subscribe((user: User) => {
-            // console.log(user);
-            this.currentUser = user;
-        });
-        // console.log(this.currentUser); 
-        return this.currentUser;       
     }
 }

@@ -13,12 +13,8 @@ export class SharedService {
     userExpense = new Subject<number>;
 
     public getAllUsers(): Observable<User[]> {
-        return this.http
-          .get<User[]>(
-            'https://travektrail-app-default-rtdb.firebaseio.com/users.json'
-          )
-          .pipe(
-            map((response) => {
+        return this.http.get<User[]>('https://travektrail-app-default-rtdb.firebaseio.com/users.json')
+          .pipe(map((response) => {
               // console.log(response);
               let users = [];
               for (let key in response) {

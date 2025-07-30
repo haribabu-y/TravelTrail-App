@@ -1,20 +1,25 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Authservice } from '../Services/auth.service';
 import { Router } from '@angular/router';
 import { User } from '../Models/user';
 import { MessageService } from 'primeng/api';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
-  authService: Authservice = inject(Authservice);
-  router: Router = inject(Router)
+export class LoginComponent implements OnInit, OnDestroy {
   errorMessage: string = ''
-  messageService: MessageService = inject(MessageService);
+  loginSubscription: Subscription;
+
+  constructor(
+    private authService: Authservice,
+    private router: Router,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit(): void {
     localStorage.clear();
@@ -28,11 +33,11 @@ export class LoginComponent implements OnInit {
     }
     const email = form.value.email;
     const password = form.value.password;
-    console.log(form.value);
-    this.authService.login(email, password).subscribe({
+    // console.log(form.value);
+    this.loginSubscription = this.authService.login(email, password).subscribe({
       next: (user: User | null ) => {
         if(user) {
-          console.log(user);          
+          // console.log(user);          
           this.errorMessage = 'Login Successful!..';
           this.messageService.add({severity: 'success', summary: 'Success', detail: this.errorMessage})
           if(user.isAdmin) {
@@ -55,8 +60,15 @@ export class LoginComponent implements OnInit {
         localStorage.removeItem('user');
       },
       complete: () => {
-        console.log('Login attempt complete.');        
+        // console.log('Login attempt complete.');
+        this.messageService.add({severity: 'success', summary:'Success', detail:"Login Successful!."});    
       }
     });    
+  }
+
+  ngOnDestroy(): void {
+    if(this.loginSubscription) {
+      this.loginSubscription.unsubscribe();
+    }
   }
 }

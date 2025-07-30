@@ -65,7 +65,7 @@
               #columnMultiSelect
               [options]="columnOptions"
               [(ngModel)]="selectedColumns"
-              (onChange)="columnsChanged($event)"
+              (onChange)="columnsChanged()"
               optionLabel="label"
               [displaySelectedLabel]="false"
             />
@@ -76,13 +76,7 @@
     </ng-template>
     <ng-template pTemplate="paginatorleft" let-state>
       <span class="p-paginator-pages">
-        {{ state.first < state.totalRecords ? state.first + 1 : state.first }} to
-        {{
-          state.first + state.rows > state.totalRecords
-            ? state.totalRecords
-            : state.first + state.rows
-        }}
-        of {{ state.totalRecords }} Records
+        {{ state.first < state.totalRecords ? state.first + 1 : state.first }} to {{ state.first + state.rows > state.totalRecords ? state.totalRecords : state.first + state.rows }} of {{ state.totalRecords }} Records
       </span>
     </ng-template>
     <ng-template pTemplate="paginatorright" let-state>
@@ -162,10 +156,7 @@
         </td>
         <td *ngFor="let column of selectedColumns">
           {{
-            column.value === "totalExpense"
-              ? (convertAmount(user.totalExpense)
-                | currency : currencyCode : usercurrencySymbol)
-              : user[column.value]
+            column.value === "totalExpense" ? (convertAmount(user.totalExpense) | currency:currencyCode:usercurrencySymbol) : user[column.value]
           }}
         </td>
 
@@ -228,8 +219,7 @@
                 required
                 formControlName="username"
               />
-              <span *ngIf="(addUserForm1.controls['username'].touched && addUserForm1.controls['username'].invalid)"
-                >Only alphanumric characters Allowed, Space is not Allowed
+              <span *ngIf="(addUserForm1.controls['username'].touched && addUserForm1.controls['username'].invalid)">Only alphanumric characters Allowed, Space is not Allowed
               </span>
             </div>
             <div class="row">
@@ -241,9 +231,7 @@
                   formControlName="firstName"
                   required
                 />
-                <span *ngIf="addUserForm1.controls['firstName'].touched && addUserForm1.controls['firstName'].invalid"
-                  >Only alphanumric characters and space Allowed</span
-                >
+                <span *ngIf="addUserForm1.controls['firstName'].touched && addUserForm1.controls['firstName'].invalid">Only alphanumric characters and space Allowed</span>
               </div>
               <div class="inputfield">
                 <label for="lastName">Last name</label>
@@ -264,9 +252,7 @@
                   />
                   <label
                     for="male"
-                    [class.selectedGender]="selectedGender === 'male'"
-                    >Male</label
-                  >
+                    [class.selectedGender]="selectedGender === 'male'">Male</label>
                   <input
                     type="radio"
                     value="Female"
@@ -277,9 +263,7 @@
                   />
                   <label
                     for="female"
-                    [class.selectedGender]="selectedGender === 'female'"
-                    >Female</label
-                  >
+                    [class.selectedGender]="selectedGender === 'female'">Female</label>
                   <input
                     type="radio"
                     value="Others"
@@ -290,9 +274,7 @@
                   />
                   <label
                     for="others"
-                    [class.selectedGender]="selectedGender === 'others'"
-                    >Others</label
-                  >
+                    [class.selectedGender]="selectedGender === 'others'">Others</label>
                 </div>
               </div>
               <div class="inputfield">
@@ -321,9 +303,7 @@
               <div class="inputfield phoneNumberField">
                 <label for="mobile">Mobile Number*</label>
                 <input type="text" id="mobile" formControlName="phone" />
-                <span *ngIf="addUserForm1.controls['phone'].touched && addUserForm1.controls['phone'].invalid"
-                  >Mobile number must be less than 10 digits*</span
-                >
+                <span *ngIf="addUserForm1.controls['phone'].touched && addUserForm1.controls['phone'].invalid">Mobile number must be 10 digits*</span>
               </div>
             </div>
           </div>

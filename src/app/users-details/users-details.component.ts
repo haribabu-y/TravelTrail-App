@@ -14,6 +14,7 @@ import { states } from '../constants/countries';
 import { timezones } from '../constants/countries';
 import { locales } from '../constants/countries';
 import { phoneCodes } from '../constants/countries';
+import { secretKey } from '../constants/countries';
 import * as CryptoJS from 'crypto-js';
 import { Subscription } from 'rxjs';
 
@@ -23,15 +24,20 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./users-details.component.css']
 })
 export class UsersDetailsComponent implements OnInit, OnDestroy {
+
+  constructor(
+    private sharedService: SharedService,
+    private messageService: MessageService,
+    private http: HttpClient,
+  ) {}
   
   @ViewChild('usersDetailTable') usersDetailTable: Table;
-  sharedService: SharedService = inject(SharedService);
-  bucketListService: BucketListService = inject(BucketListService)
   users: UserDetail[] = [];
   isDarkMode: boolean = false;
   darkThemeSubscription: Subscription;
   currencyCode: string;
   oldCurrencyCode: string;
+  isLoading: boolean = false;
 
   countries = countries;
   states = states;
@@ -42,7 +48,7 @@ export class UsersDetailsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     
     this.getAllUserDetails();
-    this.selectedColumns = [...this.columnOptions]
+    this.selectedColumns = [...this.columnOptions];
     
     this.addUserForm1 = new FormGroup({
         profileImage: new FormControl(null),
@@ -102,14 +108,13 @@ export class UsersDetailsComponent implements OnInit, OnDestroy {
         
         let userTotalExpense: number = this.convertExpenseToAdminCurrency(totalExpense,adminCurrencyCode,userCurrencyCode)
         // console.log(userTotalExpense);        
-        let userDetail = new UserDetail(id,username, userimage, age, country, userTotalExpense);
+        let userDetail = new UserDetail(id, username, userimage, age, country, userTotalExpense);
         allUsers.push(userDetail);   
       }
       // console.log(this.users);
       this.users = allUsers;
       this.isLoading = false;
     });
-
   }
 
   currencyFormate = [
@@ -204,8 +209,6 @@ exchangeRates: { [key: string]: number } = {
 };
 
   selectedCurrency: any;
-  displayAmount: number;
-  userCurrencyCode: string;
   usercurrencySymbol: string;
   
   currencyFormateChanged() {
@@ -249,9 +252,6 @@ exchangeRates: { [key: string]: number } = {
 
   convertExpenseToselectedCurrency(amount: number, sourceCurrencyCode: string, resultcurrencyCode: string) {
     
-    if(!this.exchangeRatesToINR[sourceCurrencyCode] || !this.exchangeRatesToINR[resultcurrencyCode]) {
-      console.error("Unsupported currency code");      
-    }
     let amountToINR: number = amount * this.exchangeRatesToINR[sourceCurrencyCode];
     // console.log(amountToINR);
     const convertedAmount = amountToINR / this.exchangeRatesToINR[resultcurrencyCode];
@@ -259,8 +259,6 @@ exchangeRates: { [key: string]: number } = {
         
     return convertedAmount;
   }
-
-  isLoading: boolean = false;
 
   filterGlobal(text: string) {
     return this.usersDetailTable.filterGlobal(text, 'contains');
@@ -315,19 +313,16 @@ exchangeRates: { [key: string]: number } = {
     this.columnMultiSelect.show();
     // this.shoeColumnsDisplay = !this.shoeColumnsDisplay
   }
-  columnsChanged(event: any) {
+
+  columnsChanged() {
     // console.log(event);    
     this.columnMultiSelect.show();
-    event.originalEvent?.stopPropagation?.();
     // console.log(this.selectedColumns);
     // this.shoeColumnsDisplay = false;
   }
 
-
-
 // code for adding and updating the new user to the application
   showAddOrUpdateDailog: boolean = false;
-
   addUserForm1: FormGroup;
 
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
@@ -346,7 +341,7 @@ exchangeRates: { [key: string]: number } = {
 
   onFilechanges(event: Event) {
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
+    const file = input.files[0];
 
     if (!file) return;
 
@@ -365,12 +360,13 @@ exchangeRates: { [key: string]: number } = {
       return;
     }
     const reader = new FileReader();
+    reader.readAsDataURL(file);
     reader.onload = () => {
       this.profileImage = reader.result as string;
       // console.log(reader.result as string);  
       this.addUserForm1.patchValue({ profileImage: reader.result as string});    
     };
-    reader.readAsDataURL(file);
+    
   }
 
   selectedGender: string = 'male';
@@ -380,19 +376,14 @@ exchangeRates: { [key: string]: number } = {
   }
 
   filteredstates: any[] = [];
-  // @ViewChild('addUserForm') addUserForm: NgForm;
-  authService: Authservice = inject(Authservice);
-  messageService: MessageService = inject(MessageService)
-  http: HttpClient = inject(HttpClient);
-  secretKey: string = 'TravelTrail';
+  // secretKey: string = 'TravelTrail';
 
   onCountryChanges(country: any) {
     this.filteredstates = this.states[country.code] || [];
   }
 
   addOrUpdateUser(id?: string) {
-    // console.log(this.addUserForm1);  
-
+    console.log(this.addUserForm1);  
     if(this.addUserForm1.invalid){
       let formControls = this.addUserForm1.controls;
       let errorMessage = ''
@@ -433,7 +424,7 @@ exchangeRates: { [key: string]: number } = {
     // console.log(this.addUserForm1);
     // console.log(this.addUserForm1.value);
     let password = this.addUserForm1.value.password;
-    let encryptedPassword = CryptoJS.AES.encrypt(password, this.secretKey).toString();
+    let encryptedPassword = CryptoJS.AES.encrypt(password, secretKey).toString();
     // console.log(encryptedPassword);
     this.addUserForm1.patchValue({password: encryptedPassword});
     let country = (this.addUserForm1.controls['country']).value.code;
@@ -459,11 +450,7 @@ exchangeRates: { [key: string]: number } = {
           return;
         }
         
-        // this.authService.signup(newUser);
-        this.http.post(
-        'https://travektrail-app-default-rtdb.firebaseio.com/users.json',
-        newUser
-      )
+        this.http.post('https://travektrail-app-default-rtdb.firebaseio.com/users.json', newUser)
       .subscribe((response) => {
         // console.log(response);
         // console.log(newUser);  
@@ -513,7 +500,7 @@ exchangeRates: { [key: string]: number } = {
       this.addUserForm1.patchValue({country: countryObj})
       let encryptedPassword = user.password;
       // console.log(encryptedPassword);          
-      let code = CryptoJS.AES.decrypt(encryptedPassword, this.secretKey);
+      let code = CryptoJS.AES.decrypt(encryptedPassword, secretKey);
       let decryptedPassword = code.toString(CryptoJS.enc.Utf8);
       this.addUserForm1.patchValue({password: decryptedPassword});
       // console.log(this.addUserForm1.controls['country']);      
@@ -522,7 +509,6 @@ exchangeRates: { [key: string]: number } = {
       }
       this.addUserForm1.patchValue({state: this.filteredstates.find((state) => state.code === this.userToEdit.state)})
       // console.log(this.addUserForm1);
-      
     })
   }
   showDeleteUserdailog: boolean = false;
@@ -543,7 +529,6 @@ exchangeRates: { [key: string]: number } = {
     this.showDeleteUserdailog = false;
     this.getAllUserDetails();
     });
-    
   }
 
   closeDeleteUserDailog() {
@@ -573,13 +558,12 @@ exchangeRates: { [key: string]: number } = {
 
   onPageChange(event: any) {
     // console.log(event);
-    this.goToPageNumber = event.page + 1;
     this.numOfRows = event.rows;
   }
 
   goToPage() {
     if(this.usersDetailTable && this.goToPageNumber > 0) {
-      const pageIndex = this.goToPageNumber -1;
+      const pageIndex = this.goToPageNumber -1;      
       const firstRowIndex = pageIndex * this.numOfRows;
       if(firstRowIndex >= 0 && firstRowIndex < this.usersDetailTable.value.length) {
         this.usersDetailTable.first = firstRowIndex;

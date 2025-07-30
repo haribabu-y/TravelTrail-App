@@ -16,20 +16,26 @@ import { Subscription } from 'rxjs';
 })
 export class UserTripComponent implements OnInit, OnDestroy {
 
+  constructor(
+    private sharedService: SharedService,
+    private bucketListService: BucketListService,
+    private messageService: MessageService,
+  ){}
+
   @ViewChild('userTripTable') userTripTable: Table;
 
   usersTrips: UserTrips[] = [];
-  sharedService: SharedService = inject(SharedService);
-  bucketListService: BucketListService = inject(BucketListService);
-  messageService: MessageService = inject(MessageService);
   userId: string = ''
   isLoading: boolean = false;
-  isDarkMode: boolean = false;
+  isDarkMode: boolean = false
   darkThemeSubscription: Subscription;
+  getAllUsersSubscription: Subscription;
+  getUserBucketListSubscrition: Subscription;
+  editUserBucketlistSubscription: Subscription;
+  deleteUserbucketListSubscription: Subscription;
   currencyCode: string = '';
   currencySymbol: string = '';
-  oldCurrencyCode: string;
-
+  oldCurrencyCode: string
   countries  = countries;
 
   ngOnInit(): void {
@@ -305,9 +311,8 @@ export class UserTripComponent implements OnInit, OnDestroy {
     // this.shoeColumnsDisplay = !this.shoeColumnsDisplay;
   }
 
-  columnsChanged(event) {
+  columnsChanged() {
     this.columnMultiSelect.show();
-    event.originalEvent?.stopPropagation?.();
     // console.log(this.selectedColumns);
     // this.shoeColumnsDisplay = false;    
   }
@@ -369,7 +374,7 @@ export class UserTripComponent implements OnInit, OnDestroy {
   }
 
   onFilechanges(event: Event) {
-    const file = (event.target as HTMLInputElement).files?.[0];
+    const file = (event.target as HTMLInputElement).files[0];
 
     if(!file) return;
 
@@ -385,14 +390,12 @@ export class UserTripComponent implements OnInit, OnDestroy {
       alert("File size must be 2MB.");
       return;
     }
-
     const reader = new FileReader();
+    reader.readAsDataURL(file);
     reader.onload = () => {
       this.placeImage = reader.result as string;
       // console.log(reader.result as string);      
-    }
-    reader.readAsDataURL(file);
-    
+    }    
   }
 
   deleteSelectedPlaceImage() {
@@ -530,6 +533,18 @@ export class UserTripComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if(this.darkThemeSubscription) {
       this.darkThemeSubscription.unsubscribe();
+    }
+    if(this.getAllUsersSubscription) {
+      this.getAllUsersSubscription.unsubscribe();
+    }
+    if(this.getUserBucketListSubscrition) {
+      this.getUserBucketListSubscrition.unsubscribe();
+    }
+    if(this.editUserBucketlistSubscription) {
+      this.editUserBucketlistSubscription.unsubscribe();
+    }
+    if(this.deleteUserbucketListSubscription) {
+      this.deleteUserbucketListSubscription.unsubscribe();
     }
   }
 }

@@ -1,6 +1,5 @@
 import { AfterContentChecked, Component, Inject, inject, Injector, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { SharedService } from './Services/shared.service';
 import { LogoutService } from './Services/autoLogout.service';
 
 @Component({
@@ -22,7 +21,8 @@ export class AppComponent implements AfterContentChecked, OnInit {
   isInAuthPages: boolean = true;
 
   ngAfterContentChecked(): void {
-    if(this.router.url === '/login' || this.router.url === '/signup' || this.router.url === '/') {
+    let currentUrl = this.router.url;
+    if(currentUrl === '/login' || currentUrl === '/signup' || currentUrl === '/' || currentUrl.includes('/login') || currentUrl.includes('/signup')) {
       this.isInAuthPages = false;
       // localStorage.removeItem('user');
     } else {

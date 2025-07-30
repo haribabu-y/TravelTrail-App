@@ -470,3 +470,5 @@ export const phoneCodes = [
   '+32',   // Belgium
 ];
 
+export const secretKey: string = "TravelTrail";
+

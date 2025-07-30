@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, inject, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostListener, inject, OnDestroy, OnInit } from '@angular/core';
 import { SharedService } from '../Services/shared.service';
 import { TripService } from '../Services/trip.service';
 import { map, Subscription } from 'rxjs';
@@ -10,21 +10,22 @@ import * as d3 from 'd3';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
-  barGraphData: any;
-  barGraphOptions: any;
-  lineGraphData: any;
-  lineGraphOptions: any;
-  pieChartData: any;
-  pieChartOptions: any;
-  userTrips: String[];
-  userExpenses: number[];
+  // barGraphData: any;
+  // barGraphOptions: any;
+  // lineGraphData: any;
+  // lineGraphOptions: any;
+  // pieChartData: any;
+  // pieChartOptions: any;
   isLoading: boolean = false;
   isDarkMode: boolean = false;
+  darkThemeSubscription: Subscription;
+  getAllTripsSubscription: Subscription;
   d3GraphData = [];
 
-  sharedService: SharedService = inject(SharedService);
-  tripService: TripService = inject(TripService);
-  darkThemeSubscription: Subscription;
+  constructor(
+    private sharedService: SharedService, 
+    private tripService: TripService
+  ) {}
 
 //   predefinedColors: string[] = [
 //   "#FF6384", // Red
@@ -103,7 +104,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.isLoading = true;
     let graphDatas = [];
-    this.tripService.getAllTrips().pipe(map((response) => {
+    this.getAllTripsSubscription = this.tripService.getAllTrips().pipe(map((response) => {
       let trips = [];
       let expenses = [];
       let totalExpense = 0;
@@ -120,12 +121,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       }      
       // console.log(trips);
       // console.log(expenses);      
-      this.userTrips = trips; 
-      this.userExpenses = expenses;  
       // console.log(totalExpense);      
-      this.sharedService.getUserExpense(totalExpense); 
-      // console.log(this.userTrips);
-      // console.log(this.userExpenses); 
+      this.sharedService.getUserExpense(totalExpense);  
       graphDatas.push(trips);
       graphDatas.push(expenses)
       // console.log(graphDatas);
@@ -133,11 +130,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       return graphDatas;
     })).subscribe((res) => {
       // console.log(res);
-      // // this.userTrips = res[0];
-      // // this.userExpenses = res[1];
-      // console.log(this.userTrips);
-      // console.log(this.userExpenses);
-
       setTimeout(() => {
         this.createD3BarGraphSvg();
         this.drawD3Bars();
@@ -407,9 +399,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   private chartWidth = 0;
   private chartHeight = 380;
 
-  //getting the reference of the ElementRef
-  elementRef: ElementRef = inject(ElementRef);
-
   @HostListener('window: resize', ['$event'])
   onResize(event: any) {
     this.updateDimentions();
@@ -431,12 +420,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   updateDimentions() {
     let container: any;
     if(this.selectedRadio === 'barGraph') {
-      container =this.elementRef.nativeElement.querySelector("#d3-barGraph");
+      container = document.querySelector("#d3-barGraph");
     }
     if(this.selectedRadio === 'lineGraph') {
-      container =this.elementRef.nativeElement.querySelector("#d3-lineChart");
+      container = document.querySelector("#d3-lineChart");
     }
-    // const constiner =this.elementRef.nativeElement.querySelector("#d3-barGraph");
     if(container) {
       this.chartWidth = container.clientWidth - this.marginLeft - this.marginRight;
       // this.chartHeight = constiner.clientHeight - this.marginTop - this.marginBottom;
@@ -447,7 +435,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   createD3BarGraphSvg() {
     this.updateDimentions();
-    const container = d3.select(this.elementRef.nativeElement).select("#d3-barGraph");
+    const container = d3.select("#d3-barGraph");
     container.select("svg").remove();
     this.barGraphSvg = container.append('svg')
                         .attr("width", this.chartWidth + this.marginLeft + this.marginRight)
@@ -503,14 +491,13 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   drawD3Bars() {
     // console.log(this.d3GraphData);  
     this.updateDimentions();
-
     const x = d3.scaleBand()
               .range([0,this.chartWidth])
               .domain(this.d3GraphData.map((_,i) => i.toString()))
               .padding(0.2);
 
     const y = d3.scaleLinear()
-                .domain(this.d3GraphData.length > 0 ? [0, d3.max(this.d3GraphData, d => d.value)!] : [0, 1])
+                .domain(this.d3GraphData.length > 0 ? [0, d3.max(this.d3GraphData, d => d.value)] : [0, 1])
                 .range([this.chartHeight, 0]);
 
     this.barGraphG.append('g').attr("class", "x-axis")
@@ -522,11 +509,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     
     // this.barGraphSvg.remove("text");
     let xAxisLabel = this.barGraphSvg.select(".x-axis-label")
-    // if(xAxisLabel.empty()) {
-    //   xAxisLabel = this.barGraphG.append("taxt")
-    //     .attr("class", "x-axis-label")
-    // }
-    // console.log(xAxisLabel);
     if(xAxisLabel) {
       xAxisLabel
       .attr("x", this.chartWidth / 2 + 20)
@@ -546,7 +528,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     // this.barGraphSvg.append("text")
     //   .attr("class", "y-axis-label")
     //   .attr("x", -this.chartHeight / 2)
-    //   .attr("y", this.marginLeft - 50) // Adjust so it sits left of the y axis
+    //   .attr("y", this.marginLeft - 50) 
     //   .attr("transform", "rotate(-90)")
     //   .attr("text-anchor", "middle")
     //   .text("Total Expense");
@@ -594,7 +576,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   createD3LineChartSvg() {
     this.updateDimentions();
-    const container = d3.select(this.elementRef.nativeElement).select("#d3-lineChart");
+    const container = d3.select("#d3-lineChart");
     container.select("svg").remove();
     this.lineBarSvg = container.append("svg")
                         .attr("width", this.chartWidth + this.marginLeft + this.marginRight)
@@ -801,8 +783,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     // console.log(this.selectedRadio);
     localStorage.setItem('preloadGraph', this.selectedRadio);
        
-    if(this.darkThemeSubscription) {
-      this.darkThemeSubscription.unsubscribe();
-    }
+    this.darkThemeSubscription.unsubscribe();
+    this.getAllTripsSubscription.unsubscribe();
   }
 }

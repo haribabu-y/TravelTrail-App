@@ -3,7 +3,7 @@ import { BucketList } from '../Models/bucketList';
 import { BucketListService } from '../Services/bucketList.service';
 import { MessageService } from 'primeng/api';
 import { SharedService } from '../Services/shared.service';
-import { Subscription } from 'rxjs';
+import { Subscription, SubscriptionLike } from 'rxjs';
 
 @Component({
   selector: 'app-bucket-list',
@@ -13,17 +13,25 @@ import { Subscription } from 'rxjs';
 export class BucketListComponent implements OnInit, OnDestroy {
   showAddBucketDailog: boolean = false;
   isLoading: boolean = false;
-  isAdmin: boolean = false;
   isDarkMode: boolean = false;
   currencyCode: string = '';
 
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   userBucketLists: BucketList[];
-  bucketListService: BucketListService = inject(BucketListService);
-  sharedService: SharedService = inject(SharedService);
-  messageService: MessageService = inject(MessageService);
+  // bucketListService: BucketListService = inject(BucketListService);
+  // sharedService: SharedService = inject(SharedService);
+  // messageService: MessageService = inject(MessageService);
   darkThemeSubscription: Subscription;
+  getBucketlistSubscription: Subscription;
+  addBucketlistSubscription: Subscription;
+  editBicketListSubscription: Subscription;
+
+  constructor(
+    private bucketListService: BucketListService, 
+    private sharedService: SharedService, 
+    private messageService: MessageService
+  ){}
 
   ngOnInit(): void {
     this.darkThemeSubscription = this.sharedService.isDarkMode.subscribe((res) => this.isDarkMode = res)
@@ -34,7 +42,7 @@ export class BucketListComponent implements OnInit, OnDestroy {
 
   getbucketlists() {
     this.isLoading = true;
-    this.bucketListService.getAllBucketLists().subscribe((bucketLists: BucketList[]) => {
+    this.getBucketlistSubscription = this.bucketListService.getAllBucketLists().subscribe((bucketLists: BucketList[]) => {
       this.userBucketLists = bucketLists;
       this.isLoading = false;
     })
@@ -56,7 +64,7 @@ export class BucketListComponent implements OnInit, OnDestroy {
   }
 
   onFilechanges(event: Event) {
-    const file = (event.target as HTMLInputElement).files?.[0];
+    const file = (event.target as HTMLInputElement).files[0];
     if(!file) return;
 
     const maxInputSize = 2;
@@ -82,12 +90,10 @@ export class BucketListComponent implements OnInit, OnDestroy {
     }
 
     const reader = new FileReader();
+    reader.readAsDataURL(file);
     reader.onload = () => {
       this.placeImage = reader.result as string;
-      console.log(reader.result as string);      
-    }
-    reader.readAsDataURL(file);
-    
+    }    
   }
 
   closeDailog() {
@@ -121,14 +127,6 @@ export class BucketListComponent implements OnInit, OnDestroy {
     this.estimatedBudget = item.estimatedBudget;
     console.log(item.id);
     this.bucketId = item.id;
-  }
-
-  deleteBucketItem(item: BucketList) {
-    let itemId = item.id;
-    this.bucketListService.deleteUserbucketItem(itemId).subscribe((res) => {
-      this.getbucketlists();
-    });
-    this.closeDailog();
   }
 
   validatePlaceName() {
@@ -205,7 +203,7 @@ export class BucketListComponent implements OnInit, OnDestroy {
       estimatedBudget: this.estimatedBudget
     }
     if(id) {
-      this.bucketListService.updateUserBucketItem(id,newBucketItem).subscribe((res) => {
+      this.editBicketListSubscription = this.bucketListService.updateUserBucketItem(id,newBucketItem).subscribe((res) => {
         this.getbucketlists();
         this.bucketId = '';
         this.messageService.add({severity:'success', summary:'Success', detail:'BucketList Successfully Updated!.'})
@@ -215,7 +213,7 @@ export class BucketListComponent implements OnInit, OnDestroy {
     }
 
     console.log(newBucketItem);    
-    this.bucketListService.addNewBucketListitem(newBucketItem).subscribe((res) => {
+    this.addBucketlistSubscription = this.bucketListService.addNewBucketListitem(newBucketItem).subscribe((res) => {
       this.getbucketlists();
       this.messageService.add({severity:'success', summary:'Success', detail:'BucketList Successfully Added!.'})
     });
@@ -223,8 +221,13 @@ export class BucketListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if(this.darkThemeSubscription) {
       this.darkThemeSubscription.unsubscribe();
-    }
+      this.getBucketlistSubscription.unsubscribe();
+      if(this.addBucketlistSubscription) {
+        this.addBucketlistSubscription.unsubscribe();
+      }
+      if(this.editBicketListSubscription) {
+        this.editBicketListSubscription.unsubscribe();
+      }
   }
 }

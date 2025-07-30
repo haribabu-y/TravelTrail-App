@@ -219,6 +219,10 @@
     right: 15px;
 }
 
+.editDeletBtns i {
+    cursor: pointer;
+}
+
 .bucket-image i {
     background-color: white;
     color: black;
@@ -466,7 +470,7 @@ input[type="number"]::-webkit-inner-spin-button {
         width: 150px !important;
     }
     
-    ::ng-deep .p-datatable-header {
+    .user-trip-table ::ng-deep .p-datatable-header {
         flex-direction: row;
         gap: 10px;
     }
@@ -488,8 +492,8 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 @media screen and (max-width: 426px) {
 
-    ::ng-deep .p-datatable-header {
-        flex-direction: column;
+    .user-trip-table ::ng-deep .p-datatable-header {
+        flex-direction: column !important;
         gap: 10px;
     }
     .right-contents {

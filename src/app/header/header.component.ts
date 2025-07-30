@@ -16,17 +16,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   darkMode: boolean = false;
   isDarkMode: boolean = false;
-  router: Router = inject(Router);
-  activeRoute: ActivatedRoute = inject(ActivatedRoute)
-  authService: Authservice = inject(Authservice);
-  sharedService: SharedService = inject(SharedService)
+  userExpenseSubscription: Subscription;
   usertype: string;
   isAdmin: boolean = false;
   userExpense: number;
-  userExpenseSubscription: Subscription;
   userDetail: User;
   country: string;
   state: string;
+
+  constructor(
+    private router: Router,
+    private authService: Authservice,
+    private sharedService: SharedService
+  ) {}
 
   currentPage: string = this.router.url.split('/')[2];
   ngDoCheck() {
@@ -43,8 +45,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   toggleDarkMode() {
-    this.darkMode = !this.darkMode;3
-
+    this.darkMode = !this.darkMode;
     const body = document.body;
     let mode: string = this.darkMode ? 'dark' : 'light';
     localStorage.setItem('theme', mode);
@@ -59,6 +60,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   logoutUser() {
     this.authService.logout();
   }
+
   currentUser: User;
   profileImage: string = 'assets/users/defaultProfileImg.jpg'
   username: string = '';
@@ -94,15 +96,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
             this.currentUser = allUsers.find((user) => {
               return user.username === localuser.username;
             })
-            console.log(this.currentUser);  
+            // console.log(this.currentUser);  
             if (this.currentUser) {
               this.userDetail = this.currentUser;
               this.username = this.currentUser.username;
               let countryObj = countries.find((country) => {
                 return country.code === this.currentUser.country;
               });
-              console.log(countryObj);        
-              this.country = Object.values(countryObj)[0];
+              // console.log(countryObj);                      
+              this.country = countryObj.name;              
               let filteredState = states[countryObj.code] || [];
               if(this.currentUser.state) {
                 this.state = filteredState.find((state) => state.code === this.currentUser.state).name;
@@ -122,34 +124,35 @@ export class HeaderComponent implements OnInit, OnDestroy {
       return;
     } else {
       this.usertype = localuser.username;
-    }
-    console.log(localuser);
-    this.sharedService.getAllUsers().subscribe({
-      next: (allUsers) => {
-        this.currentUser = allUsers.find((user) => {
-          return user.username === localuser.username;
-        })
-        this.username = this.currentUser.username;
-        let countryObj = countries.find((country) => {
-          return country.code === this.currentUser.country;
-        });
-        console.log(countryObj);        
-        this.country = Object.values(countryObj)[0];
-        let filteredState = states[countryObj.code] || [];
-        if(this.currentUser.state) {
-          this.state = filteredState.find((state) => state.code === this.currentUser.state).name;
-        }        
-        this.currencyCode = countryObj['currencyCode'];
-        this.userDetail = this.currentUser;
-        if (this.currentUser.profileImage) {
-          this.profileImage = this.currentUser.profileImage;
-        } else {
-          let firstName = this.currentUser.firstName;
-          let lastName = this.currentUser.lastName;
-          this.profileImage = `https://ui-avatars.com/api/?name=${firstName}+${lastName ? lastName : ''}&bold=true`
+      // console.log(localuser);
+      // this.router.navigate(['/user/Home'])
+      this.sharedService.getAllUsers().subscribe({
+        next: (allUsers) => {
+          this.currentUser = allUsers.find((user) => {
+            return user.username === localuser.username;
+          })
+          this.username = this.currentUser.username;
+          let countryObj = countries.find((country) => {
+            return country.code === this.currentUser.country;
+          });
+          // console.log(countryObj);        
+          this.country = countryObj.name;
+          let filteredState = states[countryObj.code] || [];
+          if(this.currentUser.state) {
+            this.state = filteredState.find((state) => state.code === this.currentUser.state).name;
+          }        
+          this.currencyCode = countryObj['currencyCode'];
+          this.userDetail = this.currentUser;
+          if (this.currentUser.profileImage) {
+            this.profileImage = this.currentUser.profileImage;
+          } else {
+            let firstName = this.currentUser.firstName;
+            let lastName = this.currentUser.lastName;
+            this.profileImage = `https://ui-avatars.com/api/?name=${firstName}+${lastName ? lastName : ''}&bold=true`
+          }
         }
-      }
-    });
+      });
+    }  
   };
 
   showProfileInfo: boolean = false;
@@ -167,7 +170,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.showProfileInfo = false;
       }
     }
-
   }
 
   showProfileDetail() {

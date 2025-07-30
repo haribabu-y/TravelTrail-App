@@ -1,5 +1,4 @@
-import { HttpClient } from '@angular/common/http';
-import { AfterViewChecked, Component, ElementRef, HostListener, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { User } from '../Models/user';
 import { Authservice } from '../Services/auth.service';
@@ -12,15 +11,24 @@ import { states } from '../constants/countries';
 import { timezones } from '../constants/countries';
 import { locales } from '../constants/countries';
 import { phoneCodes } from '../constants/countries';
+import { secretKey } from '../constants/countries';
 
 import * as CryptoJS from 'crypto-js';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css'],
 })
-export class SignupComponent implements OnInit, AfterViewChecked {
+export class SignupComponent implements OnInit, AfterViewChecked, OnDestroy {
+
+  constructor( 
+    private sharedService: SharedService, 
+    private messageService: MessageService
+  ) {}
+
+  getAllUserSubscritpion: Subscription;
 
   selectedGender: string = 'male';
 
@@ -72,9 +80,6 @@ export class SignupComponent implements OnInit, AfterViewChecked {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('logoContainer') logoContainer: ElementRef<HTMLDivElement>;;
 
-  http: HttpClient = inject(HttpClient);
-  sharedService: SharedService = inject(SharedService)
-  messageService: MessageService = inject(MessageService);
   allUsers: User[] = [];
   errorMessage: string = '';
   profileImage: string = 'assets/users/defaultProfileImg.jpg';
@@ -103,7 +108,7 @@ onResize(event: any) {
   onFilechanges(event: Event) {
     // const file = (event.target as HTMLInputElement).files?.[0];
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
+    const file = input.files[0];
 
     if (!file) return;
 
@@ -125,19 +130,19 @@ onResize(event: any) {
     }
 
     const reader = new FileReader();
+    reader.readAsDataURL(file);
     reader.onload = () => {
       this.profileImage = reader.result as string;
       // console.log(reader.result as string);  
       this.reactiveForm.patchValue({ profileImage: reader.result as string});    
     };
-    reader.readAsDataURL(file);
   }
 
   authService: Authservice = inject(Authservice);
   router: Router = inject(Router);
   currentUser: User;
   passMM: boolean = false;
-  secretKey: string = 'TravelTrail'; 
+  // secretKey: string = 'TravelTrail'; 
 
   onSignupFormsubmit() {
     // this.reactiveForm.patchValue({phone: `${this.phoneCode + ' ' + this.reactiveForm.value.phone}`})
@@ -158,7 +163,6 @@ onResize(event: any) {
     if(this.reactiveForm.controls['phone'].invalid) {
       this.paginationPageNo = 1;
     } 
-
     if(this.reactiveForm.controls['dob'].invalid) {
       this.paginationPageNo = 1;
     } 
@@ -172,7 +176,7 @@ onResize(event: any) {
           this.errorMessage = formField + " field is INVALID!.";
         }      
       }    
-      this.messageService.add({severity: 'warn', summary:'Warn', detail: this.errorMessage});
+      // this.messageService.add({severity: 'warn', summary:'Warn', detail: this.errorMessage});
       this.reactiveForm.markAllAsTouched();
       return;
     }
@@ -184,9 +188,9 @@ onResize(event: any) {
       this.passMM = false;
     }
 
-    console.log(this.reactiveForm.value);
+    // console.log(this.reactiveForm.value);
     let password = this.reactiveForm.value.password;
-    let encryptedPassword = CryptoJS.AES.encrypt(password, this.secretKey).toString();
+    let encryptedPassword = CryptoJS.AES.encrypt(password, secretKey).toString();
     // console.log(encryptedPassword);
     this.reactiveForm.patchValue({password: encryptedPassword});
     // this.reactiveForm.removeControl('confirmPassword');
@@ -200,7 +204,7 @@ onResize(event: any) {
     } 
     this.currentUser = this.reactiveForm.value; 
     // console.log(this.currentUser);
-    this.sharedService.getAllUsers().subscribe({
+    this.getAllUserSubscritpion = this.sharedService.getAllUsers().subscribe({
       next: (users) => {
         this.allUsers = users;
         // console.log(this.allUsers);
@@ -234,7 +238,6 @@ onResize(event: any) {
   validateDateOfBirth(date: Date) {
     let dob = new Date(date);
     let today = new Date();
-
     let age = today.getFullYear() - dob.getFullYear();
     const monthDiff = today.getMonth() - dob.getMonth();
     const dayDiff = today.getDate() - dob.getDate();
@@ -255,6 +258,12 @@ onResize(event: any) {
   }
   goToNextPage(value: number) {
     this.paginationPageNo = value;
+  }
+
+  ngOnDestroy(): void {
+    if(this.getAllUserSubscritpion) {
+      this.getAllUserSubscritpion.unsubscribe();
+    }
   }
     
 }

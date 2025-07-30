@@ -9,7 +9,8 @@ import { BucketList } from "../Models/bucketList";
 })
 export class BucketListService {
     currentUser: LoginUser;
-    http: HttpClient = inject(HttpClient);
+    constructor(private http: HttpClient) {}
+    
     getAllBucketLists(id?: string) {
         if(id) {
             return this.http.get(`https://travektrail-app-default-rtdb.firebaseio.com/users/${id}/bucketLists.json`).pipe(map((response) => {

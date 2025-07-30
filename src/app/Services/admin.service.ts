@@ -7,7 +7,8 @@ import { UserTrips } from "../Models/usertrips";
     providedIn: 'root'
 })
 export class AdminService {
-    sharedService: SharedService = inject(SharedService);
+    
+    constructor(private sharedService: SharedService) {}
 
     userTrips: UserTrips[] = [];
 

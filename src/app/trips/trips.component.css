@@ -370,9 +370,9 @@ input[type="number"]::-webkit-inner-spin-button {
 @media screen and (max-width: 320px) {
     .trip-table ::ng-deep .p-paginator-left-content {
         margin-right: 36px !important;
-        margin-left: 40px;
-        margin-top: 5px;
-        margin-bottom: 5px;
+        margin-left: 40px !important;
+        margin-top: 5px !important;
+        margin-bottom: 5px !important;
     }
 
     .searchField input {

@@ -5,19 +5,18 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class LogoutService {
-  ngZone: NgZone = inject(NgZone);
-  router: Router = inject(Router);
+  
   time: any;
   timeout = 10 * 60 * 1000;
-  constructor() { 
+  events: string[] = ['click', 'mousemove', 'keydown', 'scroll'];
+  constructor(private ngZone: NgZone,private router: Router) { 
     this.startCounting();
     // console.log('Auto logout service started');
    }
 
    startCounting() {
     this.ngZone.runOutsideAngular(() => {
-      ['click', 'mousemove', 'keydown', 'scroll', 'touchstart']
-      .forEach(event => window.addEventListener(event, () => this.resetTimer()))
+      this.events.forEach(event => window.addEventListener(event, () => this.resetTimer()))
     });
     this.resetTimer();
     // console.log('counting started');

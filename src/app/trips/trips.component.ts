@@ -7,6 +7,7 @@ import { Table } from 'primeng/table';
 import { MultiSelect } from 'primeng/multiselect';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-trips',
@@ -14,24 +15,28 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./trips.component.css']
 })
 export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  constructor(
+    private tripService: TripService,
+    private sharedService: SharedService,
+    private router: Router,
+    private messageService: MessageService,
+  ){}
     
   // collecting the refercnce of the table 
   @ViewChild('tripTable') table: Table;
-  authService: Authservice = inject(Authservice);
   userTrips: Trip[];
   //instance of the tripService
-  tripService: TripService = inject(TripService);
-  sharedService: SharedService = inject(SharedService);
   isLoading: boolean = false;
   isDarkMode: boolean = false;
   darkThemeSubscription: Subscription;
+  getAllTripsSunscription: Subscription;
+  addNewTripSubscrition: Subscription;
   currencyCode: string = '';
 
   @ViewChild('coloumnSelect') columnSelect: ElementRef;
   @ViewChild('rowSelect') rowSelect: ElementRef;
   @ViewChild('searchText') searchField: ElementRef;
-
-  messageService: MessageService = inject(MessageService);
 
   ngOnInit() {
     let theme = localStorage.getItem('theme');
@@ -40,7 +45,7 @@ export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.isDarkMode = false;
     }
-
+    // console.log(this.router.url);
     this.darkThemeSubscription = this.sharedService.isDarkMode.subscribe((res) => {
       this.isDarkMode = res;
     })
@@ -49,11 +54,11 @@ export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.selectedColumns = [...this.columnOptions]
 
     let user = JSON.parse(localStorage.getItem('user'));
-    console.log(user.country);
+    // console.log(user.country);
     if(user) {
       this.currencyCode = user.country.currencyCode;
     }
-    console.log(this.currencyCode);
+    // console.log(this.currencyCode);
     if(localStorage.getItem('tripsRows')) {
       this.rows = JSON.parse(localStorage.getItem('tripsRows'))
     }
@@ -68,7 +73,7 @@ export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   loadTripsInTable() {
     this.isLoading = true;
-    this.tripService.getAllTrips().subscribe((res: Trip[]) => {
+    this.getAllTripsSunscription = this.tripService.getAllTrips().subscribe((res: Trip[]) => {
       // console.log(res);  
       this.userTrips = res;
       this.isLoading = false;
@@ -185,7 +190,7 @@ export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
       totalExpense: this.totalExpense,
       totalMembers: this.totalMembers
     }
-    this.tripService.addNewtrip(data).subscribe((res) => {
+    this.addNewTripSubscrition = this.tripService.addNewtrip(data).subscribe((res) => {
       this.loadTripsInTable();
       this.messageService.add({severity: 'success', summary:'Success',detail:'Trip SuccessFully Added!.'})
     });
@@ -226,8 +231,7 @@ export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
-    console.log(target);
-    console.log(this.columnSelect);
+    // console.log(target);
     if(this.showRowsChange) {
       let clickedInsideListBox = this.rowSelect.nativeElement.contains(target);
     if(!clickedInsideListBox) {
@@ -254,16 +258,15 @@ export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.columnMultiSelect.show();
     // this.shoeColumnsDisplay = !this.shoeColumnsDisplay;
   }
-  columnsChanged(event: any) {
-    console.log(event);    
+  columnsChanged() {
+    // console.log(event);    
     this.columnMultiSelect.show();
-    event.originalEvent?.stopPropagation?.();
   }
 
   goToPageNumber: number = null;
 
   onPageChange(event: any) {
-    console.log(event);
+    // console.log(event);
     this.goToPageNumber = event.page + 1;
     this.rows = event.rows;
   }
@@ -272,7 +275,7 @@ export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   showTripDetail(trip: Trip) {
     this.showTripDetailDailog = true;
-    console.log(trip);
+    // console.log(trip);
     this.startPlace = trip.startLocation;
     this.destination = trip.destination;
     this.totalDistance = trip.totalDistance;
@@ -282,7 +285,7 @@ export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   goToPage(){
     if(this.table && this.goToPageNumber > 0) {
-      const pageIndex = this.goToPageNumber -1;
+      const pageIndex = this.goToPageNumber - 1;
       const firstRowIndex = pageIndex * this.rows;
       if(firstRowIndex >= 0 && firstRowIndex < this.table.value.length) {
         this.table.first = firstRowIndex;
@@ -298,7 +301,12 @@ export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
     if(this.darkThemeSubscription) {
       this.darkThemeSubscription.unsubscribe();
     }
-    
+    if(this.getAllTripsSunscription) {
+      this.getAllTripsSunscription.unsubscribe();
+    }
+    if(this.addNewTripSubscrition) {
+      this.addNewTripSubscrition.unsubscribe();
+    }
     // console.log(this.rows);
     // console.log(this.selectedColumns);
     // console.log(this.goToPageNumber);
