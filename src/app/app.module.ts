@@ -45,6 +45,9 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 import { TooltipModule } from 'primeng/tooltip';
+import { ProfileComponent } from './profile/profile.component';
+
+import { AccordionModule } from 'primeng/accordion';
 
 @NgModule({
   declarations: [
@@ -58,7 +61,8 @@ import { TooltipModule } from 'primeng/tooltip';
     SignupComponent,
     UsersDetailsComponent,
     LoaderComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -81,7 +85,8 @@ import { TooltipModule } from 'primeng/tooltip';
     ToastModule,
     OverlayPanelModule,
     ConfirmDialogModule,
-    TooltipModule
+    TooltipModule,
+    AccordionModule
   ],
   providers: [MessageService],
   bootstrap: [AppComponent]

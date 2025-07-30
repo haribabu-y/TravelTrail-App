@@ -1,0 +1,17 @@
+<div class="profileInformation card flex justify-content-center">
+    <p-accordion #userDeatil class="profileDetailDiv">
+        <p-accordionTab header="Profile Image">
+            <img [src]="profileImage" alt="Profile Image">
+        </p-accordionTab>
+        <p-accordionTab header="Name">
+            <h3>{{name}}</h3>
+        </p-accordionTab>
+        <p-accordionTab header="Email">
+            <h3>{{email}}</h3>
+        </p-accordionTab>
+        <p-accordionTab header="Address">
+            <h3>{{address}}</h3>
+        </p-accordionTab>
+    </p-accordion>
+</div>
+

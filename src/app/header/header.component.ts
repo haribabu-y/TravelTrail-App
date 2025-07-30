@@ -90,7 +90,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (localuser.isAdmin) {
       this.usertype === 'admin';
       this.isAdmin = true;
-      // this.router.navigate(['/admin/UsersTrips']);
+      this.router.navigate(['/admin/UsersTrips']);
       this.sharedService.getAllUsers().subscribe({
           next: (allUsers) => {
             this.currentUser = allUsers.find((user) => {

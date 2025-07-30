@@ -9,6 +9,7 @@ import { UserTripComponent } from './user-trip/user-trip.component';
 import { UsersDetailsComponent } from './users-details/users-details.component';
 import { canActivateRouteGuard } from './RouteGuards/authGuard'
 import { NotFoundComponent } from './not-found/not-found.component';
+import { ProfileComponent } from './profile/profile.component';
 
 const routes: Routes = [
   
@@ -18,6 +19,7 @@ const routes: Routes = [
     {path: 'Home', component: HomeComponent},
     {path: 'Trips', component: TripsComponent},
     {path: 'BucketLists', component: BucketListComponent},
+    {path: 'profile', component: ProfileComponent}
   ]},
   {path: 'admin', canActivateChild: [canActivateRouteGuard], children: [
     { path: '', redirectTo: 'UsersTrips', pathMatch: 'full' },

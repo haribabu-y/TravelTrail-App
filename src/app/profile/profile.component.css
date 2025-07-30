@@ -1,0 +1,4 @@
+::ng-deep .p-accordion .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link {
+    background-color: #1E88E5 !important;
+    color: white;
+}
