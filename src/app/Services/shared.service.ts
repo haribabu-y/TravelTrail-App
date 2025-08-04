@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { catchError, map, Observable, Subject, throwError } from "rxjs";
 import { User } from "../Models/user";
@@ -12,8 +12,8 @@ export class SharedService {
     isDarkMode = new Subject<boolean>();
     userExpense = new Subject<number>;
 
-    public getAllUsers(): Observable<User[]> {
-        return this.http.get<User[]>('https://travektrail-app-default-rtdb.firebaseio.com/users.json')
+    public getAllUsers(idToken?: string): Observable<User[]> {
+        return this.http.get<User[]>('https://travektrail-app-default-rtdb.firebaseio.com/users.json', {params: new HttpParams().set('auth', idToken)})
           .pipe(map((response) => {
               // console.log(response);
               let users = [];

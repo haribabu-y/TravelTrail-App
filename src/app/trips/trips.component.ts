@@ -49,8 +49,13 @@ export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.darkThemeSubscription = this.sharedService.isDarkMode.subscribe((res) => {
       this.isDarkMode = res;
     })
-
-    this.loadTripsInTable();
+    let userTrips = JSON.parse(localStorage.getItem('userTrips'));
+    if(userTrips) {
+      this.userTrips = userTrips;
+    } else {
+      this.loadTripsInTable();
+    }
+    
     this.selectedColumns = [...this.columnOptions]
 
     let user = JSON.parse(localStorage.getItem('user'));
@@ -76,6 +81,7 @@ export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getAllTripsSunscription = this.tripService.getAllTrips().subscribe((res: Trip[]) => {
       // console.log(res);  
       this.userTrips = res;
+      localStorage.setItem('userTrips', JSON.stringify(this.userTrips));
       this.isLoading = false;
       // console.log(this.userTrips);  
       let totalExpense: number = 0;

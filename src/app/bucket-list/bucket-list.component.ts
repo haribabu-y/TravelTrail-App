@@ -3,7 +3,7 @@ import { BucketList } from '../Models/bucketList';
 import { BucketListService } from '../Services/bucketList.service';
 import { MessageService } from 'primeng/api';
 import { SharedService } from '../Services/shared.service';
-import { Subscription, SubscriptionLike } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-bucket-list',
@@ -23,7 +23,6 @@ export class BucketListComponent implements OnInit, OnDestroy {
   // sharedService: SharedService = inject(SharedService);
   // messageService: MessageService = inject(MessageService);
   darkThemeSubscription: Subscription;
-  getBucketlistSubscription: Subscription;
   addBucketlistSubscription: Subscription;
   editBicketListSubscription: Subscription;
 
@@ -36,14 +35,20 @@ export class BucketListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.darkThemeSubscription = this.sharedService.isDarkMode.subscribe((res) => this.isDarkMode = res)
     localStorage.getItem('theme') === 'dark' ? this.isDarkMode = true : this.isDarkMode = false;
-    this.getbucketlists();
+    let userBucketList = JSON.parse(localStorage.getItem('userBucketLists'));
+    if(userBucketList) {
+      this.userBucketLists = userBucketList;
+    } else {
+      this.getbucketlists();
+    }    
     this.currencyCode = JSON.parse(localStorage.getItem('user')).country.currencyCode;
   }
 
   getbucketlists() {
     this.isLoading = true;
-    this.getBucketlistSubscription = this.bucketListService.getAllBucketLists().subscribe((bucketLists: BucketList[]) => {
+    this.bucketListService.getAllBucketLists().subscribe((bucketLists: BucketList[]) => {
       this.userBucketLists = bucketLists;
+      localStorage.setItem('userBucketLists', JSON.stringify(this.userBucketLists));
       this.isLoading = false;
     })
   }
@@ -117,7 +122,7 @@ export class BucketListComponent implements OnInit, OnDestroy {
     this.placeImage = '';
   }
 
-  bucketId: string;
+  bucketId: string = '';
   editBucketItem(item: BucketList) {
     this.showAddBucketDailog = true;
     this.placeImage = item.placeImage;    
@@ -159,7 +164,6 @@ export class BucketListComponent implements OnInit, OnDestroy {
   isEBV: boolean = false;
 
   addRecord(id?: string) {
-    console.log(typeof this.estimatedDistance);    
     if(this.placeImage === '') {
       this.placeImageErrormsg = "Place Image is required!."
       this.isPIV = true;
@@ -222,7 +226,6 @@ export class BucketListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
       this.darkThemeSubscription.unsubscribe();
-      this.getBucketlistSubscription.unsubscribe();
       if(this.addBucketlistSubscription) {
         this.addBucketlistSubscription.unsubscribe();
       }

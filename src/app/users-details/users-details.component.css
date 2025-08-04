@@ -24,7 +24,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 1rem 0 !important;
+  padding: 10px 0 !important;
   background-color: white !important;
 }
 
@@ -405,9 +405,17 @@ td i {
       padding: 0.5rem 1rem;
 }
 
-.users-detail-table ::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
+/* .users-detail-table ::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
   background-color: #CEE8FF;
+} */
+
+.users-detail-table ::ng-deep .highlightrow {
+    background-color: #CEE8FF ;
+    transform: scale(1.02);
+    position: relative;
+    /* z-index: 1000; */
 }
+
 .text {
     display: flex;
     flex-direction: column;

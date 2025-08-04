@@ -15,6 +15,7 @@ import { secretKey } from '../constants/countries';
 
 import * as CryptoJS from 'crypto-js';
 import { Subscription } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-signup',
@@ -25,7 +26,8 @@ export class SignupComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   constructor( 
     private sharedService: SharedService, 
-    private messageService: MessageService
+    private messageService: MessageService,
+    private http: HttpClient
   ) {}
 
   getAllUserSubscritpion: Subscription;
@@ -147,7 +149,6 @@ onResize(event: any) {
   onSignupFormsubmit() {
     // this.reactiveForm.patchValue({phone: `${this.phoneCode + ' ' + this.reactiveForm.value.phone}`})
     console.log(this.reactiveForm.controls);    
-    
     if(this.reactiveForm.controls['username'].invalid) {
       this.paginationPageNo = 1;
     } 
@@ -166,6 +167,7 @@ onResize(event: any) {
     if(this.reactiveForm.controls['dob'].invalid) {
       this.paginationPageNo = 1;
     } 
+
     if(this.reactiveForm.invalid) {
       // console.log(this.reactiveForm.controls);
       let formControls = this.reactiveForm.controls;
@@ -189,6 +191,7 @@ onResize(event: any) {
     }
 
     // console.log(this.reactiveForm.value);
+    let email = this.reactiveForm.value.email;
     let password = this.reactiveForm.value.password;
     let encryptedPassword = CryptoJS.AES.encrypt(password, secretKey).toString();
     // console.log(encryptedPassword);
@@ -204,35 +207,76 @@ onResize(event: any) {
     } 
     this.currentUser = this.reactiveForm.value; 
     // console.log(this.currentUser);
-    this.getAllUserSubscritpion = this.sharedService.getAllUsers().subscribe({
-      next: (users) => {
-        this.allUsers = users;
-        // console.log(this.allUsers);
-        let isUserExits = this.allUsers.find((user) => {
-          return (user.username === this.currentUser.username || user.email === this.currentUser.email);
-        });
-        if (isUserExits) {
-          // alert('User already exits');
-          this.messageService.add({severity: 'error', summary: 'Error', detail:'User already exits. Please Login!.'})
-          setTimeout(() => {
+
+    this.http.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA0CxBGkhNtT1q48ZjBhu4aFn1FsQgYoxs', {email: 'admin12@gmail.com', password: 'Admin1', returnSecureToken: true})
+        .subscribe((res) => {
+           console.log(res);
+          this.getAllUserSubscritpion = this.sharedService.getAllUsers(res['idToken']).subscribe({
+            next: (users) => {
+              this.allUsers = users;
+              // console.log(this.allUsers);
+              let isUserExits = this.allUsers.find((user) => {
+                return (user.username === this.currentUser.username || user.email === this.currentUser.email);
+              });
+              if (isUserExits) {
+              // alert('User already exits');
+              this.messageService.add({severity: 'error', summary: 'Error', detail:'User already exits. Please Login!.'})
+              setTimeout(() => {
+                this.router.navigate(['/login']);
+              },1500)
+              // this.router.navigate(['/login']);
+              return;
+            }
+            // console.log(this.currentUser);        
+            this.authService.signup(email, password, this.currentUser);
+            this.reactiveForm.reset();
+            this.profileImage = 'assets/users/defaultProfileImg.jpg';
+            this.messageService.add({severity: 'success', summary: 'Success', detail:`User ${this.currentUser.firstName + " " + this.currentUser.lastName} successfully signed Up. Please Login!.`});
             this.router.navigate(['/login']);
-          },1500)
-          // this.router.navigate(['/login']);
-          return;
-        }
-        // console.log(this.currentUser);        
-        this.authService.signup(this.currentUser);
-        this.reactiveForm.reset();
-        this.profileImage = 'assets/users/defaultProfileImg.jpg';
-        this.messageService.add({severity: 'success', summary: 'Success', detail:`User ${this.currentUser.firstName + " " + this.currentUser.lastName} successfully signed Up. Please Login!.`});
-        this.router.navigate(['/login']);
-      },
-      error: (err) => {
-        this.errorMessage = err.message;
-        this.messageService.add({severity: 'error', summary:'Error', detail:'An Unknowen Error occered!.'});
-        // console.log(this.errorMessage);
-      },
-    });
+          },
+          error: (err) => {
+            this.errorMessage = err.message;
+            this.messageService.add({severity: 'error', summary:'Error', detail:'An Unknowen Error occered!.'});
+            // console.log(this.errorMessage);
+          },
+        });            
+         })
+
+    // this.getAllUserSubscritpion = this.sharedService.getAllUsers().subscribe({
+    //   next: (users) => {
+    //     this.allUsers = users;
+    //     // console.log(this.allUsers);
+    //     let isUserExits = this.allUsers.find((user) => {
+    //       return (user.username === this.currentUser.username || user.email === this.currentUser.email);
+    //     });
+    //     if (isUserExits) {
+    //       // alert('User already exits');
+    //       this.messageService.add({severity: 'error', summary: 'Error', detail:'User already exits. Please Login!.'})
+    //       setTimeout(() => {
+    //         this.router.navigate(['/login']);
+    //       },1500)
+    //       // this.router.navigate(['/login']);
+    //       return;
+    //     }
+    //     // console.log(this.currentUser);        
+    //     this.authService.signup(email, password, this.currentUser);
+    //     this.reactiveForm.reset();
+    //     this.profileImage = 'assets/users/defaultProfileImg.jpg';
+    //     this.messageService.add({severity: 'success', summary: 'Success', detail:`User ${this.currentUser.firstName + " " + this.currentUser.lastName} successfully signed Up. Please Login!.`});
+    //     this.router.navigate(['/login']);
+    //   },
+    //   error: (err) => {
+    //     this.errorMessage = err.message;
+    //     this.messageService.add({severity: 'error', summary:'Error', detail:'An Unknowen Error occered!.'});
+    //     // console.log(this.errorMessage);
+    //   },
+    // });
+
+    // this.authService.signup(email, password, this.currentUser);
+    // this.reactiveForm.reset();
+    // this.profileImage = 'assets/users/defaultProfileImg.jpg';
+    // this.messageService.add({severity: 'success', summary: 'Success', detail:`User ${this.currentUser.firstName + " " + this.currentUser.lastName} successfully signed Up. Please Login!.`});
+    // this.router.navigate(['/login']);
   }
 
   validateDateOfBirth(date: Date) {

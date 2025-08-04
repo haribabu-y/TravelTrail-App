@@ -1,6 +1,6 @@
-<app-loader *ngIf="isLoading"></app-loader>
+<app-loader *appIf="isLoading"></app-loader>
 <p-toast></p-toast>
-<div class="bucket-list-container" [ngClass]="isDarkMode ? 'dark-mode' : ''" *ngIf="!isLoading">
+<div class="bucket-list-container" [appClass]="{className: 'dark-mode', condition: isDarkMode}" *appIf="!isLoading">
   <div #bucketListItem class="bucket-list-item" *ngFor="let bucketListItem of userBucketLists">
     <div class="bucket-image">
       <p-image
@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="content">
-      <span>{{bucketListItem.placeName}}</span>
+      <span>{{bucketListItem.placeName | titlecasepipe}}</span>
       <p>
         {{bucketListItem.placeDescription}}
       </p>
@@ -29,7 +29,7 @@
   </div>
 </div>
 
-<div class="add-bucket-contsiner" [ngClass]="isDarkMode ? 'dark-mode' : ''">
+<div class="add-bucket-contsiner" [appClass]="{className: 'dark-mode', condition: isDarkMode}">
 <p-dialog
     [header]="bucketId ? 'Update Place' : 'Add Place'"
     [(visible)]="showAddBucketDailog"
@@ -64,7 +64,7 @@
                 <i class="pi pi-trash" (click)="deleteSelectedPlaceImage()"></i>
             </div>
         </div>
-        <span *ngIf="isPIV">{{placeImageErrormsg}}</span>
+        <span *appIf="isPIV">{{placeImageErrormsg}}</span>
       </div>
       <div class="inputfield">
         <label for="pn">Place Name *</label>
@@ -77,7 +77,7 @@
           (ngModelChange)="validatePlaceName()"
           required
         />
-        <span *ngIf="isPNV">Place Name is Invalid*</span>
+        <span *appIf="isPNV">Place Name is Invalid*</span>
       </div>
       <div class="inputfield">
         <label for="pd">Place Description *</label>
@@ -89,7 +89,7 @@
           (ngModelChange)="validatePlaceDescription()"
           required
         />
-        <span *ngIf="isPDV">Place Description is Invalid*</span>
+        <span *appIf="isPDV">Place Description is Invalid*</span>
       </div>
       <div class="inputfield">
         <label for="ed">Estimated Distance *</label>
@@ -101,7 +101,7 @@
           (ngModelChange)="validateED()"
           required
         />
-        <span *ngIf="isEDV">Estimated Distance is Invalid*</span>
+        <span *appIf="isEDV">Estimated Distance is Invalid*</span>
       </div>
       <div class="inputfield">
         <label for="eb">Estimated Budget *</label>
@@ -113,7 +113,7 @@
           (ngModelChange)="validateEB()"
           required
         />
-        <span *ngIf="isEBV">Estimated Budget is Invalid*</span>
+        <span *appIf="isEBV">Estimated Budget is Invalid*</span>
       </div>
       <div class="buttons">
         <button (click)="closeDailog()" class="cancelbtn">Cancel</button>

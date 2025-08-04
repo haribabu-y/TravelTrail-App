@@ -1,17 +1,32 @@
-<div class="profileInformation card flex justify-content-center">
-    <p-accordion #userDeatil class="profileDetailDiv">
-        <p-accordionTab header="Profile Image">
-            <img [src]="profileImage" alt="Profile Image">
+<div class="profileInformation">
+    <p-accordion>
+        <p-accordionTab header="Profile Image" #innerDiv>
+            <img [src]="profileImage" alt="Profile Image" width="200px" height="200px">
         </p-accordionTab>
-        <p-accordionTab header="Name">
+        <p-accordionTab header="Name" #innerDiv class="innerAcc">
             <h3>{{name}}</h3>
         </p-accordionTab>
-        <p-accordionTab header="Email">
+        <p-accordionTab header="Email" #innerDiv class="innerAcc">
             <h3>{{email}}</h3>
         </p-accordionTab>
-        <p-accordionTab header="Address">
+        <p-accordionTab header="Date of Birth" #innerDiv class="innerAcc">
+            <h3>{{dob | date:'mediumDate' }}</h3>
+        </p-accordionTab>
+        <p-accordionTab header="Address" #innerDiv class="innerAcc">
             <h3>{{address}}</h3>
+        </p-accordionTab>
+        <p-accordionTab header="Country" #innerDiv class="innerAcc">
+            <h3>{{country}}</h3>
         </p-accordionTab>
     </p-accordion>
 </div>
+
+<!-- <div class="outerDiv">
+    <div #innerDivE><img [src]="profileImage" alt="Profile Image" width="200px" height="200px"></div>
+    <div #innerDivE>{{name}}</div>
+    <div #innerDivE>{{email}}</div>
+    <div #innerDivE>{{dob}}</div>
+    <div #innerDivE>{{address}}</div>
+    <div #innerDivE>{{country}}</div>
+</div> -->
 

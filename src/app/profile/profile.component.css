@@ -2,3 +2,7 @@
     background-color: #1E88E5 !important;
     color: white;
 }
+
+/* ::ng-deep .p-accordion-header-text, ::ng-deep .p-accordion .p-accordion-header .p-accordion-header-link .p-accordion-toggle-icon {
+    color: white;
+} */

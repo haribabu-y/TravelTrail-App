@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <div class="app-header" [ngClass]="darkMode ? 'dark-mode' : ''">
   <div class="header">
     <div class="left">
@@ -73,7 +74,7 @@
             </div>
             <div class="currency" *ngIf="!isAdmin">
               <img src="./../../assets/currencyimg.png" alt="Currency Image" />
-              <span>{{ userExpense | currency }}</span>
+              <span>{{ userExpense | currency:currencyCode }}</span>
             </div>
           </div>
         </div>
@@ -84,7 +85,7 @@
       <div class="profile">
         <div class="currency" *ngIf="!isAdmin">
           <img src="./../../assets/currencyimg.png" alt="Currency Image" />
-          <span>{{ userExpense | currency : currencyCode }}</span>
+          <span>{{ userExpense | currency:currencyCode }}</span>
         </div>
         <div class="toggleDarkMode">
           <p>{{ darkMode ? "Light Theme" : "Dark Theme" }}</p>
@@ -104,26 +105,24 @@
                   <strong>Username:</strong>
                   {{ userDetail?.username ? userDetail.username : "" }}
                 </p>
-                <p><strong>First Name:</strong> {{ userDetail?.firstName }}</p>
+                <p><strong>First Name:</strong> {{ userDetail?.firstName | titlecasepipe }}</p>
                 <p>
                   <strong>Last Name:</strong>
-                  {{ userDetail?.lastName ? userDetail.lastName : "-" }}
+                  {{ userDetail?.lastName ? userDetail.lastName : "-" | titlecasepipe }}
                 </p>
                 <p><strong>Email:</strong> {{ userDetail?.email }}</p>
-                <p><strong>Gender:</strong> {{ userDetail?.gender }}</p>
+                <p><strong>Gender:</strong> {{ userDetail?.gender | titlecasepipe}}</p>
                 <p>
                   <strong>Date of Birth:</strong> {{ userDetail?.dob | date }}
                 </p>
                 <p><strong>Phone Number:</strong> {{ userDetail?.phone }}</p>
                 <p><strong>Address:</strong> {{ userDetail?.address }}</p>
                 <p>
-                  <strong>Country:</strong> {{ country }}
+                  <strong>Country:</strong> {{ country | titlecasepipe }}
                 </p>
                 <p>
                   <strong>State:</strong>
-                  {{
-                  state ? state : "-"
-                  }}
+                  {{ (state ? state : "-") | titlecasepipe }}
                 </p>
                 <p><strong>Zip Code:</strong> {{ userDetail?.zipCode }}</p>
                 <p><strong>Time Zone:</strong> {{ userDetail?.timeZone }}</p>
@@ -131,7 +130,7 @@
                   <strong>Locale:</strong>
                   {{ userDetail?.locale ? userDetail.locale : "-" }}
                 </p>
-                <p><strong>Is Admin:</strong>{{ userDetail?.isAdmin }}</p>
+                <p><strong>Is Admin: </strong>{{ userDetail?.isAdmin ? 'True' : 'False' }}</p>
               </div>
             </div>
           </p-overlayPanel>
@@ -145,7 +144,7 @@
       Trips</a>
     <a routerLink="/user/BucketLists" [routerLinkActive]="'activeLink'" *ngIf="!isAdmin"><i class="pi pi-tag"></i>
       Bucket List</a>
-    <a routerLink="/user/profile">Profile</a>
+    <a routerLink="/user/profile" [routerLinkActive]="'activeLink'" *ngIf="!isAdmin"><i class="pi pi-user"></i> Profile</a>
     <a routerLink="/admin/UsersTrips" [routerLinkActive]="'activeLink'" *ngIf="isAdmin"><i class="pi pi-briefcase"></i>
       User Trips</a>
     <a routerLink="/admin/Users" [routerLinkActive]="'activeLink'" *ngIf="isAdmin"><i class="pi pi-users"></i> Users</a>

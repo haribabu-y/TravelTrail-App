@@ -7,7 +7,12 @@ import { BucketList } from '../Models/bucketList';
 import { MultiSelect } from 'primeng/multiselect';
 import { MessageService } from 'primeng/api';
 import { countries } from '../constants/countries';
+import { exchangeRates } from '../constants/countries';
+import { exchangeRatesToINR } from '../constants/countries';
+import { currencyFormate } from '../constants/countries';
+
 import { Subscription } from 'rxjs';
+import { AdminService } from '../Services/admin.service';
 
 @Component({
   selector: 'app-user-trip',
@@ -20,6 +25,7 @@ export class UserTripComponent implements OnInit, OnDestroy {
     private sharedService: SharedService,
     private bucketListService: BucketListService,
     private messageService: MessageService,
+    private adminService: AdminService
   ){}
 
   @ViewChild('userTripTable') userTripTable: Table;
@@ -29,10 +35,6 @@ export class UserTripComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   isDarkMode: boolean = false
   darkThemeSubscription: Subscription;
-  getAllUsersSubscription: Subscription;
-  getUserBucketListSubscrition: Subscription;
-  editUserBucketlistSubscription: Subscription;
-  deleteUserbucketListSubscription: Subscription;
   currencyCode: string = '';
   currencySymbol: string = '';
   oldCurrencyCode: string
@@ -46,138 +48,66 @@ export class UserTripComponent implements OnInit, OnDestroy {
     this.oldCurrencyCode = JSON.parse(localStorage.getItem('user')).country.currencyCode;
     this.currencySymbol = JSON.parse(localStorage.getItem('user')).country.currencySymbol;
 
-    this.selectedColumns = [...this.columnOptions]
-    this.isLoading = true;
-    this.sharedService.getAllUsers().subscribe((users) => {
-      for (let user of users) {
-        // console.log(user);
-        let username: string = user.firstName + ' ' + (user.lastName ? user.lastName : '');
-        let gender: string = user.gender;
-        let age: number = new Date().getFullYear() - new Date(user.dob).getFullYear();
-        let id: string = user.id;
-        let countryObj = this.countries.find((country) => {
-          return country.code === user.country;
-        });
-        // console.log(countryObj);        
-        let country = Object.values(countryObj)[0];
-        // let country = user.country;
-        // console.log(country);        
-        
-        let totalDistance: number = 0;
-        let totalExpense: number = 0;
-        // console.log(user.trips);
-        if (user.trips) {
-          Object.keys(user.trips).forEach((key) => {
-            // console.log(user.trips[key]);
-            totalDistance += user.trips[key].totalDistance;
-            totalExpense += user.trips[key].totalExpense;
-          });
-        }
-        let adminCurrencyCode = this.currencyCode;
-        let userCurrencyCode= countryObj['currencyCode'];
-        // console.log(userCurrencyCode);
-        let userTotalExpense: number;
+    let userstrips = JSON.parse(localStorage.getItem('usersTrips'));
+    if(userstrips) {
+      this.usersTrips = userstrips;
+    } else {
+      this.loadUserTipsInTable();
+    }
 
-        userTotalExpense = this.convertExpenseToAdminCurrency(totalExpense,adminCurrencyCode,userCurrencyCode);
-        // console.log(userTotalExpense);        
-        let userDetail = new UserTrips( username, totalDistance, gender, age, userTotalExpense, id);
-        // console.log(userDetail);
-        this.usersTrips.push(userDetail);
-      }
-      this.isLoading = false;
-    });
+    this.selectedColumns = [...this.columnOptions]
+    // this.isLoading = true;
+    // this.sharedService.getAllUsers().subscribe((users) => {
+    //   for (let user of users) {
+    //     // console.log(user);
+    //     let username: string = user.firstName + ' ' + (user.lastName ? user.lastName : '');
+    //     let gender: string = user.gender;
+    //     let age: number = new Date().getFullYear() - new Date(user.dob).getFullYear();
+    //     let id: string = user.id;
+    //     let countryObj = this.countries.find((country) => {
+    //       return country.code === user.country;
+    //     });
+    //     // console.log(countryObj);        
+    //     let country = Object.values(countryObj)[0];
+    //     // let country = user.country;
+    //     // console.log(country);        
+        
+    //     let totalDistance: number = 0;
+    //     let totalExpense: number = 0;
+    //     // console.log(user.trips);
+    //     if (user.trips) {
+    //       Object.keys(user.trips).forEach((key) => {
+    //         // console.log(user.trips[key]);
+    //         totalDistance += user.trips[key].totalDistance;
+    //         totalExpense += user.trips[key].totalExpense;
+    //       });
+    //     }
+    //     let adminCurrencyCode = this.currencyCode;
+    //     let userCurrencyCode= countryObj['currencyCode'];
+    //     // console.log(userCurrencyCode);
+    //     let userTotalExpense: number;
+
+    //     userTotalExpense = this.convertExpenseToAdminCurrency(totalExpense,adminCurrencyCode,userCurrencyCode);
+    //     // console.log(userTotalExpense);        
+    //     let userDetail = new UserTrips( username, totalDistance, gender, age, userTotalExpense, id);
+    //     // console.log(userDetail);
+    //     this.usersTrips.push(userDetail);
+    //   }
+    //   this.isLoading = false;
+    // });
   }
 
-    currencyFormate = [
-      { name: '₹ Rupees', code: 'INR', symbol: '₹' },
-      { name: '$ Dollar', code: 'USD', symbol: '$' },
-      { name: '€ Euro', code: 'EUR', symbol: '€' },
-      { name: 'лв Lev', code: 'BGN', symbol: 'лв' },
-      { name: 'kn Kuna', code: 'HRK', symbol: 'kn' },
-      { name: 'Kč Koruna', code: 'CZK', symbol: 'Kč' },
-      { name: 'kr Krone', code: 'DKK', symbol: 'kr' },
-      { name: 'Ft Forint', code: 'HUF', symbol: 'Ft' },
-      { name: 'kr Króna', code: 'ISK', symbol: 'kr' },
-      { name: 'kr Krone', code: 'NOK', symbol: 'kr' },
-      { name: 'zł Zloty', code: 'PLN', symbol: 'zł' },
-      { name: 'lei Leu', code: 'RON', symbol: 'lei' },
-      { name: 'kr Krona', code: 'SEK', symbol: 'kr' },
-      { name: 'Fr Franc', code: 'CHF', symbol: 'Fr' },
-      { name: '£ Pound', code: 'GBP', symbol: '£' },
-      { name: '$ Peso', code: 'ARS', symbol: '$' },
-      { name: 'Bs. Boliviano', code: 'BOB', symbol: 'Bs.' },
-      { name: 'R$ Real', code: 'BRL', symbol: 'R$' },
-      { name: '$ Peso', code: 'CLP', symbol: '$' },
-      { name: '$ Peso', code: 'COP', symbol: '$' },
-      { name: 'G$ Dollar', code: 'GYD', symbol: 'G$' },
-      { name: '₲ Guarani', code: 'PYG', symbol: '₲' },
-      { name: 'S/. Sol', code: 'PEN', symbol: 'S/.' },
-      { name: '$ Dollar', code: 'SRD', symbol: '$' },
-      { name: '$U Peso', code: 'UYU', symbol: '$U' },
-      { name: 'Bs.S. Bolívar', code: 'VES', symbol: 'Bs.S.' },
-      { name: '¥ Yen', code: 'JPY', symbol: '¥' }
-  ];
+  loadUserTipsInTable() {
+    this.isLoading = true;
+    this.adminService.getUsersTrips().subscribe((userTrips) => {
+      // console.log(userTrips);
+      this.usersTrips = userTrips;
+      localStorage.setItem("usersTrips", JSON.stringify(this.usersTrips));
+      this.isLoading = false;   
+    })
+  }
 
-  exchangeRates: { [key: string]: number } = {
-    'INR': 1,        // Base
-    'USD': 0.012,    // US Dollar
-    'EUR': 0.011,    // Euro
-    'BGN': 0.021,    // Bulgarian Lev
-    'HRK': 0.083,    // Croatian Kuna (historical, now uses EUR)
-    'CZK': 0.27,     // Czech Koruna
-    'DKK': 0.082,    // Danish Krone
-    'HUF': 4.4,      // Hungarian Forint
-    'ISK': 1.6,      // Icelandic Króna
-    'NOK': 0.13,     // Norwegian Krone
-    'PLN': 0.048,    // Polish Złoty
-    'RON': 0.056,    // Romanian Leu
-    'SEK': 0.13,     // Swedish Krona
-    'CHF': 0.0108,   // Swiss Franc
-    'GBP': 0.0095,   // British Pound
-    'ARS': 10.2,     // Argentine Peso
-    'BOB': 0.083,    // Boliviano
-    'BRL': 0.065,    // Brazilian Real
-    'CLP': 11.1,     // Chilean Peso
-    'COP': 48.2,     // Colombian Peso
-    'GYD': 2.5,      // Guyanese Dollar
-    'PYG': 88.0,     // Paraguayan Guarani
-    'PEN': 0.045,    // Peruvian Sol
-    'SRD': 0.45,     // Surinamese Dollar
-    'UYU': 0.47,     // Uruguayan Peso
-    'VES': 0.44,     // Venezuelan Bolívar Soberano
-    // Duplicate currencies across countries
-    'JPY': 1.85
-  };
-
-  exchangeRatesToINR: { [key: string]: number } = {
-  'INR': 1,           // Base
-  'USD': 83.33,       // 1 USD = 83.33 INR
-  'EUR': 90.91,       // 1 EUR = 90.91 INR
-  'BGN': 47.62,       // 1 BGN = 47.62 INR
-  'HRK': 12.05,       // 1 HRK = 12.05 INR
-  'CZK': 3.70,        // 1 CZK = 3.70 INR
-  'DKK': 12.20,       // 1 DKK = 12.20 INR
-  'HUF': 0.227,       // 1 HUF = 0.227 INR
-  'ISK': 0.625,       // 1 ISK = 0.625 INR
-  'NOK': 7.69,        // 1 NOK = 7.69 INR
-  'PLN': 20.83,       // 1 PLN = 20.83 INR
-  'RON': 17.86,       // 1 RON = 17.86 INR
-  'SEK': 7.69,        // 1 SEK = 7.69 INR
-  'CHF': 92.59,       // 1 CHF = 92.59 INR
-  'GBP': 105.26,      // 1 GBP = 105.26 INR
-  'ARS': 0.098,       // 1 ARS = 0.098 INR
-  'BOB': 12.05,       // 1 BOB = 12.05 INR
-  'BRL': 15.38,       // 1 BRL = 15.38 INR
-  'CLP': 0.090,       // 1 CLP = 0.090 INR
-  'COP': 0.021,       // 1 COP = 0.021 INR
-  'GYD': 0.40,        // 1 GYD = 0.40 INR
-  'PYG': 0.0114,      // 1 PYG = 0.0114 INR
-  'PEN': 22.22,       // 1 PEN = 22.22 INR
-  'SRD': 2.22,        // 1 SRD = 2.22 INR
-  'UYU': 2.13,        // 1 UYU = 2.13 INR
-  'VES': 2.27,        // 1 VES = 2.27 INR
-  'JPY': 0.54         // 1 JPY = 0.54 INR
-};
+  currencyFormate = currencyFormate;
 
   selectedCurrency: any;
   userCurrencyCode: string;
@@ -188,12 +118,19 @@ export class UserTripComponent implements OnInit, OnDestroy {
     this.currencyCode = this.selectedCurrency.code;
     this.userCurrencyCode = this.selectedCurrency.code;
     this.usercurrencySymbol = this.selectedCurrency.symbol;
-        
+
+    // console.log(this.selectedCurrency);
+    // console.log(this.usersTrips);
+    this.usersTrips.forEach((trip) => {
+      trip.totalExpense = this.convertAmount(trip.totalExpense);
+    })
+    this.oldCurrencyCode = this.selectedCurrency.code;
+    
   }
   convertAmount(baseAmount?: number): number {
     // console.log("Base mount" + baseAmount);   
     // console.log(this.currencyCode);       
-    if (this.selectedCurrency && this.exchangeRates[this.selectedCurrency.code]) {
+    if (this.selectedCurrency && exchangeRates[this.selectedCurrency.code]) {
       // let amountInINR = baseAmount * this.exchangeRatesToINR[this.oldCurrencyCode]
       // console.log(amountInINR);      
       // const rate = this.exchangeRates[this.selectedCurrency.code];   
@@ -206,31 +143,36 @@ export class UserTripComponent implements OnInit, OnDestroy {
     return baseAmount;
   }
 
-  convertExpenseToAdminCurrency(amount: number, adminCurrencyCode: string, usercurrencycode: string): number | null {
-    const rateToINRUser = this.exchangeRates[usercurrencycode];
-    const reteToINRAdmin = this.exchangeRates[adminCurrencyCode];
-    if(!rateToINRUser || !reteToINRAdmin) {
-      // alert("Invalid currency codes or missing exchange rates");
-      return null;
-    }
-    //converting thr user amount to INR
-    const userAmountInINR = amount / rateToINRUser;
-    // console.log(userAmountInINR);
-    //converting the user INR amount to admin currency
-    const amountInAdminCurrency = userAmountInINR * reteToINRAdmin;
-    // console.log(amountInAdminCurrency);
+  // convertExpenseToAdminCurrency(amount: number, adminCurrencyCode: string, usercurrencycode: string): number | null {
+  //   const rateToINRUser = exchangeRates[usercurrencycode];
+  //   const reteToINRAdmin = exchangeRates[adminCurrencyCode];
+  //   if(!rateToINRUser || !reteToINRAdmin) {
+  //     // alert("Invalid currency codes or missing exchange rates");
+  //     return null;
+  //   }
+  //   //converting thr user amount to INR
+  //   const userAmountInINR = amount / rateToINRUser;
+  //   // console.log(userAmountInINR);
+  //   //converting the user INR amount to admin currency
+  //   const amountInAdminCurrency = userAmountInINR * reteToINRAdmin;
+  //   // console.log(amountInAdminCurrency);
 
-    return parseFloat(amountInAdminCurrency.toFixed(2));        
-  }
+  //   return parseFloat(amountInAdminCurrency.toFixed(2));        
+  // }
 
   convertExpenseToselectedCurrency(amount: number, sourceCurrencyCode: string, resultcurrencyCode: string) {
+
+    // console.log(sourceCurrencyCode);
+    // console.log(resultcurrencyCode);    
     
-    if(!this.exchangeRatesToINR[sourceCurrencyCode] || !this.exchangeRatesToINR[resultcurrencyCode]) {
+    // this.oldCurrencyCode = resultcurrencyCode;
+    
+    if(!exchangeRatesToINR[sourceCurrencyCode] || !exchangeRatesToINR[resultcurrencyCode]) {
       console.error("Unsupported currency code");      
     }
-    let amountToINR: number = amount * this.exchangeRatesToINR[sourceCurrencyCode];
+    let amountToINR: number = amount * exchangeRatesToINR[sourceCurrencyCode];
     // console.log(amountToINR);
-    const convertedAmount = amountToINR / this.exchangeRatesToINR[resultcurrencyCode];
+    const convertedAmount = amountToINR / exchangeRatesToINR[resultcurrencyCode];
     // console.log(convertedAmount);
         
     return convertedAmount;
@@ -267,7 +209,7 @@ export class UserTripComponent implements OnInit, OnDestroy {
     }
   }
 
-    @ViewChild('rowSelect') rowSelect!: ElementRef;
+  @ViewChild('rowSelect') rowSelect!: ElementRef;
   numOfRows: number = 10;
   showRowsChange: boolean = false;
   rowOptions = [
@@ -327,9 +269,9 @@ export class UserTripComponent implements OnInit, OnDestroy {
     this.userId = userid;
     this.bucketListDailog = true;
     this.isbucketListloading = true;
-    this.bucketListService.getAllBucketLists(userid).subscribe((res) => {
+    this.bucketListService.getAllBucketLists(userid).subscribe((userBucketLists) => {
       // console.log(res);   
-      this.bucketListItems = res;
+      this.bucketListItems = userBucketLists;
       this.isbucketListloading = false;
       if(this.bucketListItems.length === 0) {
         this.haveBucketLists = true;
@@ -533,18 +475,6 @@ export class UserTripComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if(this.darkThemeSubscription) {
       this.darkThemeSubscription.unsubscribe();
-    }
-    if(this.getAllUsersSubscription) {
-      this.getAllUsersSubscription.unsubscribe();
-    }
-    if(this.getUserBucketListSubscrition) {
-      this.getUserBucketListSubscrition.unsubscribe();
-    }
-    if(this.editUserBucketlistSubscription) {
-      this.editUserBucketlistSubscription.unsubscribe();
-    }
-    if(this.deleteUserbucketListSubscription) {
-      this.deleteUserbucketListSubscription.unsubscribe();
     }
   }
 }

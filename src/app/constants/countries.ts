@@ -472,3 +472,96 @@ export const phoneCodes = [
 
 export const secretKey: string = "TravelTrail";
 
+
+export const currencyFormate = [
+      { name: '₹ Rupees', code: 'INR', symbol: '₹' },
+      { name: '$ Dollar', code: 'USD', symbol: '$' },
+      { name: '€ Euro', code: 'EUR', symbol: '€' },
+      { name: 'лв Lev', code: 'BGN', symbol: 'лв' },
+      { name: 'kn Kuna', code: 'HRK', symbol: 'kn' },
+      { name: 'Kč Koruna', code: 'CZK', symbol: 'Kč' },
+      { name: 'kr Krone', code: 'DKK', symbol: 'kr' },
+      { name: 'Ft Forint', code: 'HUF', symbol: 'Ft' },
+      { name: 'kr Króna', code: 'ISK', symbol: 'kr' },
+      { name: 'kr Krone', code: 'NOK', symbol: 'kr' },
+      { name: 'zł Zloty', code: 'PLN', symbol: 'zł' },
+      { name: 'lei Leu', code: 'RON', symbol: 'lei' },
+      { name: 'kr Krona', code: 'SEK', symbol: 'kr' },
+      { name: 'Fr Franc', code: 'CHF', symbol: 'Fr' },
+      { name: '£ Pound', code: 'GBP', symbol: '£' },
+      { name: '$ Peso', code: 'ARS', symbol: '$' },
+      { name: 'Bs. Boliviano', code: 'BOB', symbol: 'Bs.' },
+      { name: 'R$ Real', code: 'BRL', symbol: 'R$' },
+      { name: '$ Peso', code: 'CLP', symbol: '$' },
+      { name: '$ Peso', code: 'COP', symbol: '$' },
+      { name: 'G$ Dollar', code: 'GYD', symbol: 'G$' },
+      { name: '₲ Guarani', code: 'PYG', symbol: '₲' },
+      { name: 'S/. Sol', code: 'PEN', symbol: 'S/.' },
+      { name: '$ Dollar', code: 'SRD', symbol: '$' },
+      { name: '$U Peso', code: 'UYU', symbol: '$U' },
+      { name: 'Bs.S. Bolívar', code: 'VES', symbol: 'Bs.S.' },
+      { name: '¥ Yen', code: 'JPY', symbol: '¥' }, // For comparison only
+  ];
+
+export const exchangeRates: { [key: string]: number } = {
+    'INR': 1,        // Base
+    'USD': 0.012,    // US Dollar
+    'EUR': 0.011,    // Euro
+    'BGN': 0.021,    // Bulgarian Lev
+    'HRK': 0.083,    // Croatian Kuna (historical, now uses EUR)
+    'CZK': 0.27,     // Czech Koruna
+    'DKK': 0.082,    // Danish Krone
+    'HUF': 4.4,      // Hungarian Forint
+    'ISK': 1.6,      // Icelandic Króna
+    'NOK': 0.13,     // Norwegian Krone
+    'PLN': 0.048,    // Polish Złoty
+    'RON': 0.056,    // Romanian Leu
+    'SEK': 0.13,     // Swedish Krona
+    'CHF': 0.0108,   // Swiss Franc
+    'GBP': 0.0095,   // British Pound
+    'ARS': 10.2,     // Argentine Peso
+    'BOB': 0.083,    // Boliviano
+    'BRL': 0.065,    // Brazilian Real
+    'CLP': 11.1,     // Chilean Peso
+    'COP': 48.2,     // Colombian Peso
+    'GYD': 2.5,      // Guyanese Dollar
+    'PYG': 88.0,     // Paraguayan Guarani
+    'PEN': 0.045,    // Peruvian Sol
+    'SRD': 0.45,     // Surinamese Dollar
+    'UYU': 0.47,     // Uruguayan Peso
+    'VES': 0.44,     // Venezuelan Bolívar Soberano
+    // Duplicate currencies across countries
+    'JPY': 1.85
+  };
+
+
+  export const exchangeRatesToINR: { [key: string]: number } = {
+  'INR': 1,           // Base
+  'USD': 83.33,       // 1 USD = 83.33 INR
+  'EUR': 90.91,       // 1 EUR = 90.91 INR
+  'BGN': 47.62,       // 1 BGN = 47.62 INR
+  'HRK': 12.05,       // 1 HRK = 12.05 INR
+  'CZK': 3.70,        // 1 CZK = 3.70 INR
+  'DKK': 12.20,       // 1 DKK = 12.20 INR
+  'HUF': 0.227,       // 1 HUF = 0.227 INR
+  'ISK': 0.625,       // 1 ISK = 0.625 INR
+  'NOK': 7.69,        // 1 NOK = 7.69 INR
+  'PLN': 20.83,       // 1 PLN = 20.83 INR
+  'RON': 17.86,       // 1 RON = 17.86 INR
+  'SEK': 7.69,        // 1 SEK = 7.69 INR
+  'CHF': 92.59,       // 1 CHF = 92.59 INR
+  'GBP': 105.26,      // 1 GBP = 105.26 INR
+  'ARS': 0.098,       // 1 ARS = 0.098 INR
+  'BOB': 12.05,       // 1 BOB = 12.05 INR
+  'BRL': 15.38,       // 1 BRL = 15.38 INR
+  'CLP': 0.090,       // 1 CLP = 0.090 INR
+  'COP': 0.021,       // 1 COP = 0.021 INR
+  'GYD': 0.40,        // 1 GYD = 0.40 INR
+  'PYG': 0.0114,      // 1 PYG = 0.0114 INR
+  'PEN': 22.22,       // 1 PEN = 22.22 INR
+  'SRD': 2.22,        // 1 SRD = 2.22 INR
+  'UYU': 2.13,        // 1 UYU = 2.13 INR
+  'VES': 2.27,        // 1 VES = 2.27 INR
+  'JPY': 0.54         // 1 JPY = 0.54 INR
+};
+

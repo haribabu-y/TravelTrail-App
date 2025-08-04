@@ -6,6 +6,7 @@ import { SharedService } from '../Services/shared.service';
 import { Subscription } from 'rxjs';
 import { countries } from '../constants/countries';
 import { states } from '../constants/countries';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-header',
@@ -27,7 +28,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private authService: Authservice,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private messageService: MessageService
   ) {}
 
   currentPage: string = this.router.url.split('/')[2];
@@ -90,7 +92,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (localuser.isAdmin) {
       this.usertype === 'admin';
       this.isAdmin = true;
-      this.router.navigate(['/admin/UsersTrips']);
+      // this.router.navigate(['/admin/UsersTrips']);
       this.sharedService.getAllUsers().subscribe({
           next: (allUsers) => {
             this.currentUser = allUsers.find((user) => {
@@ -118,6 +120,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 this.profileImage = `https://ui-avatars.com/api/?name=${firstName}+${lastName ? lastName : ''}&bold=true`
               }
             }
+          }, error: (err) => {
+            this.messageService.add({severity:"error", summary:"Error", detail: err.message})
           }
         });
       this.username = localuser.username;
@@ -150,6 +154,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
             let lastName = this.currentUser.lastName;
             this.profileImage = `https://ui-avatars.com/api/?name=${firstName}+${lastName ? lastName : ''}&bold=true`
           }
+        }, error: (err) => {
+          this.messageService.add({severity:"error", summary:"Error", detail: err.message})
         }
       });
     }  
@@ -177,6 +183,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.userExpenseSubscription.unsubscribe();
+    if(this.userExpenseSubscription) {
+      this.userExpenseSubscription.unsubscribe();
+    }    
   }
 }

@@ -38,11 +38,13 @@ export class BucketListService {
         }))
     }
 
-    addNewBucketListitem(data: BucketList) {
+    addNewBucketListitem(data: BucketList) {     
+        console.log(this.currentUser.id);           
         return this.http.post(`https://travektrail-app-default-rtdb.firebaseio.com/users/${this.currentUser.id}/bucketLists.json`, data)
     }
 
     deleteUserbucketItem(id: string,userid?: string) {
+        console.log(this.currentUser);        
         if(userid) {
             return this.http.delete(`https://travektrail-app-default-rtdb.firebaseio.com/users/${userid}/bucketLists/${id}.json`)
         }
@@ -50,6 +52,7 @@ export class BucketListService {
     }
 
     updateUserBucketItem(id: string, data: BucketList, userId?: string) {
+        console.log(id);        
         if(userId) {
             return this.http.put(`https://travektrail-app-default-rtdb.firebaseio.com/users/${userId}/bucketLists/${id}.json`,data)
         }

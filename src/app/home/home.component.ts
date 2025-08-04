@@ -368,7 +368,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.isDarkMode = false;
     }
-
   }
 
   ngAfterViewInit(): void {

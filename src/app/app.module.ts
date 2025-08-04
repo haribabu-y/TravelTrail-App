@@ -49,6 +49,19 @@ import { ProfileComponent } from './profile/profile.component';
 
 import { AccordionModule } from 'primeng/accordion';
 
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { authInterceptorSevice } from './Services/auth-interceptor.service';
+import { HighlightRowDirective } from './CustomDirectives/highlight-row.directive';
+import { SetBackgroundColorDirective } from './CustomDirectives/set-background-color.directive';
+import { SearchFilterPipe } from './CustomPipes/search-filter.pipe';
+
+import { CustomClassDirective } from './CustomDirectives/customClass.directive';
+import { CustomIfDirective } from './CustomDirectives/customIf.directive';
+import { CustomTitlecasePipe } from './CustomPipes/CustomTitlecase.pipe';
+import { DigitsOnlyDirective } from './CustomDirectives/digitesOnly.directive';
+import { StringOnlyDirective } from './CustomDirectives/stringOnly.directive';
+import { HandleErrorInterceptor } from './Services/handle-error.interceptor';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -62,7 +75,15 @@ import { AccordionModule } from 'primeng/accordion';
     UsersDetailsComponent,
     LoaderComponent,
     NotFoundComponent,
-    ProfileComponent
+    ProfileComponent,
+    HighlightRowDirective,
+    SetBackgroundColorDirective,
+    SearchFilterPipe,
+    CustomClassDirective,
+    CustomIfDirective,
+    CustomTitlecasePipe,
+    DigitsOnlyDirective,
+    StringOnlyDirective
   ],
   imports: [
     BrowserModule,
@@ -88,7 +109,11 @@ import { AccordionModule } from 'primeng/accordion';
     TooltipModule,
     AccordionModule
   ],
-  providers: [MessageService],
+  providers: [
+    MessageService,
+    {provide: HTTP_INTERCEPTORS, useClass: HandleErrorInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: authInterceptorSevice, multi: true},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

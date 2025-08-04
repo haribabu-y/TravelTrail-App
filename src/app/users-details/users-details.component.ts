@@ -15,8 +15,12 @@ import { timezones } from '../constants/countries';
 import { locales } from '../constants/countries';
 import { phoneCodes } from '../constants/countries';
 import { secretKey } from '../constants/countries';
+import { currencyFormate } from '../constants/countries';
+import { exchangeRates } from '../constants/countries';
+import { exchangeRatesToINR } from '../constants/countries';
 import * as CryptoJS from 'crypto-js';
 import { Subscription } from 'rxjs';
+import { AdminService } from '../Services/admin.service';
 
 @Component({
   selector: 'app-users-details',
@@ -29,12 +33,15 @@ export class UsersDetailsComponent implements OnInit, OnDestroy {
     private sharedService: SharedService,
     private messageService: MessageService,
     private http: HttpClient,
+    private authService: Authservice,
+    private adminService: AdminService
   ) {}
   
   @ViewChild('usersDetailTable') usersDetailTable: Table;
   users: UserDetail[] = [];
   isDarkMode: boolean = false;
   darkThemeSubscription: Subscription;
+  loadTableObservableSubscription: Subscription;
   currencyCode: string;
   oldCurrencyCode: string;
   isLoading: boolean = false;
@@ -44,10 +51,18 @@ export class UsersDetailsComponent implements OnInit, OnDestroy {
   timeZones = timezones;
   locales = locales;
   phoneCode = phoneCodes;
+  currencyFormate = currencyFormate;
 
   ngOnInit(): void {
     
-    this.getAllUserDetails();
+    // this.getAllUserDetails();
+    let allUsers = JSON.parse(localStorage.getItem('allUsers'));
+    if(allUsers) {
+      this.users = allUsers
+    } else {
+      this.loadUserdetailsInTable();
+    }
+
     this.selectedColumns = [...this.columnOptions];
     
     this.addUserForm1 = new FormGroup({
@@ -75,138 +90,63 @@ export class UsersDetailsComponent implements OnInit, OnDestroy {
 
     this.currencyCode = JSON.parse(localStorage.getItem('user')).country['currencyCode'];
     this.oldCurrencyCode = JSON.parse(localStorage.getItem('user')).country['currencyCode'];
+
+    this.loadTableObservableSubscription = this.authService.loadTableObservable.subscribe((res) => {
+      console.log(res);
+      this.loadUserdetailsInTable();
+    })
+
   }
 
-  getAllUserDetails() {
+  loadUserdetailsInTable() {
     this.isLoading = true;
-    let allUsers: UserDetail[] = [];
-    this.sharedService.getAllUsers().subscribe((users) => {
-      for(let user of users) {
-        // console.log(user);
-        let userimage: string = user.profileImage ? user.profileImage : `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName ? user.lastName : ''}&bold=true`;
-        let username: string = user.firstName + ' ' + (user.lastName ? user.lastName : '');
-        let id: string = user.id;
-        let age: number = new Date().getFullYear() - new Date(user.dob).getFullYear();
-        // console.log(user.country);        
-        let countryObj = this.countries.find((country) => {
-          return country.code === user.country;
-        });
-        // console.log(countryObj);        
-        let country = Object.values(countryObj)[0];
-        // console.log(country);        
-        let totalExpense: number = 0;
-        if (user.trips) {
-          Object.keys(user.trips).forEach((key) => {
-            // console.log(user.trips[key]);
-            totalExpense += user.trips[key].totalExpense;
-          });
-        }
-        let adminCurrencyCode = this.currencyCode;
-        let userCurrencyCode= countryObj['currencyCode']; 
-        // console.log(adminCurrencyCode);
-        // console.log(userCurrencyCode); 
-        
-        let userTotalExpense: number = this.convertExpenseToAdminCurrency(totalExpense,adminCurrencyCode,userCurrencyCode)
-        // console.log(userTotalExpense);        
-        let userDetail = new UserDetail(id, username, userimage, age, country, userTotalExpense);
-        allUsers.push(userDetail);   
-      }
-      // console.log(this.users);
-      this.users = allUsers;
-      this.isLoading = false;
-    });
+    this.adminService.getAllUserDetails().subscribe((users) => {
+      // console.log(users);
+      this.users = users;
+      localStorage.setItem("allUsers", JSON.stringify(users));
+      this.isLoading = false;     
+    })
   }
 
-  currencyFormate = [
-      { name: '₹ Rupees', code: 'INR', symbol: '₹' },
-      { name: '$ Dollar', code: 'USD', symbol: '$' },
-      { name: '€ Euro', code: 'EUR', symbol: '€' },
-      { name: 'лв Lev', code: 'BGN', symbol: 'лв' },
-      { name: 'kn Kuna', code: 'HRK', symbol: 'kn' },
-      { name: 'Kč Koruna', code: 'CZK', symbol: 'Kč' },
-      { name: 'kr Krone', code: 'DKK', symbol: 'kr' },
-      { name: 'Ft Forint', code: 'HUF', symbol: 'Ft' },
-      { name: 'kr Króna', code: 'ISK', symbol: 'kr' },
-      { name: 'kr Krone', code: 'NOK', symbol: 'kr' },
-      { name: 'zł Zloty', code: 'PLN', symbol: 'zł' },
-      { name: 'lei Leu', code: 'RON', symbol: 'lei' },
-      { name: 'kr Krona', code: 'SEK', symbol: 'kr' },
-      { name: 'Fr Franc', code: 'CHF', symbol: 'Fr' },
-      { name: '£ Pound', code: 'GBP', symbol: '£' },
-      { name: '$ Peso', code: 'ARS', symbol: '$' },
-      { name: 'Bs. Boliviano', code: 'BOB', symbol: 'Bs.' },
-      { name: 'R$ Real', code: 'BRL', symbol: 'R$' },
-      { name: '$ Peso', code: 'CLP', symbol: '$' },
-      { name: '$ Peso', code: 'COP', symbol: '$' },
-      { name: 'G$ Dollar', code: 'GYD', symbol: 'G$' },
-      { name: '₲ Guarani', code: 'PYG', symbol: '₲' },
-      { name: 'S/. Sol', code: 'PEN', symbol: 'S/.' },
-      { name: '$ Dollar', code: 'SRD', symbol: '$' },
-      { name: '$U Peso', code: 'UYU', symbol: '$U' },
-      { name: 'Bs.S. Bolívar', code: 'VES', symbol: 'Bs.S.' },
-      { name: '¥ Yen', code: 'JPY', symbol: '¥' }, // For comparison only
-  ];
-
-exchangeRates: { [key: string]: number } = {
-    'INR': 1,        // Base
-    'USD': 0.012,    // US Dollar
-    'EUR': 0.011,    // Euro
-    'BGN': 0.021,    // Bulgarian Lev
-    'HRK': 0.083,    // Croatian Kuna (historical, now uses EUR)
-    'CZK': 0.27,     // Czech Koruna
-    'DKK': 0.082,    // Danish Krone
-    'HUF': 4.4,      // Hungarian Forint
-    'ISK': 1.6,      // Icelandic Króna
-    'NOK': 0.13,     // Norwegian Krone
-    'PLN': 0.048,    // Polish Złoty
-    'RON': 0.056,    // Romanian Leu
-    'SEK': 0.13,     // Swedish Krona
-    'CHF': 0.0108,   // Swiss Franc
-    'GBP': 0.0095,   // British Pound
-    'ARS': 10.2,     // Argentine Peso
-    'BOB': 0.083,    // Boliviano
-    'BRL': 0.065,    // Brazilian Real
-    'CLP': 11.1,     // Chilean Peso
-    'COP': 48.2,     // Colombian Peso
-    'GYD': 2.5,      // Guyanese Dollar
-    'PYG': 88.0,     // Paraguayan Guarani
-    'PEN': 0.045,    // Peruvian Sol
-    'SRD': 0.45,     // Surinamese Dollar
-    'UYU': 0.47,     // Uruguayan Peso
-    'VES': 0.44,     // Venezuelan Bolívar Soberano
-    // Duplicate currencies across countries
-    'JPY': 1.85
-  };
-
-  exchangeRatesToINR: { [key: string]: number } = {
-  'INR': 1,           // Base
-  'USD': 83.33,       // 1 USD = 83.33 INR
-  'EUR': 90.91,       // 1 EUR = 90.91 INR
-  'BGN': 47.62,       // 1 BGN = 47.62 INR
-  'HRK': 12.05,       // 1 HRK = 12.05 INR
-  'CZK': 3.70,        // 1 CZK = 3.70 INR
-  'DKK': 12.20,       // 1 DKK = 12.20 INR
-  'HUF': 0.227,       // 1 HUF = 0.227 INR
-  'ISK': 0.625,       // 1 ISK = 0.625 INR
-  'NOK': 7.69,        // 1 NOK = 7.69 INR
-  'PLN': 20.83,       // 1 PLN = 20.83 INR
-  'RON': 17.86,       // 1 RON = 17.86 INR
-  'SEK': 7.69,        // 1 SEK = 7.69 INR
-  'CHF': 92.59,       // 1 CHF = 92.59 INR
-  'GBP': 105.26,      // 1 GBP = 105.26 INR
-  'ARS': 0.098,       // 1 ARS = 0.098 INR
-  'BOB': 12.05,       // 1 BOB = 12.05 INR
-  'BRL': 15.38,       // 1 BRL = 15.38 INR
-  'CLP': 0.090,       // 1 CLP = 0.090 INR
-  'COP': 0.021,       // 1 COP = 0.021 INR
-  'GYD': 0.40,        // 1 GYD = 0.40 INR
-  'PYG': 0.0114,      // 1 PYG = 0.0114 INR
-  'PEN': 22.22,       // 1 PEN = 22.22 INR
-  'SRD': 2.22,        // 1 SRD = 2.22 INR
-  'UYU': 2.13,        // 1 UYU = 2.13 INR
-  'VES': 2.27,        // 1 VES = 2.27 INR
-  'JPY': 0.54         // 1 JPY = 0.54 INR
-};
+  // getAllUserDetails() {
+  //   this.isLoading = true;
+  //   let allUsers: UserDetail[] = [];
+  //   this.sharedService.getAllUsers().subscribe((users) => {
+  //     for(let user of users) {
+  //       // console.log(user);
+  //       let userimage: string = user.profileImage ? user.profileImage : `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName ? user.lastName : ''}&bold=true`;
+  //       let username: string = user.firstName + ' ' + (user.lastName ? user.lastName : '');
+  //       let id: string = user.id;
+  //       let age: number = new Date().getFullYear() - new Date(user.dob).getFullYear();
+  //       // console.log(user.country);        
+  //       let countryObj = this.countries.find((country) => {
+  //         return country.code === user.country;
+  //       });
+  //       // console.log(countryObj);        
+  //       let country = Object.values(countryObj)[0];
+  //       // console.log(country);        
+  //       let totalExpense: number = 0;
+  //       if (user.trips) {
+  //         Object.keys(user.trips).forEach((key) => {
+  //           // console.log(user.trips[key]);
+  //           totalExpense += user.trips[key].totalExpense;
+  //         });
+  //       }
+  //       let adminCurrencyCode = this.currencyCode;
+  //       let userCurrencyCode= countryObj['currencyCode']; 
+  //       // console.log(adminCurrencyCode);
+  //       // console.log(userCurrencyCode); 
+        
+  //       let userTotalExpense: number = this.convertExpenseToAdminCurrency(totalExpense,adminCurrencyCode,userCurrencyCode)
+  //       // console.log(userTotalExpense);        
+  //       let userDetail = new UserDetail(id, username, userimage, age, country, userTotalExpense);
+  //       allUsers.push(userDetail);   
+  //     }
+  //     // console.log(this.users);
+  //     this.users = allUsers;
+  //     this.isLoading = false;
+  //   });
+  // }
 
   selectedCurrency: any;
   usercurrencySymbol: string;
@@ -215,13 +155,19 @@ exchangeRates: { [key: string]: number } = {
     // this.oldCurrencyCode = this.currencyCode;
     this.currencyCode = this.selectedCurrency.code;
     this.usercurrencySymbol = this.selectedCurrency.symbol;
+
+    this.users.forEach((user) => {
+      user.totalExpense = this.convertAmount(user.totalExpense);
+    })
+    this.oldCurrencyCode = this.selectedCurrency.code;
+    
   }
 
   convertAmount(baseAmount?: number): number {
-    if (this.selectedCurrency && this.exchangeRates[this.selectedCurrency.code]) {
+    if (this.selectedCurrency && exchangeRates[this.selectedCurrency.code]) {
       // console.log(this.oldCurrencyCode);      
       // console.log(this.selectedCurrency.code);      
-      const rate = this.exchangeRates[this.selectedCurrency.code];
+      const rate = exchangeRates[this.selectedCurrency.code];
       // console.log(rate);
       // console.log(baseAmount);
       // console.log(this.convertExpenseToselectedCurrency(baseAmount,this.oldCurrencyCode,this.selectedCurrency.code));      
@@ -234,8 +180,8 @@ exchangeRates: { [key: string]: number } = {
     convertExpenseToAdminCurrency(amount: number, adminCurrencyCode: string, usercurrencycode: string): number | null {
       // console.log(adminCurrencyCode);
       // console.log(usercurrencycode);      
-    const rateToINRUser = this.exchangeRates[usercurrencycode];
-    const reteToINRAdmin = this.exchangeRates[adminCurrencyCode];
+    const rateToINRUser = exchangeRates[usercurrencycode];
+    const reteToINRAdmin = exchangeRates[adminCurrencyCode];
     if(!rateToINRUser || !reteToINRAdmin) {
       // alert("Invalid currency codes or missing exchange rates");
       return null;
@@ -252,9 +198,11 @@ exchangeRates: { [key: string]: number } = {
 
   convertExpenseToselectedCurrency(amount: number, sourceCurrencyCode: string, resultcurrencyCode: string) {
     
-    let amountToINR: number = amount * this.exchangeRatesToINR[sourceCurrencyCode];
+    // this.oldCurrencyCode = resultcurrencyCode;
+
+    let amountToINR: number = amount * exchangeRatesToINR[sourceCurrencyCode];
     // console.log(amountToINR);
-    const convertedAmount = amountToINR / this.exchangeRatesToINR[resultcurrencyCode];
+    const convertedAmount = amountToINR / exchangeRatesToINR[resultcurrencyCode];
     // console.log(convertedAmount);
         
     return convertedAmount;
@@ -263,8 +211,8 @@ exchangeRates: { [key: string]: number } = {
   filterGlobal(text: string) {
     return this.usersDetailTable.filterGlobal(text, 'contains');
   }
-
-    reloadAll(text: string) {
+  
+  reloadAll(text: string) {
     if(text === '') {
       this.filterGlobal(text);
     }
@@ -332,6 +280,7 @@ exchangeRates: { [key: string]: number } = {
     this.selectedGender = 'male';
     this.addUserForm1.get('username').enable();
     this.addUserForm1.get('password').enable();
+    this.addUserForm1.get('email').enable();
     this.showAddOrUpdateDailog = true;
   }
 
@@ -417,7 +366,8 @@ exchangeRates: { [key: string]: number } = {
         this.userToEditId = ''; 
         this.messageService.add({severity:'success', summary:'Success', detail:'User Successfully Updated!.'})
         this.showAddOrUpdateDailog = false;
-        this.getAllUserDetails();
+        // this.getAllUserDetails();
+        this.loadUserdetailsInTable();
       });
       return;
     } 
@@ -450,16 +400,23 @@ exchangeRates: { [key: string]: number } = {
           return;
         }
         
-        this.http.post('https://travektrail-app-default-rtdb.firebaseio.com/users.json', newUser)
-      .subscribe((response) => {
-        // console.log(response);
-        // console.log(newUser);  
+        this.authService.signup(newUser.email, password, newUser, true);
         this.addUserForm1.reset(); 
         this.messageService.add({severity:'success', summary:'Success', detail:'UserSuccessFully Added!.'})
         this.profileImage = 'assets/users/defaultProfileImg.jpg';
         this.showAddOrUpdateDailog = false;
-        this.getAllUserDetails();
-      });
+        // this.getAllUserDetails();
+
+      //   this.http.post('https://travektrail-app-default-rtdb.firebaseio.com/users.json', newUser)
+      // .subscribe((response) => {
+      //   // console.log(response);
+      //   // console.log(newUser);  
+      //   this.addUserForm1.reset(); 
+      //   this.messageService.add({severity:'success', summary:'Success', detail:'UserSuccessFully Added!.'})
+      //   this.profileImage = 'assets/users/defaultProfileImg.jpg';
+      //   this.showAddOrUpdateDailog = false;
+      //   this.getAllUserDetails();
+      // });
         
       }
     })
@@ -482,6 +439,7 @@ exchangeRates: { [key: string]: number } = {
     if(userId) {
       this.addUserForm1.get('username').disable();
       this.addUserForm1.get('password').disable();
+      this.addUserForm1.get('email').disable();
     }
     this.http.get(`https://travektrail-app-default-rtdb.firebaseio.com/users/${userId}.json`).subscribe((user: User) => {
       this.userToEdit = user;
@@ -513,6 +471,7 @@ exchangeRates: { [key: string]: number } = {
   }
   showDeleteUserdailog: boolean = false;
   userId: string = '';
+
   showDeleteUser(id: string) {
     // console.log(id); 
     this.userId = id;
@@ -524,11 +483,39 @@ exchangeRates: { [key: string]: number } = {
   }
 
   deleteUser() {
-    this.http.delete(`https://travektrail-app-default-rtdb.firebaseio.com/users/${this.userId}.json`).subscribe((res) => {
-      this.messageService.add({severity:'success', summary:'Success', detail:`User Successfully Deleted!.`})
-    this.showDeleteUserdailog = false;
-    this.getAllUserDetails();
-    });
+    // console.log(this.userId);  
+    this.http.get(`https://travektrail-app-default-rtdb.firebaseio.com/users/${this.userId}.json`).subscribe((res) => {
+      // console.log(res);
+      let email = res['email'];
+      let encryptedPassword = res['password'];
+      let code = CryptoJS.AES.decrypt(encryptedPassword, secretKey);
+      let decryptedPassword = code.toString(CryptoJS.enc.Utf8);
+      this.http.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA0CxBGkhNtT1q48ZjBhu4aFn1FsQgYoxs', {email: email, password: decryptedPassword, returnSecureToken: true}).subscribe((res) => {
+        // console.log(res);
+        // console.log(res['idToken']); 
+        this.deleteAuthUser(res['idToken']);            
+      })
+                  
+    }) 
+    // this.http.delete(`https://travektrail-app-default-rtdb.firebaseio.com/users/${this.userId}.json`).subscribe((res) => {
+    //   this.messageService.add({severity:'success', summary:'Success', detail:`User Successfully Deleted!.`})
+    // this.showDeleteUserdailog = false;
+    // // this.getAllUserDetails();
+    // this.loadUserdetailsInTable();
+    // });
+  }
+
+  deleteAuthUser(tokenId: string) {
+    let idToken = {idToken: tokenId};
+    this.http.post('https://identitytoolkit.googleapis.com/v1/accounts:delete?key=AIzaSyA0CxBGkhNtT1q48ZjBhu4aFn1FsQgYoxs', idToken).subscribe((res) => {
+      // console.log(res); 
+      this.http.delete(`https://travektrail-app-default-rtdb.firebaseio.com/users/${this.userId}.json`).subscribe((res) => {
+        this.messageService.add({severity:'success', summary:'Success', detail:`User Successfully Deleted!.`})
+        this.showDeleteUserdailog = false;
+        // this.getAllUserDetails();
+        this.loadUserdetailsInTable();
+      });     
+    })
   }
 
   closeDeleteUserDailog() {
@@ -578,6 +565,9 @@ exchangeRates: { [key: string]: number } = {
   ngOnDestroy(): void {
     if(this.darkThemeSubscription) {
       this.darkThemeSubscription.unsubscribe();
+    }
+    if(this.loadTableObservableSubscription) {
+      this.loadTableObservableSubscription.unsubscribe();
     }
   }
   

@@ -1,7 +1,7 @@
 
-<app-loader *ngIf="isLoading"></app-loader>
+<app-loader *appIf="isLoading"></app-loader>
 <p-toast></p-toast>
-<div class="trip-table" [ngClass]="isDarkMode ? 'dark-mode' : ''" *ngIf="!isLoading">
+<div class="trip-table" [appClass]="{className: 'dark-mode', condition: isDarkMode}" *appIf="!isLoading">
   <p-table
     #tripTable
     [value]="userTrips"
@@ -37,7 +37,7 @@
             <i class="pi pi-bars"></i>
             <span>{{rows}}</span>
         </div>
-        <div *ngIf="showRowsChange" class="numRowChanges" >
+        <div *appIf="showRowsChange" class="numRowChanges" >
             <p-listbox
                 [options]="rowOptions"
                 [(ngModel)] = rows
@@ -109,7 +109,7 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-trip>
-      <tr (click)="showTripDetail(trip)" style="cursor: pointer;">
+      <tr (click)="showTripDetail(trip)" style="cursor: pointer;" appHighlightRow>
         <td *ngFor="let column of selectedColumns">{{ column.value === 'totalDistance' ? (trip[column.value] + 'kms') : column.value === 'totalExpense' ? (trip[column.value] | currency:currencyCode) : trip[column.value]}}</td>
         <!-- <td>{{ trip.destination }}</td>
         <td>{{ trip.totalDistance }}</td>
@@ -125,7 +125,7 @@
   </p-table>
 </div>
 
-<div class="add-trip-container" [ngClass]="isDarkMode ? 'dark-mode' : ''">
+<div class="add-trip-container" [appClass]="{className: 'dark-mode', condition: isDarkMode}">
 <p-dialog
   header="Add Trip"
   [modal]="true"
@@ -144,11 +144,12 @@
           id="sl"
           [(ngModel)]="startPlace"
           pattern="^[a-zA-Z\s]+$"
+          stringOnlyDir
           (ngModelChange)="validatePlaceName()"
           autofocus
           required
         />
-        <span *ngIf="isSPV">Start Location is Invalid*</span>
+        <span *appIf="isSPV">Start Location is Invalid*</span>
       </div>
       <div class="inputfield">
         <label for="d">Destination *</label>
@@ -161,7 +162,7 @@
           (ngModelChange)="validatePlacedescription()"
           required
         />
-        <span *ngIf="isDV">Destination is Invalid*</span>
+        <span *appIf="isDV">Destination is Invalid*</span>
       </div>
       <div class="inputfield">
         <label for="td">Total Distance *</label>
@@ -173,7 +174,7 @@
           (ngModelChange)="validateNumberFields('td')"
           required
         />
-        <span *ngIf="isTDV">Total Distance is Invalid*</span>
+        <span *appIf="isTDV">Total Distance is Invalid*</span>
       </div>
       <div class="inputfield">
         <label for="te">Total Expanse *</label>
@@ -185,7 +186,7 @@
           (ngModelChange)="validateNumberFields('te')"
           required
         />
-        <span *ngIf="isTEV">Total Expanse is Invalid*</span>
+        <span *appIf="isTEV">Total Expanse is Invalid*</span>
       </div>
       <div class="inputfield">
         <label for="tm">Total Members *</label>
@@ -197,7 +198,7 @@
           (ngModelChange)="validateNumberFields('tm')"
           required
         />
-        <span *ngIf="isTMV">Total Members is Invalid*</span>
+        <span *appIf="isTMV">Total Members is Invalid*</span>
       </div>
       <div class="buttons">
         <button (click)="closeDailog()" class="cancelbtn">Cancel</button>
@@ -208,7 +209,7 @@
 </p-dialog>
 </div>
 
-<div class="trip-detail-container" [ngClass]="isDarkMode ? 'dark-mode' : ''">
+<div class="trip-detail-container" [appClass]="{className: 'dark-mode', condition: isDarkMode}">
   <p-dialog 
     header="Trip Detail"
     [modal]="true"

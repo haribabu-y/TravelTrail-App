@@ -14,7 +14,7 @@
     [scrollable]="true"
     scrollHeight="500px"
     [rows]="numOfRows"
-    [globalFilterFields]="['username', 'age', 'Country', 'TotalExpense']"
+    [globalFilterFields]="['username', 'age', 'country', 'totalExpense']"
   >
     <ng-template pTemplate="caption">
       <p>Users Details</p>
@@ -144,7 +144,7 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-user>
-      <tr>
+      <tr appHighlightRow>
         <td>
           <img
             [src]="user.userImage"
@@ -156,7 +156,7 @@
         </td>
         <td *ngFor="let column of selectedColumns">
           {{
-            column.value === "totalExpense" ? (convertAmount(user.totalExpense) | currency:currencyCode:usercurrencySymbol) : user[column.value]
+            column.value === "totalExpense" ? (user.totalExpense | currency:currencyCode:usercurrencySymbol) : column.value === 'username' ? (user[column.value] | titlecase) : user[column.value]
           }}
         </td>
 
@@ -229,13 +229,14 @@
                   type="text"
                   id="firstName"
                   formControlName="firstName"
+                  stringOnlyDir
                   required
                 />
                 <span *ngIf="addUserForm1.controls['firstName'].touched && addUserForm1.controls['firstName'].invalid">Only alphanumric characters and space Allowed</span>
               </div>
               <div class="inputfield">
                 <label for="lastName">Last name</label>
-                <input type="text" id="lastName" formControlName="lastName" />
+                <input type="text" id="lastName" formControlName="lastName" stringOnlyDir />
               </div>
             </div>
             <div class="row">
@@ -302,7 +303,7 @@
               </div>
               <div class="inputfield phoneNumberField">
                 <label for="mobile">Mobile Number*</label>
-                <input type="text" id="mobile" formControlName="phone" />
+                <input type="text" id="mobile" formControlName="phone" digitsOnlyDir />
                 <span *ngIf="addUserForm1.controls['phone'].touched && addUserForm1.controls['phone'].invalid">Mobile number must be 10 digits*</span>
               </div>
             </div>

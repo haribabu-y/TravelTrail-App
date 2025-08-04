@@ -51,9 +51,17 @@
     border-bottom-right-radius: 8px;
 }
 
-.trip-table ::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
+/* .trip-table ::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
     background-color: #CEE8FF;
+} */
+
+.trip-table ::ng-deep .highlightrow {
+    background-color: #CEE8FF ;
+    transform: scale(1.02);
+    position: relative;
+    z-index: 1000;
 }
+
 .right-captions {
     display: flex;
     flex-direction: row;

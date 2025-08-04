@@ -181,9 +181,9 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-userTrip>
-        <tr>
+        <tr appHighlightRow>
           <td *ngFor="let column of selectedColumns">
-            {{(column.value === 'totalDistance') ? (getConvertedDistance(userTrip.totalDistance)) : (column.value === 'totalExpense') ? (convertAmount(userTrip.totalExpense) | currency: currencyCode:usercurrencySymbol) : userTrip[column.value]}}
+            {{(column.value === 'totalDistance') ? (getConvertedDistance(userTrip.totalDistance)) : (column.value === 'totalExpense') ? (userTrip.totalExpense | currency: currencyCode:usercurrencySymbol) : column.value === 'username' ? (userTrip[column.value] | titlecase) : userTrip[column.value]}}
           </td>
           
           <!-- <td>{{ userTrip.username }}</td>

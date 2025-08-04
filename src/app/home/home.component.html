@@ -1,6 +1,6 @@
-<app-loader *ngIf="isLoading"></app-loader>
-<ng-container *ngIf="!isLoading">
-  <div class="graphtype" [ngClass]="isDarkMode ? 'dark-mode' : ''">
+<app-loader *appIf="isLoading"></app-loader>
+<ng-container *appIf="!isLoading">
+  <div class="graphtype" [appClass]="{className: 'dark-mode', condition: isDarkMode}">
     <p>Graph Types</p>
     <div class="graphTypeRadio">
       <input
@@ -43,8 +43,8 @@
       </label>
     </div>
   </div>
-  <div [ngClass]="isDarkMode ? 'dark-mode' : ''">
-    <div class="barGraph" *ngIf="selectedRadio === 'barGraph'">
+  <div [appClass]="{className: 'dark-mode', condition: isDarkMode}">
+    <div class="barGraph" *appIf="selectedRadio === 'barGraph'">
       <!-- <p-chart type="bar" [data]="barGraphData" [options]="barGraphOptions" [responsive]="true"></p-chart> -->
        <div class="graph-title"><h2>Trip Vs Expense</h2></div>
       <div id="d3-barGraph">
@@ -54,7 +54,7 @@
         </div>
       </div>      
     </div>
-    <div class="lineBar" *ngIf="selectedRadio === 'lineGraph'">
+    <div class="lineBar" *appIf="selectedRadio === 'lineGraph'">
       <!-- <p-chart type="line" [data]="lineGraphData" [options]="lineGraphOptions" /> -->
        <div class="graph-title"><h2>Trip Vs Expense</h2></div>
       <div id="d3-lineChart">
@@ -64,7 +64,7 @@
         </div>
       </div>
     </div>
-    <div class="pieChart" *ngIf="selectedRadio === 'pieChart'">
+    <div class="pieChart" *appIf="selectedRadio === 'pieChart'">
       <!-- <p-chart type="pie" [data]="pieChartData" [options]="pieChartOptions" height="500px"/> -->
       <div class="graph-title"><h2>Trip Vs Expense</h2></div>
       <div id="d3-pieChart">

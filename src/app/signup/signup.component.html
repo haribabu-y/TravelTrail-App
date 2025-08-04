@@ -65,6 +65,7 @@
                 id="firstname"
                 class="text-base text-color p-2 border-solid border-round border-none outline-none focus:border-primary w-full"
                 formControlName="firstName"
+                stringOnlyDir
               />
               <span *ngIf="reactiveForm.controls['firstName'].touched && reactiveForm.controls['firstName'].invalid">Only alphanumric characters and space Allowed</span>
             </div>
@@ -75,6 +76,7 @@
                 id="lastname"
                 class="text-base text-color border-none p-2 border-solid border-round outline-none focus:border-primary w-full"
                 formControlName="lastName"
+                stringOnlyDir
               />
             </div>
             <div class="field col-12 md:col-6 gender-container">
@@ -165,6 +167,7 @@
               <label for="phone-number">Phone No.*</label>
               <input
                 type="text"
+                digitsOnlyDir
                 id="phone-number"
                 class="text-base text-color border-none p-2 border-solid border-round outline-none focus:border-primary w-full"
                 formControlName="phone"
@@ -213,6 +216,7 @@
               <input
                 type="number"
                 id="zip-code"
+                digitsOnlyDir
                 class="text-base text-color border-none p-2 border-solid border-round outline-none focus:border-primary w-full"
                 formControlName="zipCode"
               />
