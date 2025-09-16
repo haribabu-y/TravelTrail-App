@@ -19,6 +19,7 @@
       'totalExpense',
       'totalMembers'
     ]"
+    (onFilter)="handleFilter($event)"
   >
     <ng-template pTemplate="caption">
       <p>Total trips</p>
@@ -28,6 +29,7 @@
             #searchText
             pInputText
             type="text"
+            [(ngModel)]="enteredText"
             (keydown.enter)="filterTableGlobal(searchText.value)"
             (input)="reloadAll(searchText.value)"
           />
@@ -110,7 +112,9 @@
     </ng-template>
     <ng-template pTemplate="body" let-trip>
       <tr (click)="showTripDetail(trip)" style="cursor: pointer;" appHighlightRow>
-        <td *ngFor="let column of selectedColumns">{{ column.value === 'totalDistance' ? (trip[column.value] + 'kms') : column.value === 'totalExpense' ? (trip[column.value] | currency:currencyCode) : trip[column.value]}}</td>
+        <td *ngFor="let column of selectedColumns" class="tableField" [highlightSearchText2]="enteredText">
+          {{ column.value === 'totalDistance' ? (trip[column.value] + 'kms') : column.value === 'totalExpense' ? (trip[column.value] | currency:currencyCode) : trip[column.value]}}
+        </td>
         <!-- <td>{{ trip.destination }}</td>
         <td>{{ trip.totalDistance }}</td>
         <td>{{ trip.totalExpense }}</td>
@@ -134,6 +138,10 @@
   [draggable]="false"
   (onHide)="closeDailog()"
 >
+  <ng-template pTemplate="header" class="dialog-header">
+    <h3>Add Trip</h3>
+    <i class="pi pi-times" (click)="closeDailog()"></i>
+  </ng-template>
   <ng-template pTemplate="content">
     <div class="inputFields">
       <div class="inputfield">
@@ -148,6 +156,7 @@
           (ngModelChange)="validatePlaceName()"
           autofocus
           required
+          [confirmClose2]="startPlace"
         />
         <span *appIf="isSPV">Start Location is Invalid*</span>
       </div>
@@ -161,6 +170,7 @@
           pattern="^[a-zA-Z\s]+$"
           (ngModelChange)="validatePlacedescription()"
           required
+          [confirmClose2]="destination"
         />
         <span *appIf="isDV">Destination is Invalid*</span>
       </div>
@@ -173,6 +183,7 @@
           [(ngModel)]="totalDistance"
           (ngModelChange)="validateNumberFields('td')"
           required
+          [confirmClose2]="totalDistance"
         />
         <span *appIf="isTDV">Total Distance is Invalid*</span>
       </div>
@@ -185,6 +196,7 @@
           [(ngModel)]="totalExpense"
           (ngModelChange)="validateNumberFields('te')"
           required
+          [confirmClose2]="totalExpense"
         />
         <span *appIf="isTEV">Total Expanse is Invalid*</span>
       </div>
@@ -197,6 +209,7 @@
           [(ngModel)]="totalMembers"
           (ngModelChange)="validateNumberFields('tm')"
           required
+          [confirmClose2]="totalMembers"
         />
         <span *appIf="isTMV">Total Members is Invalid*</span>
       </div>
@@ -225,4 +238,36 @@
       <p><strong>Total Members: </strong>{{totalMembers}}</p>
     </div>
   </p-dialog>
+</div>
+
+
+<div class="confirm-close-dialog" [appClass]="{className: 'dark-mode', condition: isDarkMode}">
+  <p-dialog
+    [(visible)]="showConfirmCloseDialog"
+    [modal]="true"
+    [resizable]="false"
+    [draggable]="false"
+    (onHide)="closeConfirmDailog()"
+    header="Confirm"
+    position="top"
+    [style]="{ width: '25rem', 'top': '200px'}"
+  >
+    <ng-template pTemplate="content">
+      <div class="confirm-close-container">
+        <div class="text">
+          <div class="image">
+            <img src="assets/quation-mark.png" alt="Image" width="40px" height="40px">
+          </div>
+          <div class="message">
+            <p>Are You sure?</p>
+            <p>Do you really want to close the Dialog!</p>
+          </div>
+        </div>
+        <div class="btns">
+          <button (click)="closeConfirmDailog()">No</button>
+          <button (click)='closeIfFieldsNotChanged()' class="yesButton">Yes</button>
+        </div>
+      </div>
+    </ng-template>
+</p-dialog>
 </div>

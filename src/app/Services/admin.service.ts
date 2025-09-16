@@ -21,7 +21,7 @@ export class AdminService {
             // console.log(users);
             for(let user of users) {
                 // console.log(user);
-                let username: string = user.firstName + ' ' + user.lastName;
+                let username: string = user.firstName + ' ' + (user.lastName ? user.lastName : '');
                 let gender: string = user.gender;
                 let age: number = new Date().getFullYear() - new Date(user.dob).getFullYear();
                 let id: string = user.id;

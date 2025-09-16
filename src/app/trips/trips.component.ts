@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, inject, OnDestroy, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from '@angular/core';
 import { Authservice } from '../Services/auth.service';
 import { TripService } from '../Services/trip.service';
 import { Trip } from '../Models/trip';
@@ -8,6 +8,7 @@ import { MultiSelect } from 'primeng/multiselect';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { ConfirmClose2Directive } from '../CustomDirectives/confirmClose2.directive';
 
 @Component({
   selector: 'app-trips',
@@ -21,6 +22,7 @@ export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
     private sharedService: SharedService,
     private router: Router,
     private messageService: MessageService,
+    private renderer: Renderer2
   ){}
     
   // collecting the refercnce of the table 
@@ -37,6 +39,8 @@ export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('coloumnSelect') columnSelect: ElementRef;
   @ViewChild('rowSelect') rowSelect: ElementRef;
   @ViewChild('searchText') searchField: ElementRef;
+
+  enteredText: string = '';
 
   ngOnInit() {
     let theme = localStorage.getItem('theme');
@@ -78,10 +82,11 @@ export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   loadTripsInTable() {
     this.isLoading = true;
-    this.getAllTripsSunscription = this.tripService.getAllTrips().subscribe((res: Trip[]) => {
+    this.getAllTripsSunscription = this.tripService.getAllTrips().subscribe({
+      next: (res: Trip[]) => {
       // console.log(res);  
       this.userTrips = res;
-      localStorage.setItem('userTrips', JSON.stringify(this.userTrips));
+      // localStorage.setItem('userTrips', JSON.stringify(this.userTrips));
       this.isLoading = false;
       // console.log(this.userTrips);  
       let totalExpense: number = 0;
@@ -89,6 +94,11 @@ export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
         totalExpense += key.totalExpense;
       }    
       this.sharedService.getUserExpense(totalExpense);
+    },
+    error: (error) => {
+      let errorMessage: string = "An error occered while fetching the user Trips!";
+      this.messageService.add({severity:'error', summary: 'Error', detail:errorMessage});
+    }
     });
     // console.log(this.userTrips);
   }
@@ -110,14 +120,39 @@ export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.totalMembers = null;
   }
 
+  @ViewChildren(ConfirmClose2Directive) confirmClose2Directive!: QueryList<ConfirmClose2Directive>;
+
+  showConfirmCloseDialog: boolean = false;
+
   closeDailog() {
-    this.showDailog = false;
+    const isAnyValueChanged = this.confirmClose2Directive.some((directive) => directive.getIfvaluechangedOrNot());
+    if(isAnyValueChanged) {
+      this.showConfirmCloseDialog = true;
+    } else {
+      this.showConfirmCloseDialog = false;
+      this.closeIfFieldsNotChanged()
+    }
+  }
+
+  closeConfirmDailog() {
+    this.showConfirmCloseDialog = false;
+  }
+
+  closeIfFieldsNotChanged() {
+    this.showConfirmCloseDialog = false;
+
     this.isSPV = false;
     this.isDV = false;
     this.isTDV = false;
     this.isTEV = false;
     this.isTMV = false;
+    this.showDailog = false;
+
+    this.confirmClose2Directive.forEach((directive) => {
+      directive.changeToDefault();
+    })
   }
+  
   validatePlaceName() {
     const pattern = /^[a-zA-Z\s]*$/;
     this.isSPV = !pattern.test(this.startPlace || '');
@@ -154,7 +189,7 @@ export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
   isTMV: boolean = false;
 
   onNewTripSubmit() {
-    console.log(this.startPlace);    
+    // console.log(this.startPlace);    
     if(this.startPlace === '') {
       this.isSPV = true;
       // return;
@@ -214,6 +249,45 @@ export class TripsComponent implements OnInit, AfterViewInit, OnDestroy {
     if(text === '') {
       this.filterTableGlobal(text);
     }
+  }
+
+  handleFilter(event) {
+    // console.log(JSON.stringify(event.filters).length == 2); 
+    if(JSON.stringify(event.filters).length == 2) {
+      let allFields = document.querySelectorAll('.tableField');
+      let fields = document.querySelectorAll('.highlightField');
+      console.log(fields);
+      fields.forEach((field) => {
+        console.log(field);        
+        this.renderer.removeAttribute(field,'highlightsearchtext');
+      })    
+      console.log(fields);          
+      return;
+    }   
+
+    setTimeout(() => {
+      // let element = document.querySelectorAll('[highlightSearchText]');
+      // console.log(element);
+      let tableBodyDom = document.querySelector('.p-datatable-tbody')
+      // console.log(tableBodyDom);
+      let allFields = tableBodyDom.querySelectorAll('.tableField');
+      console.log(allFields);    
+      console.log(event);    
+      let searchText = event.filters.global.value;
+      // console.log(searchText);  
+      allFields.forEach((field) => {
+        let fieldText =  field.innerHTML.replace(/[^\w\s]/g, '')
+        // let fieldText =  field.innerHTML
+        console.log(fieldText);
+        console.log(searchText.toLowerCase());        
+        // console.log(field.innerHTML.includes(searchText));      
+        if(fieldText.toLowerCase().includes(searchText.toLowerCase())) {
+          // (field as HTMLElement).style.backgroundColor = 'lightblue'
+          console.log("entered");          
+          field.setAttribute('highlightSearchText', searchText.replace(/\W/g,''));
+        }
+      })
+    },0);
   }
 
   // For selcting the number of rows to display

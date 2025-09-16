@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { UserTrips } from '../Models/usertrips';
 import { SharedService } from '../Services/shared.service';
@@ -25,7 +25,8 @@ export class UserTripComponent implements OnInit, OnDestroy {
     private sharedService: SharedService,
     private bucketListService: BucketListService,
     private messageService: MessageService,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private renderer: Renderer2
   ){}
 
   @ViewChild('userTripTable') userTripTable: Table;
@@ -39,6 +40,8 @@ export class UserTripComponent implements OnInit, OnDestroy {
   currencySymbol: string = '';
   oldCurrencyCode: string
   countries  = countries;
+
+  enteredText: string = '';
 
   ngOnInit(): void {
     this.darkThemeSubscription = this.sharedService.isDarkMode.subscribe((res) => this.isDarkMode = res);
@@ -99,11 +102,17 @@ export class UserTripComponent implements OnInit, OnDestroy {
 
   loadUserTipsInTable() {
     this.isLoading = true;
-    this.adminService.getUsersTrips().subscribe((userTrips) => {
-      // console.log(userTrips);
-      this.usersTrips = userTrips;
-      localStorage.setItem("usersTrips", JSON.stringify(this.usersTrips));
-      this.isLoading = false;   
+    this.adminService.getUsersTrips().subscribe({
+      next: (userTrips) => {
+        console.log(userTrips);
+        this.usersTrips = userTrips;
+        localStorage.setItem("usersTrips", JSON.stringify(this.usersTrips));
+        this.isLoading = false;   
+      },
+      error: (error) => {
+        let errorMessage: string = "An error occered while fetching the users Trips!";
+        this.messageService.add({severity:'error', summary:'Error', detail: errorMessage});
+      }
     })
   }
 
@@ -123,7 +132,9 @@ export class UserTripComponent implements OnInit, OnDestroy {
     // console.log(this.usersTrips);
     this.usersTrips.forEach((trip) => {
       trip.totalExpense = this.convertAmount(trip.totalExpense);
+      // console.log(trip.totalExpense);
     })
+    console.log(this.usersTrips);
     this.oldCurrencyCode = this.selectedCurrency.code;
     
   }
@@ -207,6 +218,41 @@ export class UserTripComponent implements OnInit, OnDestroy {
     if(text === '') {
       this.filterGlobal(text);
     }
+  }
+
+  handleFilter(event) {
+    // console.log(JSON.stringify(event.filters).length == 2); 
+    if(JSON.stringify(event.filters).length == 2) {
+      let allFields = document.querySelectorAll('.tableField');
+      let fields = document.querySelectorAll('.highlightField');
+      console.log(fields);
+      fields.forEach((field) => {
+        console.log(field);        
+        this.renderer.removeAttribute(field,'highlightsearchtext');
+      })    
+      console.log(fields);          
+      return;
+    }   
+
+    setTimeout(() => {
+      // let element = document.querySelectorAll('[highlightSearchText]');
+      // console.log(element);
+      let tableBodyDom = document.querySelector('.p-datatable-tbody')
+      // console.log(tableBodyDom);
+      let allFields = tableBodyDom.querySelectorAll('.tableField');
+      // console.log(allFields);    
+      // console.log(event);    
+      let searchText = event.filters.global.value;
+      console.log(searchText);  
+      allFields.forEach((field) => {
+        let fieldText =  field.innerHTML.replace(/[^\w\s]/g, '')
+        console.log(field.innerHTML.includes(searchText));      
+        if(fieldText.toLowerCase().includes(searchText.toLowerCase())) {
+          // (field as HTMLElement).style.backgroundColor = 'lightblue'
+          field.setAttribute('highlightSearchText', searchText);
+        }
+      })
+    },0);
   }
 
   @ViewChild('rowSelect') rowSelect!: ElementRef;

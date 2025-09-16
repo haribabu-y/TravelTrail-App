@@ -52,7 +52,7 @@ export class Authservice {
                             {params: new HttpParams().set("auth", `${res.idToken}`)}
                           )
                             .subscribe((response) => {
-                              console.log(response);
+                              // console.log(response);
                             });
                         })
     }   
@@ -145,7 +145,7 @@ export class Authservice {
   }
 
   handleCreateuser(data) {
-    console.log(data);
+    // console.log(data);
     const tokenId = data.idToken;
     const expiresInTs = new Date().getTime() + +data.expiresIn * 1000;
     const expiresIn = new Date(expiresInTs);
@@ -153,11 +153,11 @@ export class Authservice {
     this.autoLogout(data.expiresIn * 1000);
     let user: LoginUser;
     this.sharedservice.getAllUsers(tokenId).pipe(map((res) => {
-      console.log(res);
+      // console.log(res);
       let foundUser = res.find((user) => {
         return email === user.email;
       })
-      console.log(foundUser);
+      // console.log(foundUser);
       if(foundUser) {
         let country = this.countries.find((country) => {
           return country.code === foundUser.country;
@@ -171,7 +171,7 @@ export class Authservice {
         return null;
       } 
     })).subscribe((res) => {
-      console.log(res);
+      // console.log(res);
       // return res;      
     });
   }

@@ -19,6 +19,7 @@ export class User {
         public confirmPassword?: string,
         public lastName?: string,
         public trips?: string,
-        public bucketlists?: string
+        public bucketlists?: string,
+        public countryCode?: string
     ) {}
 }

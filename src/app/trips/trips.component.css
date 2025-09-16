@@ -49,6 +49,15 @@
 .trip-table ::ng-deep .p-paginator {
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
+    background: #f8f9fa
+}
+
+.trip-table ::ng-deep .p-datatable-wrapper {
+    min-height: 500px;
+}
+
+.highlightField {
+  background-color: yellow !important;
 }
 
 /* .trip-table ::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
@@ -57,7 +66,7 @@
 
 .trip-table ::ng-deep .highlightrow {
     background-color: #CEE8FF ;
-    transform: scale(1.02);
+    transform: scale(1.01);
     position: relative;
     z-index: 1000;
 }
@@ -195,7 +204,8 @@
     color: #084880;
 }
 
-.submitbtn {
+.submitbtn, .yesButton {
+    border: 1px solid #084880;
     background-color: #084880;
     color: white;
     border: none;
@@ -487,3 +497,84 @@ input[type="number"]::-webkit-inner-spin-button {
 .dark-mode .searchField i {
   color: black;
 }
+
+
+/* styling the confirm dialog */
+
+.confirm-close-dialog ::ng-deep .p-dialog .p-dialog-header {
+  padding: 10px 20px;
+}
+
+.confirm-close-dialog ::ng-deep .p-dialog .p-dialog-header .p-dialog-title {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-left: 8px;
+    font-family: "Roboto", sans-serif;
+}
+.confirm-close-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.confirm-close-dialog ::ng-deep .p-dialog .p-dialog-content {
+    padding: 0 20px 1rem 20px;
+}
+
+.confirm-close-dialog ::ng-deep .p-dialog .p-dialog-header .p-dialog-header-icon:last-child {
+    margin-right: -8px;
+}
+
+.btns {
+    display: flex;
+    justify-content: end;
+    gap: 10px;
+    width: 100%;
+}
+.btns button {
+    width: 50px;
+    border: 1px solid #084880;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+
+.add-trip-container ::ng-deep .p-dialog-header-icons {
+    display: none !important;
+}
+
+::ng-deep .pi .pi-times {
+    cursor: pointer;
+}
+
+.pi-times:before {
+    cursor: pointer;
+}
+
+.text {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start;
+    width: 100%;
+    margin-left: 40px;
+}
+
+.text .image img {
+    border-radius: 50%;
+    background-color: lightgray;
+}
+.message {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+}
+
+.message p {
+    font-size: 14px;
+    font-weight: 700;
+    font-family: "Roboto", sans-serif;
+}
+

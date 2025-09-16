@@ -36,26 +36,24 @@
                       <strong>Username:</strong>
                       {{ userDetail.username ? userDetail.username : "" }}
                     </p>
-                    <p><strong>First Name:</strong> {{ userDetail.firstName }}</p>
+                    <p><strong>First Name:</strong> {{ userDetail.firstName | titlecasepipe }}</p>
                     <p>
                       <strong>Last Name:</strong>
-                      {{ userDetail.lastName ? userDetail.lastName : "-" }}
+                      {{ (userDetail.lastName ? userDetail.lastName : "-") | titlecasepipe }}
                     </p>
                     <p><strong>Email:</strong> {{ userDetail.email }}</p>
                     <p><strong>Gender:</strong> {{ userDetail.gender }}</p>
                     <p>
                       <strong>Date of Birth:</strong> {{ userDetail.dob | date }}
                     </p>
-                    <p><strong>Phone Number:</strong> {{ userDetail.phone }}</p>
+                    <p><strong>Phone Number:</strong>{{userDetail?.countryCode}} {{ (userDetail?.phone | phoneNumberFormat)}}</p>
                     <p><strong>Address:</strong> {{ userDetail.address }}</p>
                     <p>
-                      <strong>Country:</strong> {{ userDetail.country["name"] }}
+                      <strong>Country:</strong> {{ userDetail.country["name"] | titlecasepipe }}
                     </p>
                     <p>
                       <strong>State:</strong>
-                      {{
-                      userDetail.state["name"] ? userDetail.state["name"] : "-"
-                      }}
+                      {{ (userDetail.state["name"] ? userDetail.state["name"] : "-") | titlecasepipe }}
                     </p>
                     <p><strong>Zip Code:</strong> {{ userDetail.zipCode }}</p>
                     <p><strong>Time Zone:</strong> {{ userDetail.timeZone }}</p>
@@ -63,7 +61,7 @@
                       <strong>Locale:</strong>
                       {{ userDetail.locale ? userDetail.locale : "-" }}
                     </p>
-                    <p><strong>Is Admin:</strong>{{ userDetail.isAdmin }}</p>
+                    <p><strong>Is Admin:</strong>{{ userDetail.isAdmin ? "True" : "False" }}</p>
                   </div>
                 </div>
               </p-overlayPanel>
@@ -108,14 +106,14 @@
                 <p><strong>First Name:</strong> {{ userDetail?.firstName | titlecasepipe }}</p>
                 <p>
                   <strong>Last Name:</strong>
-                  {{ userDetail?.lastName ? userDetail.lastName : "-" | titlecasepipe }}
+                  {{ (userDetail?.lastName ? userDetail.lastName : "-") | titlecasepipe }}
                 </p>
                 <p><strong>Email:</strong> {{ userDetail?.email }}</p>
                 <p><strong>Gender:</strong> {{ userDetail?.gender | titlecasepipe}}</p>
                 <p>
                   <strong>Date of Birth:</strong> {{ userDetail?.dob | date }}
                 </p>
-                <p><strong>Phone Number:</strong> {{ userDetail?.phone }}</p>
+                <p><strong>Phone Number:</strong> {{userDetail?.countryCode}} {{ (userDetail?.phone | phoneNumberFormat) }}</p>
                 <p><strong>Address:</strong> {{ userDetail?.address }}</p>
                 <p>
                   <strong>Country:</strong> {{ country | titlecasepipe }}

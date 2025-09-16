@@ -45,6 +45,10 @@
     align-items: center;
 }
 
+.highlightField {
+  background-color: yellow !important;
+}
+
 /* .user-trip-table ::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
     background-color: #CEE8FF;
     transform: scale(1.02);
@@ -62,6 +66,11 @@
 .user-trip-table ::ng-deep .p-paginator {
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
+    background: #f8f9fa
+}
+
+.user-trip-table ::ng-deep .p-datatable-wrapper {
+    min-height: 500px;
 }
 
 .right-contents {
@@ -266,8 +275,8 @@
 }
 
 .bucketDailog ::ng-deep .p-dialog {
-        width: 35%;
-    }
+    width: 35%;
+}
 
 /* Styling the dailog for adding new bucket place */
 
@@ -276,8 +285,8 @@
 }
 
 .editBucketItem ::ng-deep .p-dialog {
-        width: 35%;
-    }
+    width: 35%;
+}
 
 .inputFields {
     display: flex;
@@ -527,6 +536,10 @@ input[type="number"]::-webkit-inner-spin-button {
 
     .user-trip-table ::ng-deep .p-paginator-left-content {
         margin: 5px 100px !important;
+    }
+
+    .editBucketItem ::ng-deep .p-dialog {
+        width: 80%;
     }
 }
 

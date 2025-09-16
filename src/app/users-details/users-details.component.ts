@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { SharedService } from '../Services/shared.service';
 import { UserDetail } from '../Models/userDetail';
@@ -34,7 +34,8 @@ export class UsersDetailsComponent implements OnInit, OnDestroy {
     private messageService: MessageService,
     private http: HttpClient,
     private authService: Authservice,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private renderer: Renderer2
   ) {}
   
   @ViewChild('usersDetailTable') usersDetailTable: Table;
@@ -52,6 +53,8 @@ export class UsersDetailsComponent implements OnInit, OnDestroy {
   locales = locales;
   phoneCode = phoneCodes;
   currencyFormate = currencyFormate;
+
+  enteredText: string = '';
 
   ngOnInit(): void {
     
@@ -95,16 +98,21 @@ export class UsersDetailsComponent implements OnInit, OnDestroy {
       console.log(res);
       this.loadUserdetailsInTable();
     })
-
   }
 
   loadUserdetailsInTable() {
     this.isLoading = true;
-    this.adminService.getAllUserDetails().subscribe((users) => {
-      // console.log(users);
-      this.users = users;
-      localStorage.setItem("allUsers", JSON.stringify(users));
-      this.isLoading = false;     
+    this.adminService.getAllUserDetails().subscribe({
+      next: (users) => {
+        // console.log(users);
+        this.users = users;
+        localStorage.setItem("allUsers", JSON.stringify(users));
+        this.isLoading = false;     
+      },
+      error: (error) => {
+        let errorMessage: string = "An error occered while fetching the Users!";
+        this.messageService.add({severity:'error', summary:'Error', detail: errorMessage});
+      }
     })
   }
 
@@ -177,38 +185,37 @@ export class UsersDetailsComponent implements OnInit, OnDestroy {
     return baseAmount;
   }
 
-    convertExpenseToAdminCurrency(amount: number, adminCurrencyCode: string, usercurrencycode: string): number | null {
-      // console.log(adminCurrencyCode);
-      // console.log(usercurrencycode);      
-    const rateToINRUser = exchangeRates[usercurrencycode];
-    const reteToINRAdmin = exchangeRates[adminCurrencyCode];
-    if(!rateToINRUser || !reteToINRAdmin) {
-      // alert("Invalid currency codes or missing exchange rates");
-      return null;
-    }
-    //converting thr user amount to INR
-    const userAmountInINR = amount / rateToINRUser;
-    // console.log(userAmountInINR);
-    //converting the user INR amount to admin currency
-    const amountInAdminCurrency = userAmountInINR * reteToINRAdmin;
-    // console.log(amountInAdminCurrency);
+  //   convertExpenseToAdminCurrency(amount: number, adminCurrencyCode: string, usercurrencycode: string): number | null {
+  //     // console.log(adminCurrencyCode);
+  //     // console.log(usercurrencycode);      
+  //   const rateToINRUser = exchangeRates[usercurrencycode];
+  //   const reteToINRAdmin = exchangeRates[adminCurrencyCode];
+  //   if(!rateToINRUser || !reteToINRAdmin) {
+  //     // alert("Invalid currency codes or missing exchange rates");
+  //     return null;
+  //   }
+  //   //converting thr user amount to INR
+  //   const userAmountInINR = amount / rateToINRUser;
+  //   // console.log(userAmountInINR);
+  //   //converting the user INR amount to admin currency
+  //   const amountInAdminCurrency = userAmountInINR * reteToINRAdmin;
+  //   // console.log(amountInAdminCurrency);
 
-    return parseFloat(amountInAdminCurrency.toFixed(2));        
-  }
+  //   return parseFloat(amountInAdminCurrency.toFixed(2));        
+  // }
 
   convertExpenseToselectedCurrency(amount: number, sourceCurrencyCode: string, resultcurrencyCode: string) {
     
     // this.oldCurrencyCode = resultcurrencyCode;
-
     let amountToINR: number = amount * exchangeRatesToINR[sourceCurrencyCode];
     // console.log(amountToINR);
     const convertedAmount = amountToINR / exchangeRatesToINR[resultcurrencyCode];
-    // console.log(convertedAmount);
-        
+    // console.log(convertedAmount);    
     return convertedAmount;
   }
 
   filterGlobal(text: string) {
+    // console.log(this.usersDetailTable);    
     return this.usersDetailTable.filterGlobal(text, 'contains');
   }
   
@@ -216,6 +223,41 @@ export class UsersDetailsComponent implements OnInit, OnDestroy {
     if(text === '') {
       this.filterGlobal(text);
     }
+  }
+
+  handleFilter(event) {
+    // console.log(JSON.stringify(event.filters).length == 2); 
+    if(JSON.stringify(event.filters).length == 2) {
+      let allFields = document.querySelectorAll('.tableField');
+      let fields = document.querySelectorAll('.highlightField');
+      console.log(fields);
+      fields.forEach((field) => {
+        console.log(field);        
+        this.renderer.removeAttribute(field,'highlightsearchtext');
+      })    
+      console.log(fields);          
+      return;
+    }   
+
+    setTimeout(() => {
+      // let element = document.querySelectorAll('[highlightSearchText]');
+      // console.log(element);
+      let tableBodyDom = document.querySelector('.p-datatable-tbody')
+      // console.log(tableBodyDom);
+      let allFields = tableBodyDom.querySelectorAll('.tableField');
+      // console.log(allFields);    
+      // console.log(event);    
+      let searchText = event.filters.global.value;
+      console.log(searchText);  
+      allFields.forEach((field) => {
+        let fieldText =  field.innerHTML.replace(/[^\w\s]/g, '')
+        console.log(field.innerHTML.includes(searchText));      
+        if(fieldText.toLowerCase().includes(searchText.toLowerCase())) {
+          // (field as HTMLElement).style.backgroundColor = 'lightblue'
+          field.setAttribute('highlightSearchText', searchText);
+        }
+      })
+    },0);
   }
 
   @ViewChild('rowSelect') rowSelect;
@@ -277,7 +319,7 @@ export class UsersDetailsComponent implements OnInit, OnDestroy {
   profileImage: string = 'assets/users/defaultProfileImg.jpg';
 
   openNew() {
-    this.selectedGender = 'male';
+    // this.selectedGender = 'male';
     this.addUserForm1.get('username').enable();
     this.addUserForm1.get('password').enable();
     this.addUserForm1.get('email').enable();

@@ -15,6 +15,7 @@
     scrollHeight="500px"
     [rows]="numOfRows"
     [globalFilterFields]="['username', 'age', 'country', 'totalExpense']"
+    (onFilter)="handleFilter($event)"
   >
     <ng-template pTemplate="caption">
       <p>Users Details</p>
@@ -37,6 +38,7 @@
               #searchText
               pInputText
               type="text"
+              [(ngModel)]="enteredText"
               (keydown.enter)="filterGlobal(searchText.value)"
               (input)="reloadAll(searchText.value)"
             />
@@ -154,7 +156,7 @@
             style="border-radius: 10px"
           />
         </td>
-        <td *ngFor="let column of selectedColumns">
+        <td *ngFor="let column of selectedColumns" class="tableField" [highlightSearchText2]="enteredText">
           {{
             column.value === "totalExpense" ? (user.totalExpense | currency:currencyCode:usercurrencySymbol) : column.value === 'username' ? (user[column.value] | titlecase) : user[column.value]
           }}
@@ -229,7 +231,6 @@
                   type="text"
                   id="firstName"
                   formControlName="firstName"
-                  stringOnlyDir
                   required
                 />
                 <span *ngIf="addUserForm1.controls['firstName'].touched && addUserForm1.controls['firstName'].invalid">Only alphanumric characters and space Allowed</span>
@@ -303,7 +304,7 @@
               </div>
               <div class="inputfield phoneNumberField">
                 <label for="mobile">Mobile Number*</label>
-                <input type="text" id="mobile" formControlName="phone" digitsOnlyDir />
+                <input type="text" id="mobile" formControlName="phone" only10DigitsDir />
                 <span *ngIf="addUserForm1.controls['phone'].touched && addUserForm1.controls['phone'].invalid">Mobile number must be 10 digits*</span>
               </div>
             </div>
@@ -347,6 +348,7 @@
                   type="text"
                   id="zipcode"
                   formControlName="zipCode"
+                  digitsOnlyDir
                   required
                 />
                 <span *ngIf="addUserForm1.controls['zipCode'].touched && addUserForm1.controls['zipCode'].invalid">Zipe Code is Invalid *</span>

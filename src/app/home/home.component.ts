@@ -708,7 +708,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       })
   }
 
-  pieWidth = 450;
+  pieWidth = 550;
   pieHeight = 400;
   pieMargin = 40;
   pieRadius = Math.min(this.pieWidth, this.pieHeight) / 2 - 10;
@@ -762,8 +762,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
                       // console.log(svgRect.top);
 
                       tooltip.style("opacity", 1)
-                             .style('left', `${this.screenSize === 425 ? 100 + x + this.pieWidth / 2 - 35 : this.screenSize === 320 ? 30 + x + this.pieWidth / 2 - 25 : svgRect.left + x + this.pieWidth / 2 - 45}px`)
-                             .style('top', `${svgRect.top + y - 60}px`);
+                             .style('left', `${this.screenSize === 425 ? 100 + x + this.pieWidth / 2 - 85 : this.screenSize === 320 ? 30 + x + this.pieWidth / 2 - 25 : this.screenSize === 768 ? svgRect.left + x + this.pieWidth / 2 - 30 : svgRect.left + x + this.pieWidth / 2 - 40}px`)
+                             .style('top', `${this.screenSize === 320 ? svgRect.top + y - 100 : svgRect.top + y - 60}px`);
 
                       // console.log(d.data.name);                      
                       d3.select(".pTooltip")
@@ -776,6 +776,26 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
                       tooltip.style('opacity', 0);
                     })
                     .append("title").text(d => `${d.data.name}: ${d.data.value}`);
+        
+    const legend = this.pieChartSvg.append('g').attr('transform', `translate(${this.pieRadius + 20}, ${-this.pieRadius})`)
+
+      this.d3GraphData.forEach((d, i) => {
+        const legendRow = legend.append('g')
+        .attr('transform', `translate(0, ${i * 20})`);
+
+        legendRow.append('rect')
+        .attr('width', 25)
+        .attr('height', 15)
+        .attr('fill', color(i.toString()));
+
+      legendRow.append('text')
+        .attr('x', 30)
+        .attr('y', 9)
+        .text(d.name.toLocaleUpperCase())
+        .style('font-size', '12px')
+        .attr('class', 'lagend-text')
+        .attr('alignment-baseline', 'middle');
+      })
   }
 
   ngOnDestroy(): void {

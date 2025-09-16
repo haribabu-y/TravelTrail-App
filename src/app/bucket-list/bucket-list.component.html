@@ -36,8 +36,16 @@
     [resizable]="false"
     [draggable]="false"
     [modal]="true"
+    [closeOnEscape]="false"
     (onHide)="closeDailog()"
+    [closable]="false"
+    
 >
+  <ng-template pTemplate="header" class="dialog-header">
+    <h3>{{ bucketId ? 'Update Place' : 'Add Place' }}</h3>
+    <i class="pi pi-times" (click)="closeDailog()"></i>
+  </ng-template>
+
     <ng-template pTemplate="content">
     <div class="inputFields">
       <div class="inputfield">
@@ -55,6 +63,7 @@
           (change)="onFilechanges($event)"
           hidden
           #fileInput
+          [confirmClose3]="placeImage"
         />
         
         <div class="selected-image" *ngIf="placeImage">
@@ -76,6 +85,7 @@
           pattern="^[a-zA-Z\s]+$"
           (ngModelChange)="validatePlaceName()"
           required
+          [confirmClose3]="placeName"
         />
         <span *appIf="isPNV">Place Name is Invalid*</span>
       </div>
@@ -88,6 +98,7 @@
           [(ngModel)]="placeDescription"
           (ngModelChange)="validatePlaceDescription()"
           required
+          [confirmClose3]="placeDescription"
         />
         <span *appIf="isPDV">Place Description is Invalid*</span>
       </div>
@@ -100,6 +111,7 @@
           [(ngModel)]="estimatedDistance"
           (ngModelChange)="validateED()"
           required
+          [confirmClose3]="estimatedDistance ? estimatedDistance.toString() : ''"
         />
         <span *appIf="isEDV">Estimated Distance is Invalid*</span>
       </div>
@@ -112,6 +124,7 @@
           [(ngModel)]="estimatedBudget"
           (ngModelChange)="validateEB()"
           required
+          [confirmClose3]="estimatedBudget ? estimatedBudget.toString() : ''"
         />
         <span *appIf="isEBV">Estimated Budget is Invalid*</span>
       </div>
@@ -121,5 +134,36 @@
       </div>
     </div>
   </ng-template>
+</p-dialog>
+</div>
+
+<div class="confirm-close-dialog" [appClass]="{className: 'dark-mode', condition: isDarkMode}">
+  <p-dialog
+    header="Confirm"
+    [(visible)]="showConfirmCloseDialog"
+    [modal]="true"
+    [position]="'top'"
+    [resizable]="false"
+    [draggable]="false"
+    (onHide)="closeConfirmDailog()"
+    [style]="{ width: '25rem', 'top': '200px'}"
+  >
+    <ng-template pTemplate="content">
+      <div class="confirm-close-container">
+        <div class="text">
+          <div class="image">
+            <img src="assets/quation-mark.png" alt="Image" width="40px" height="40px">
+          </div>
+          <div class="message">
+            <p>Are You sure?</p>
+            <p>Do you really want to close the Dialog!</p>
+          </div>
+        </div>
+        <div class="btns">
+          <button (click)="closeConfirmDailog()">No</button>
+          <button (click)='closeDailogAndClear()' class="yesButton">Yes</button>
+        </div>
+      </div>
+    </ng-template>
 </p-dialog>
 </div>

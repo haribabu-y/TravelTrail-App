@@ -300,3 +300,128 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 
+/* styling the confirm dialog */
+
+.confirm-close-dialog ::ng-deep .p-dialog .p-dialog-header {
+  padding: 10px 20px;
+}
+.confirm-close-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.btns {
+    display: flex;
+    justify-content: end;
+    gap: 10px;
+    width: 90%;
+}
+.btns button {
+    width: 45%;
+    border: 1px solid #084880;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.add-bucket-contsiner ::ng-deep .p-dialog-header-icons {
+    display: none !important;
+}
+
+.pi .pi-times {
+    cursor: pointer;
+}
+
+.pi-times:before {
+    cursor: pointer;
+}
+
+
+/* ::ng-deep .dialog-header {
+    width: 120%;
+} */
+
+/* styling the confirm dialog */
+
+.confirm-close-dialog ::ng-deep .p-dialog .p-dialog-header {
+  padding: 10px 20px;
+}
+
+.confirm-close-dialog ::ng-deep .p-dialog .p-dialog-header .p-dialog-title {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-left: 8px;
+    font-family: "Roboto", sans-serif;
+}
+.confirm-close-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.confirm-close-dialog ::ng-deep .p-dialog .p-dialog-content {
+    padding: 0 20px 1rem 20px;
+}
+
+.confirm-close-dialog ::ng-deep .p-dialog .p-dialog-header .p-dialog-header-icon:last-child {
+    margin-right: -8px;
+}
+
+.btns {
+    display: flex;
+    justify-content: end;
+    gap: 10px;
+    width: 100%;
+}
+.btns button {
+    width: 50px;
+    border: 1px solid #084880;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.yesButton {
+    background-color: #084880;
+    color: white;
+}
+
+.add-bucket-contsiner ::ng-deep .p-dialog-header-icons {
+    display: none !important;
+}
+
+::ng-deep .pi .pi-times {
+    cursor: pointer;
+}
+
+.pi-times:before {
+    cursor: pointer;
+}
+
+.text {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start;
+    width: 100%;
+    margin-left: 40px;
+}
+
+.text .image img {
+    border-radius: 50%;
+    background-color: lightgray;
+}
+.message {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+}
+
+.message p {
+    font-size: 14px;
+    font-weight: 700;
+    font-family: "Roboto", sans-serif;
+}

@@ -19,6 +19,7 @@
         'age',
         'totalExpense'
       ]"
+      (onFilter)="handleFilter($event)"
     >
       <ng-template pTemplate="caption">
         <p>User Trips</p>
@@ -69,6 +70,7 @@
               #searchText
               pInputText 
               type="text" 
+              [(ngModel)]="enteredText"
               (keydown.enter)="filterGlobal(searchText.value)"
               (input)="reloadAll(searchText.value)"
 
@@ -182,7 +184,7 @@
       </ng-template>
       <ng-template pTemplate="body" let-userTrip>
         <tr appHighlightRow>
-          <td *ngFor="let column of selectedColumns">
+          <td *ngFor="let column of selectedColumns" class="tableField" [highlightSearchText2]="enteredText">
             {{(column.value === 'totalDistance') ? (getConvertedDistance(userTrip.totalDistance)) : (column.value === 'totalExpense') ? (userTrip.totalExpense | currency: currencyCode:usercurrencySymbol) : column.value === 'username' ? (userTrip[column.value] | titlecase) : userTrip[column.value]}}
           </td>
           

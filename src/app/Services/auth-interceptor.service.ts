@@ -20,7 +20,7 @@ export class authInterceptorSevice implements HttpInterceptor {
         } else {
             let modifiedUrl = req.clone({
             params: new HttpParams().set("auth", user.tokenId),
-            headers: new HttpHeaders().set("data", 'Modified URL')
+            // headers: new HttpHeaders().set("data", 'Modified URL')
             })
             return next.handle(modifiedUrl);
         }

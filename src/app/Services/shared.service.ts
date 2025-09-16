@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
-import { catchError, map, Observable, Subject, throwError } from "rxjs";
+import { BehaviorSubject, catchError, map, Observable, Subject, throwError } from "rxjs";
 import { User } from "../Models/user";
 
 @Injectable({
@@ -11,6 +11,8 @@ export class SharedService {
     http: HttpClient = inject(HttpClient);
     isDarkMode = new Subject<boolean>();
     userExpense = new Subject<number>;
+
+    isInputValueChanged = new BehaviorSubject<boolean>(false);
 
     public getAllUsers(idToken?: string): Observable<User[]> {
         return this.http.get<User[]>('https://travektrail-app-default-rtdb.firebaseio.com/users.json', {params: new HttpParams().set('auth', idToken)})
@@ -39,5 +41,9 @@ export class SharedService {
     emitThemevalue(value: boolean) {
       this.isDarkMode.next(value);
       // console.log(value);
+    }
+
+    emitInputValueChaangedEvent(value: boolean) {
+      this.isInputValueChanged.next(value);
     }
 }

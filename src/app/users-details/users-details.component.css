@@ -48,6 +48,11 @@
 .users-detail-table ::ng-deep .p-paginator {
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
+    background: #f8f9fa
+}
+
+.users-detail-table ::ng-deep .p-datatable-wrapper {
+    min-height: 500px;
 }
 
 .right-contents {
@@ -414,6 +419,10 @@ td i {
     transform: scale(1.02);
     position: relative;
     /* z-index: 1000; */
+}
+
+.highlightField {
+  background-color: yellow !important;
 }
 
 .text {

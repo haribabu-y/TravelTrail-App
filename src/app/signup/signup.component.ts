@@ -210,7 +210,7 @@ onResize(event: any) {
 
     this.http.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA0CxBGkhNtT1q48ZjBhu4aFn1FsQgYoxs', {email: 'admin12@gmail.com', password: 'Admin1', returnSecureToken: true})
         .subscribe((res) => {
-           console.log(res);
+          //  console.log(res);
           this.getAllUserSubscritpion = this.sharedService.getAllUsers(res['idToken']).subscribe({
             next: (users) => {
               this.allUsers = users;

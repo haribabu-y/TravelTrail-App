@@ -167,6 +167,9 @@
 .dark {
     background-color: #dfe7ef;
     background-color: #495057;
-    background-color: #6c757d
-;
+    background-color: #6c757d;
+}
+
+.dark-mode .pieChart ::ng-deep .lagend-text {
+    fill: white;
 }

@@ -4,6 +4,7 @@ import { BucketListService } from '../Services/bucketList.service';
 import { MessageService } from 'primeng/api';
 import { SharedService } from '../Services/shared.service';
 import { Subscription } from 'rxjs';
+import { ConfirmCloseService } from '../Services/confirm-close.service';
 
 @Component({
   selector: 'app-bucket-list',
@@ -16,6 +17,8 @@ export class BucketListComponent implements OnInit, OnDestroy {
   isDarkMode: boolean = false;
   currencyCode: string = '';
 
+  showConfirmCloseDialog: boolean = false;
+
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   userBucketLists: BucketList[];
@@ -25,12 +28,16 @@ export class BucketListComponent implements OnInit, OnDestroy {
   darkThemeSubscription: Subscription;
   addBucketlistSubscription: Subscription;
   editBicketListSubscription: Subscription;
+  formChangedSubjectSubscription: Subscription;
 
   constructor(
     private bucketListService: BucketListService, 
     private sharedService: SharedService, 
-    private messageService: MessageService
+    private messageService: MessageService,
+    private confirmCloseService: ConfirmCloseService
   ){}
+
+  inputValueChanged: boolean = false;
 
   ngOnInit(): void {
     this.darkThemeSubscription = this.sharedService.isDarkMode.subscribe((res) => this.isDarkMode = res)
@@ -42,15 +49,26 @@ export class BucketListComponent implements OnInit, OnDestroy {
       this.getbucketlists();
     }    
     this.currencyCode = JSON.parse(localStorage.getItem('user')).country.currencyCode;
+
+    this.formChangedSubjectSubscription = this.confirmCloseService.formChangedSubject.subscribe((res) => {
+        this.inputValueChanged = res;
+        console.log("inputValueChanged is subscribing.");
+      })
   }
 
   getbucketlists() {
     this.isLoading = true;
-    this.bucketListService.getAllBucketLists().subscribe((bucketLists: BucketList[]) => {
-      this.userBucketLists = bucketLists;
-      localStorage.setItem('userBucketLists', JSON.stringify(this.userBucketLists));
-      this.isLoading = false;
-    })
+    this.bucketListService.getAllBucketLists().subscribe({
+      next: (bucketLists: BucketList[]) => {
+        this.userBucketLists = bucketLists;
+        // localStorage.setItem('userBucketLists', JSON.stringify(this.userBucketLists));
+        this.isLoading = false;
+      },
+      error: (error) => {
+        let errorMessage: string = "An error occered while fetching the user Bucket lists!";
+        this.messageService.add({severity:'error', summary:'Error', detail: errorMessage});
+      }
+    })      
   }
 
   placeImage: string = '';
@@ -60,8 +78,19 @@ export class BucketListComponent implements OnInit, OnDestroy {
   estimatedBudget: number;
   placeImageErrormsg: string;
 
+  bucketListDate;
+
   showDailog() {
+    this.bucketListDate = {
+      placeImage: this.placeImage,
+      placeName: this.placeName,
+      placeDescription: this.placeDescription,
+      estimatedDistance: this.estimatedDistance,
+      estimatedBudget: this.estimatedBudget
+    }
+    // console.log(this.bucketListDate);    
     this.showAddBucketDailog = true;
+    // console.log(document.querySelector('.p-dialog-content'));
   }
 
   triggerFileinput() {
@@ -102,6 +131,48 @@ export class BucketListComponent implements OnInit, OnDestroy {
   }
 
   closeDailog() {
+    let bucketListData = { placeImage: this.placeImage,
+      placeName: this.placeName,
+      placeDescription: this.placeDescription,
+      estimatedDistance: this.estimatedDistance,
+      estimatedBudget: this.estimatedBudget
+    }
+    // let showCinfirm: boolean = false;
+    // for(let i=0; i < Object.keys(bucketListData).length; i++) {
+    //   if(bucketListData.placeImage !== this.bucketListDate.placeImage || bucketListData.placeName !== this.bucketListDate.placeName || bucketListData.placeDescription !== this.bucketListDate.placeDescription || bucketListData.estimatedDistance !== this.bucketListDate.estimatedDistance || bucketListData.estimatedBudget !== this.bucketListDate.estimatedBudget) {
+    //     showCinfirm = true;
+    //   }
+    // }
+    // if(showCinfirm) {
+    //   this.showConfirmCloseDialog = true;
+    // } else {
+    //   this.showAddBucketDailog = false;
+    //   this.closeDailogAndClear();
+    // }
+
+    if(this.inputValueChanged) {
+        this.showConfirmCloseDialog = true
+      } else {
+        this.showAddBucketDailog = false;
+        this.closeDailogAndClear();
+      }
+
+    // let isValueChanged: boolean = false;
+    // this.sharedService.isInputValueChanged.subscribe((res) => {
+    //   console.log(res);      
+    //   isValueChanged = res;
+    // }).unsubscribe()
+    // if(isValueChanged) {
+    //   this.showConfirmCloseDialog = true;
+    // } else {
+    //   this.showAddBucketDailog = false;
+    //   this.closeDailogAndClear()
+    // }
+    // isValueChanged = false;
+    
+  }
+
+  closeDailogAndClear() {
     this.showAddBucketDailog = false;
     this.bucketId = ''
     // console.log(this.placeImage);    
@@ -116,6 +187,12 @@ export class BucketListComponent implements OnInit, OnDestroy {
     this.isPDV = false;
     this.isEDV = false;
     this.isEBV = false;
+    this.showConfirmCloseDialog = false;
+    this.inputValueChanged = false;
+  }
+
+  closeConfirmDailog() {
+    this.showConfirmCloseDialog = false;
   }
 
   deleteSelectedPlaceImage() {
@@ -124,14 +201,27 @@ export class BucketListComponent implements OnInit, OnDestroy {
 
   bucketId: string = '';
   editBucketItem(item: BucketList) {
+    this.bucketId = item.id;
+    this.bucketListDate = {
+      placeImage: item.placeImage,
+      placeName: item.placeName,
+      placeDescription: item.placeDescription,
+      estimatedDistance: item.estimatedDistance,
+      estimatedBudget: item.estimatedBudget
+    }
+
+    this.sharedService.isInputValueChanged.subscribe((res) => {
+      // console.log(res);      
+    })
+    // console.log(this.bucketListDate);    
     this.showAddBucketDailog = true;
     this.placeImage = item.placeImage;    
     this.placeName = item.placeName;
     this.placeDescription = item.placeDescription;
     this.estimatedDistance = item.estimatedDistance;
     this.estimatedBudget = item.estimatedBudget;
-    console.log(item.id);
-    this.bucketId = item.id;
+    // console.log(item.id);
+    
   }
 
   validatePlaceName() {
@@ -207,21 +297,24 @@ export class BucketListComponent implements OnInit, OnDestroy {
       estimatedBudget: this.estimatedBudget
     }
     if(id) {
-      this.editBicketListSubscription = this.bucketListService.updateUserBucketItem(id,newBucketItem).subscribe((res) => {
+      // console.log(id);  
+      if(newBucketItem.placeImage !== this.bucketListDate.placeImage || newBucketItem.placeName !== this.bucketListDate.placeName || newBucketItem.placeDescription !== this.bucketListDate.placeDescription || newBucketItem.estimatedDistance !== this.bucketListDate.estimatedDistance || newBucketItem.estimatedBudget !== this.bucketListDate.estimatedBudget) {
+        this.editBicketListSubscription = this.bucketListService.updateUserBucketItem(id,newBucketItem).subscribe((res) => {
         this.getbucketlists();
         this.bucketId = '';
         this.messageService.add({severity:'success', summary:'Success', detail:'BucketList Successfully Updated!.'})
       });
-      this.closeDailog();
+      }    
+      this.closeDailogAndClear();
       return;
     }
 
-    console.log(newBucketItem);    
+    // console.log(newBucketItem);    
     this.addBucketlistSubscription = this.bucketListService.addNewBucketListitem(newBucketItem).subscribe((res) => {
       this.getbucketlists();
       this.messageService.add({severity:'success', summary:'Success', detail:'BucketList Successfully Added!.'})
     });
-    this.closeDailog();
+    this.closeDailogAndClear();
   }
 
   ngOnDestroy(): void {
@@ -231,6 +324,9 @@ export class BucketListComponent implements OnInit, OnDestroy {
       }
       if(this.editBicketListSubscription) {
         this.editBicketListSubscription.unsubscribe();
+      }
+      if(this.darkThemeSubscription) {
+        this.darkThemeSubscription.unsubscribe();
       }
   }
 }

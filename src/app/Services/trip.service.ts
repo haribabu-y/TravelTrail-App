@@ -43,6 +43,7 @@ export class TripService {
     }
 
     addNewtrip(trip: Trip) {
+      console.log(this.currentUser.id);      
         return this.http.post(`https://travektrail-app-default-rtdb.firebaseio.com/users/${this.currentUser.id}/trips.json`, trip)
     }
 }

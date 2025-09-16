@@ -9,7 +9,7 @@ import { TripsComponent } from './trips/trips.component';
 import { BucketListComponent } from './bucket-list/bucket-list.component';
 import { UserTripComponent } from './user-trip/user-trip.component';
 import { LoginComponent } from './login/login.component';
-import { SignupComponent } from './signup/signup.component';
+import { SignupComponent } from './signup/signup.component'; 
 import { UsersDetailsComponent } from './users-details/users-details.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -61,6 +61,13 @@ import { CustomTitlecasePipe } from './CustomPipes/CustomTitlecase.pipe';
 import { DigitsOnlyDirective } from './CustomDirectives/digitesOnly.directive';
 import { StringOnlyDirective } from './CustomDirectives/stringOnly.directive';
 import { HandleErrorInterceptor } from './Services/handle-error.interceptor';
+import { PhoneNumberFormatPipe } from './CustomPipes/phoneNumberFormat.pipe';
+import { Only10DigitsDirective } from './CustomDirectives/only10Digits.directive';
+import { HighlightSearchedTextDirective } from './CustomDirectives/highlightSearchedText.directive';
+import { HighlightSearchTextDirective } from './CustomDirectives/highlightSearchText.directive';
+import { ConfirmCloseDialogDirective } from './CustomDirectives/confirmClose.directive';
+import { ConfirmClose2Directive } from './CustomDirectives/confirmClose2.directive';
+import { ConfirmClose3Directive } from './CustomDirectives/confirmClose3.directive';
 
 @NgModule({
   declarations: [
@@ -83,7 +90,14 @@ import { HandleErrorInterceptor } from './Services/handle-error.interceptor';
     CustomIfDirective,
     CustomTitlecasePipe,
     DigitsOnlyDirective,
-    StringOnlyDirective
+    StringOnlyDirective,
+    PhoneNumberFormatPipe,
+    Only10DigitsDirective,
+    HighlightSearchedTextDirective,
+    HighlightSearchTextDirective,
+    ConfirmCloseDialogDirective,
+    ConfirmClose2Directive,
+    ConfirmClose3Directive
   ],
   imports: [
     BrowserModule,
