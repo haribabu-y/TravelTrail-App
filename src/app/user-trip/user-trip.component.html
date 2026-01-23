@@ -184,15 +184,14 @@
       </ng-template>
       <ng-template pTemplate="body" let-userTrip>
         <tr appHighlightRow>
-          <td *ngFor="let column of selectedColumns" class="tableField" [highlightSearchText2]="enteredText">
+          <!-- <td *ngFor="let column of selectedColumns" class="tableField" [highlightSearchText2]="enteredText">
             {{(column.value === 'totalDistance') ? (getConvertedDistance(userTrip.totalDistance)) : (column.value === 'totalExpense') ? (userTrip.totalExpense | currency: currencyCode:usercurrencySymbol) : column.value === 'username' ? (userTrip[column.value] | titlecase) : userTrip[column.value]}}
-          </td>
-          
-          <!-- <td>{{ userTrip.username }}</td>
+          </td> -->
+          <td>{{ userTrip.username }}</td>
           <td>{{ getConvertedDistance(userTrip.totalDistance)}}</td>
           <td>{{ userTrip.gender }}</td>
           <td>{{ userTrip.age }}</td>
-          <td>{{ convertAmount(userTrip.totalExpense) | currency: currencyCode }}</td> -->
+          <td>{{ convertAmount(userTrip.totalExpense) | currency: currencyCode }}</td>
           <td>
             <i class="pi pi-tag" (click)="openUserBucketList(userTrip.id)" style="cursor: pointer;"></i>
           </td>

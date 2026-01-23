@@ -156,16 +156,16 @@
             style="border-radius: 10px"
           />
         </td>
-        <td *ngFor="let column of selectedColumns" class="tableField" [highlightSearchText2]="enteredText">
+        <!-- <td *ngFor="let column of selectedColumns" class="tableField" [highlightSearchText2]="enteredText">
           {{
             column.value === "totalExpense" ? (user.totalExpense | currency:currencyCode:usercurrencySymbol) : column.value === 'username' ? (user[column.value] | titlecase) : user[column.value]
           }}
-        </td>
+        </td> -->
 
-        <!-- <td>{{user.username}}</td> 
-            <td>{{user.age}}</td>
-            <td>{{convertAmount(user.totalExpense) | currency: currencyCode }}</td>
-            <td>{{user.country}}</td> -->
+        <td>{{user.username}}</td> 
+        <td>{{user.age}}</td>
+        <td>{{convertAmount(user.totalExpense) | currency: currencyCode }}</td>
+        <td>{{user.country}}</td>
         <td><i class="pi pi-pencil" (click)="openEditDialog(user.id)"></i></td>
         <td><i class="pi pi-trash" (click)="showDeleteUser(user.id)"></i></td>
       </tr>
