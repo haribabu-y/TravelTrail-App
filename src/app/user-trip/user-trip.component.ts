@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, NgZone, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { UserTrips } from '../Models/usertrips';
 import { SharedService } from '../Services/shared.service';
@@ -26,7 +26,8 @@ export class UserTripComponent implements OnInit, OnDestroy {
     private bucketListService: BucketListService,
     private messageService: MessageService,
     private adminService: AdminService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private zone: NgZone
   ){}
 
   @ViewChild('userTripTable') userTripTable: Table;
@@ -124,6 +125,10 @@ export class UserTripComponent implements OnInit, OnDestroy {
 
   currencyFormateChanged() {
 
+    this.selectedColumns = this.selectedColumns.filter((ele) => {
+      return ele.value !== 'totalExpense';
+    });
+
     this.currencyCode = this.selectedCurrency.code;
     this.userCurrencyCode = this.selectedCurrency.code;
     this.usercurrencySymbol = this.selectedCurrency.symbol;
@@ -131,12 +136,19 @@ export class UserTripComponent implements OnInit, OnDestroy {
     // console.log(this.selectedCurrency);
     // console.log(this.usersTrips);
     this.usersTrips.forEach((trip) => {
+
       trip.totalExpense = this.convertAmount(trip.totalExpense);
       // console.log(trip.totalExpense);
     })
     console.log(this.usersTrips);
+    // console.log(this.usercurrencySymbol);
+    // console.log(this.userCurrencyCode);
+    // this.zone.run(() => {
+    //   this.usersTrips = [...this.usersTrips];
+    // })
     this.oldCurrencyCode = this.selectedCurrency.code;
     
+    this.selectedColumns.push({label:'Total Expense', value: 'totalExpense'});
   }
   convertAmount(baseAmount?: number): number {
     // console.log("Base mount" + baseAmount);   
