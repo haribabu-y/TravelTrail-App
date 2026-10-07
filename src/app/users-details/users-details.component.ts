@@ -358,8 +358,8 @@ export class UsersDetailsComponent implements OnInit, OnDestroy {
   columnOptions = [
     { label: 'User Name', value: 'username' },
     { label: 'Age', value: 'age' },
-    { label: 'Total Expense', value: 'totalExpense' },
     { label: 'Country', value: 'country' },
+    { label: 'Total Expense', value: 'totalExpense' },
   ];
 
   showCloumnList() {
